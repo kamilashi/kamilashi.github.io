@@ -1,0 +1,75 @@
+navbar_entries:
+  - title: about
+    url: about
+
+  - title: artstation
+    url: https://www.artstation.com/hgw27
+
+project_entries:
+  - title: Kaiko Project 5
+    url: kaiko-project-5-gameplay
+    desc: Gameplay code (C++, proprietary software)
+
+  - title: Kaiko Project 5
+    url: kaiko-project-5-particles
+    desc: Particle behavior & shaders (HLSL, C++, proprietary software)
+
+  - title: Bachelor Thesis
+    url: snowpack-simulation
+    desc: Snow property simulation with Compute Shaders (Compute, C#, Unity)
+
+  - title: Torpor Internship
+    url: overview-post
+    desc: Custom toon shader
+
+old_project_entries:
+  - title: Ghosts Never Talk
+    url: overview-post
+    desc: 2D sidescroller in a team of 3 (C#, Unity) 
+    # highlight: NEW
+    highlight: WIP
+
+  - title: Outline Shader in Unity
+    url: overview-post
+    desc: Outlines done via a compute shader in Unity (Compute, HLSL, Unity)
+
+footer_entries:
+  - title: linkedin
+    url: https://www.linkedin.com/in/kamila-shirinova-737121184/
+
+  - title: github
+    url: https://github.com/kamilashi
+
+misc_entries:
+  - title: this is an example vertical list
+    url: false
+
+  - title: you can show or hide using a boolean flag in _config.yml
+    url: false
+
+  - title: and you can add data in _data/home.yml
+    url: false
+
+  - title: Blog posts
+    post_list: true
+    url: false
+
+  - title: moonwalk on the Internet
+    url: false
+    entries:
+      - title: on Github
+        url: https://github.com/abhinavs/moonwalk
+
+      - title: originally built for abhinav's homepage
+        url: https://www.abhinav.co
+
+      - title: this list is scalable and can be nested
+        url: false
+        entries:
+          - title: this is nested inside a nested list
+            url: false
+
+          - title: it is easy to use, see _data/home.yml to see how to configure it.
+            url: false
+
+

@@ -3,18 +3,25 @@ layout: default
 ---
 
 <header>
-{% if site.theme_config.show_navbar == true %}
-  {% include horizontal_list.html collection=site.data.home.navbar_entries %}
-  <div class="dashed"></div>
-{% endif %}
+    {% if site.theme_config.show_navbar == true %}
+    {% include horizontal_list.html collection=site.data.home.navbar_entries %}
+    <!--<div style="height: 4px; background-color: #cc0000; margin-bottom: 20px;"></div>-->
+    {% endif %}
 
-  <h1>{{ site.title }}</h1>
-  {% if site.theme_config.show_description == true %}
-    <p>{{ site.description }}</p>
-  {% endif %}
+    {% include kamilas_header.html %}
+    <div style="display: flex; flex-wrap: wrap; width: 100%;" id="animated-boxes-root"></div>
+
+    <h1>
+        Kamila codes
+        <!-- {{ site.title }}-->
+    </h1>
+
+    {% if site.theme_config.show_description == true %}
+    <!--<p>{{ site.description }}</p>-->
+    {% endif%}
+    
 </header>
 
-<div style="height: 50px;"></div>
 
 {{ content }}
 

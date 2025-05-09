@@ -24,13 +24,13 @@ project_entries:
 
 old_project_entries:
   - title: Ghosts Never Talk
-    url: overview-post
-    desc: 2D sidescroller in a team of 3 (C#, Unity) 
+    url: ghosts-never-talk
+    desc: 2.5D sidescroller in a team of 3 (C#, Unity) 
     # highlight: NEW
     highlight: WIP
 
   - title: Outline Shader in Unity
-    url: overview-post
+    url: outline-shader
     desc: Outlines done via a compute shader in Unity (Compute, HLSL, Unity)
 
 footer_entries:

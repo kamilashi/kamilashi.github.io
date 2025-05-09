@@ -47,9 +47,9 @@ table, th, td {
 }
 
 div.highlighter-rouge pre code, pre code.highlighter-rouge {
-  display: block;
-  overflow-x: auto;
-  padding: 1em;
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
 }
 
 blockquote {
@@ -224,8 +224,23 @@ p code, li code {
   //border: 1px solid var(--text-secondary);
 }
 
-
 // custom
+
+.video-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.video-row video {
+    width: 350px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
 .image-grid {
     display: flex;
     flex-wrap: wrap;

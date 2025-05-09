@@ -1,0 +1,159 @@
+<style>
+    .outer-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        background-color: white;
+        overflow: hidden;
+        box-sizing: border-box;
+        border: 2px solid black;
+        border-left-style: hidden;
+        border-right-style: hidden;
+        margin: 0px;
+    }
+
+    .inner-box {
+        height: 100%;
+        background-color: var(--box-color, red);
+        box-sizing: border-box;
+        border: 2px solid black;
+        border-top-style: hidden;
+        border-bottom-style: hidden;
+        animation: stretch-right 2s infinite ease-in-out;
+        animation-delay: var(--delay, 0s);
+    }
+
+    .left .inner-box {
+        animation-name: stretch-left;
+    }
+
+    .right .inner-box {
+        animation-name: stretch-right;
+    }
+
+    .center .inner-box {
+        animation-name: stretch-both;
+    }
+
+    @keyframes stretch-right {
+        0%, 100% {
+            width: 0%;
+            transform: translateX(0);
+        }
+
+        50% {
+            width: 100%;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes stretch-left {
+        0%, 100% {
+            width: 100%;
+            transform: translateX(100%);
+        }
+
+        50% {
+            width: 100%;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes stretch-both {
+        0%, 100% {
+            width: 0%;
+            transform: translateX(50%);
+        }
+
+        50% {
+            width: 100%;
+            transform: translateX(0);
+        }
+    }
+</style>
+
+
+<script>
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const root = document.getElementById("animated-boxes-root");
+        if (!root) return;
+
+        const rows = [
+            { height: 35 },
+            { height: 20 },
+            { height: 35 }
+        ];
+
+        const colors = ['red', 'black', '#0064b9', '#41a9ac', '#41a9ac', '#fec72c', '#fec72c'];
+
+        let containerWidth = root.offsetWidth;
+
+        rows.forEach((row, rowIndex) => {
+
+            let rowWidthSoFar = 0;
+            let boxIndex = 0;
+            const boxes = []; // store to determine left-most / right-most later
+
+            while (rowWidthSoFar < containerWidth) {
+                const outer = document.createElement('div');
+                outer.className = 'outer-box';
+                outer.style.height = `${row.height}px`;
+
+                const randomWidth = Math.floor(Math.random() * 60) + row.height;
+                const clampedWidth = Math.min(randomWidth, containerWidth - rowWidthSoFar);
+                outer.style.width = `${clampedWidth}px`;
+
+                boxes.push({ element: outer, width: clampedWidth });
+                rowWidthSoFar += clampedWidth;
+
+
+                if (rowIndex != 0) {
+                    outer.style.borderTopStyle = 'hidden';
+                }
+            }
+
+            let currentX = 0;
+
+            boxes.forEach((box, i) => {
+                const outer = box.element;
+                const isFirst = i === 0;
+                const isLast = i === boxes.length - 1;
+
+                const inner = document.createElement('div');
+                inner.className = 'inner-box';
+
+                // Assign animation type
+                if (isFirst) {
+                    outer.classList.add('right'); // use stretch-right 
+                } else if (isLast) {
+                    outer.classList.add('left'); // use stretch-left
+                    outer.style.borderRightStyle = 'solid';
+                } else {
+                    outer.classList.add('center'); // will apply stretch-both
+                }
+
+                if (i % 2 == 0 && !isLast && !isFirst) {
+                    inner.style.setProperty('--box-color', 'white');
+                    inner.style.borderWidth = '0px';
+                }
+                else {
+                    const randomColorIdx = getRandomInt(0, colors.length-1);
+                    inner.style.setProperty('--box-color', colors[randomColorIdx]);
+                }
+
+                // Assign dynamic properties
+                inner.style.setProperty('--delay', `${(i + rowIndex) * 0.15}s`);
+
+                outer.appendChild(inner);
+                root.appendChild(outer);
+
+                currentX += box.width;
+            });
+        });
+    });
+</script>

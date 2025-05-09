@@ -56,7 +56,6 @@ For a snowpack of 5.8m in height and a uniform density of 20 kg/m^3 and temperat
 
 <div style="height: 20px;"></div>
 
-
 <div class="image-grid" >
 	<div class="item" >
 		<img src="/assets/images/snowsim/test1_start.png" alt="Image 1" >

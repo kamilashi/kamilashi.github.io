@@ -19,6 +19,14 @@ Each interactable can have an arbitrary number of transitions defined in it's se
 
 Examples of interactions: pulling/pushing levers, picking up objects, executing enemies, initiating dalogues, etc.
 
+<details>
+<summary>Code example of how the current available interaction and transition is chosen.</summary>
+	{% include interactable_code.html %}
+</details>
+
+
+<div style="height: 20px;"></div>
+
 <div class="video-row" >
 	<video autoplay muted loop controls >
 	  <source src="/assets/videos/switch_push_f.mp4" type="video/mp4">
@@ -58,13 +66,29 @@ System that processes carrying objects and placing them, handles some special ca
 
 ## Quick Time Event system
 
-System that registers button presses and fills up a smoothed progress bar. It also plays sound and visual effects attached to progress and regress points.
+System that registers button presses and fills up a smoothed progress bar. The linear progress is incremented with each button press, and the blended progress catches up with it using [lerp-damping](https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/). QTE fails if no input within a certain time. It also plays sound and visual effects attached to progress and/or regress points.
+
+```
+float exp = 2.718281828459f;
+float lerpTarget = 1.0f - keen::pf::pow(exp, -1.0f * QuickTimeEventSystem::s_quickTimeEventBlendDamp * timeStep);
+float blendedProgress = keen::lerp(blendedProgress, linearProgress, lerpTarget); 
+```
+
+*Blended progress uses frame-rate independend damping*
 
 
 ## Wall Movement System
 
 System that processes vertical and horizontal wall runs. An experimental iteraction featured manual switch of wall run direction when reaching so-called "wall run extenders", while the default one had automatic wall run extension in the same direction.
 
+<details>
+<summary>Code example of how wall is analyzed for a potential wall run.</summary>
+	{% include wall_run_code.html %}
+</details>
+
+When a wall run target is detected, the movement curve adjusts to always end up at a pre-defined position from which the animation could start playing.
+
+<span style="color: red; font-weight: bold;">Inserc video with debug rendering of the curve.</span>
 
 ## Wall Scrape System
 
@@ -74,4 +98,6 @@ System that processes a special state after colliding with a wall.
 
 System that processes sliding down a non-walkable slope.
 
+## Steering System
 
+The steering system was built combining the notion of [context maps] (https://www.gameaipro.com/GameAIPro2/GameAIPro2_Chapter18_Context_Steering_Behavior-Driven_Steering_at_the_Macro_Scale.pdf) with the steering behaviors by [Craig W. Reynolds] (https://www.red3d.com/cwr/steer/gdc99/). 

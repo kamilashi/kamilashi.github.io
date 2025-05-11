@@ -10,10 +10,6 @@ body {
   margin: 0;
   min-height: 100%;
 }
-pre, code {
-  font-family: "Roboto Mono", "Courier New", monospace;
-  font-size: 0.9rem;
-}
 
 h2, h3, h4, h5 { margin-top: 1.5em; }
 
@@ -44,12 +40,6 @@ table, th, td {
     padding: 0.4em;
     margin-left: auto;
     margin-right: auto;
-}
-
-div.highlighter-rouge pre code, pre code.highlighter-rouge {
-    display: block;
-    overflow-x: auto;
-    padding: 1em;
 }
 
 blockquote {
@@ -185,12 +175,50 @@ mark {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-p code, li code {
+
+/*p code, li code {
   background-color: var(--bg-secondary);
   padding: 0.2rem;
   color: var(--code-text);
   font-weight: bold;
 }
+  
+pre, code {
+  font-family: "Roboto Mono", "Courier New", monospace;
+  font-size: 0.9rem;
+}
+
+div.highlighter-rouge pre code, pre code.highlighter-rouge {
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
+}
+*/
+
+div.highlighter-rouge pre, details pre {
+  padding: 1em;
+  border-radius: 6px;
+  background-color: #c8d7d2;
+  font-family: "Roboto Mono", "Courier New", monospace;
+  font-size: 0.9rem;
+  color: #2d2d2d;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+div.highlighter-rouge code {
+  background: none;
+  padding: 0;
+  display: inline;
+}
+
+p code, li code {
+  //background-color: var(--bg-secondary);
+  padding: 0.2rem;
+  color: #6366f1;
+  font-weight: bold;
+}
+
 .post-title {
   margin-bottom:-1.5rem;
 }
@@ -234,12 +262,25 @@ p code, li code {
     padding: 0;
 }
 
+.single-video {
+    width: 720px;
+    display: block;
+  }
+
 .video-row video {
-    width: 350px;
     object-fit: cover;
     object-position: center;
     display: block;
 }
+
+.video-row.vid-2 video {
+  width: 350px;
+}
+
+.video-row.vid-3 video {
+  width: 224px;
+}
+
 
 .image-grid {
     display: flex;

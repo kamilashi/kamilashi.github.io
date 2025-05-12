@@ -299,3 +299,12 @@ p code, li code {
     display: block;
 }
 
+summary {
+  //font-weight: bold;
+  color: #6366f1;      
+  background-color: #c8d7d2;
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+  cursor: pointer;
+}
+

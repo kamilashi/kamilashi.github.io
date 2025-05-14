@@ -34,12 +34,15 @@ The fire effect consists of the following layers:
 <div class="video-row vid-3" >
 	<video autoplay muted loop >
 	  <source src="/assets/videos/base_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 	<video autoplay muted loop >
 	  <source src="/assets/videos/glow_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 	<video autoplay muted loop >
 	  <source src="/assets/videos/flames_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 </div >
 
@@ -49,9 +52,11 @@ The fire effect consists of the following layers:
 <div class="video-row vid-2" >
 	<video autoplay muted loop  >
 	  <source src="/assets/videos/sparks_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 	<video autoplay muted loop >
 	  <source src="/assets/videos/embers_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 </div >
 
@@ -139,9 +144,11 @@ This effect has an option to have its movement controlled by a 4-point spline, w
  <div class="video-row vid-2" >
 	<video autoplay muted loop>
 	  <source src="/assets/videos/dustfx_cr_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 	<video autoplay muted loop>
 	  <source src="/assets/videos/dust_cr_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 </div >
 
@@ -202,9 +209,11 @@ A simple efect that consists of a single Base layer that blends sprites from an 
 <div class="video-row vid-2" >
 	<video autoplay muted loop>
 	  <source src="/assets/videos/fogfx_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 	<video autoplay muted loop>
 	  <source src="/assets/videos/fog_f.mp4?v=1" type="video/mp4">
+	  Could not load the video
 	</video >
 </div >
 
@@ -212,12 +221,15 @@ A simple efect that consists of a single Base layer that blends sprites from an 
 
 <video width="720px" autoplay muted loop >
     <source src="/assets/videos/fire_f.mp4?v=1" type="video/mp4">
+	Could not load the video
 </video >
 
 <video width="720px" autoplay muted loop >
     <source src="/assets/videos/wind_f.mp4?v=1" type="video/mp4">
+	Could not load the video
 </video >
 
 <video width="720px" autoplay muted loop >
     <source src="/assets/videos/wind_fire_cloud_f.mp4?v=1" type="video/mp4">
+	Could not load the video
 </video >

@@ -4,12 +4,12 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-During my full-time employment at Kaiko I created severall gameplay systems for the unreleased project 5 from a beloved THQNordic IP. The project was done in ECS, with entities being defined by their components, that held the data and settings and operated on by systems. The in-game instances of such entities were managed with the help of proprietary tools. All system code was written in C++.
+During my full-time employment at Kaiko I created severall gameplay systems for the unreleased project 5 from a beloved THQNordic IP. The project was done in ECS, with entities being defined by their components, components operated on by their respective systems. Each component stored data and settings relevant for its container entity, managing those was done with the help of proprietary tools and converters. All system code was written in C++.
 
 
 ## Interactable System
 
-Processes a (usually) pair of interacting entities (interactor and interactable) in a state machine. The state machine can be logically split into:
+Processed a (usually) pair of interacting entities (interactor and interactable) in a state machine. The state machine can be logically split into:
 
 - Positioning both entities at predefined positions (if needed)
 - Playing synced animations (if available)
@@ -34,9 +34,12 @@ Examples of interactions: pulling/pushing levers, picking up objects, executing 
 
 <div style="height: 20px;"></div>
 
-<video width="720px" autoplay muted loop >
-    <source src="/assets/videos/chests_f.mp4?v=1" type="video/mp4">
+<video width="720px" autoplay muted loop playsinline preload="metadata">
+    <source src="/assets/videos/chests_f.mp4?v=4" type="video/mp4">
+	Could not load the video
 </video >
+
+<div style="height: 1px;"></div>
 
 *An example of how the different close-to-open transitions are chosen based on the interactor character and the interaction direction. The direction ranges defined for this particular chest type are visualized with red lines. The blue cross denotes the interaction position from which the animation will trigger, and can also be defined per transition. In this example - the characters will position themselves a bit further from the chest when interacting near its corner. Some models (like the instrument of the male character) are not rendered due to the NDA.*
 
@@ -53,7 +56,7 @@ Examples of interactions: pulling/pushing levers, picking up objects, executing 
 *As are different types ofdete interactors (character on the left, bomb on the right - the aiming and throwing are not part of the interaction, only the "detection" of the bomb as a predefined interactor type and the corresponding behavior)...* -->
 
 
-In hindsight, I would've probably build a separate system for processing the positioning of interacting entities during the execution, as it required a very different behavior than the regular interactions did and resulted in a lot of special code to handle all the corner cases.
+In hindsight, a separate system for processing the positioning of entities during an execution would've made more sence, as it required a very different behavior than the regular interactions did and resulted in a lot of special code to handle all the corner cases.
 
 ## Carriable System
 
@@ -61,18 +64,45 @@ System that processes carrying objects and placing them, handles some special ca
 
 ## Wall Movement System
 
-System that processes vertical and horizontal wall runs. An experimental iteraction featured manual switch of wall run direction when reaching so-called "wall run extenders", while the default one had automatic wall run extension in the same direction.
+System that processes vertical and horizontal wall runs. An experimental iteraction featured manual switch of wall run direction when reaching so-called "wall run extenders", while the default one had automatic wall run extension in the same direction. During a wall run, if a so called "wall-run target" is detected (wall run extender or a horizontal rail), the movement curve adjusts to always end up at a pre-defined position relative to the target, from which the transition animation could start playing. If an extender is detected below the player, the system either pulls the player closer to the extender to play the "jump-over" animation, or pulls away if a correct landing cannot be predicted. There are multiple transitions to a wall scrape, like after a vertical wall run that has no target or when failing to make a corner jump during a horizontal wall run. 
 
-The detection of a potential wall run was done outside of the wall-run system
+<div style="height: 20px;"></div>
+
+<div class="video-row vid-2" >
+	<video controls muted loop playsinline preload="metadata">
+	  <source src="/assets/videos/vwallrun_f.mp4?v=4" type="video/mp4">
+	  Could not load the video
+	</video >
+	<video controls muted loop playsinline preload="metadata">
+	  <source src="/assets/videos/hwallrun_f.mp4?v=3" type="video/mp4">
+	  Could not load the video
+	</video >
+</div >
+
+<div style="height: 1px;"></div>
+
+*Vertical (left) and horizontal (right) wall runs with auto-extenders.*
+ 
+
+<div style="height: 20px;"></div>
+
+<video width="720px" controls muted loop playsinline preload="metadata">
+    <source src="/assets/videos/mwallrun_f.mp4?v=3" type="video/mp4">
+	Could not load the video
+</video >
+
+<div style="height: 1px;"></div>
+
+*Mixed wall runs with manual extenders.*
+
+Manual extenders have a idle time-out after which tha character automatically drops from the extender. Wall-run is only possible into the direction at which the wall is marked by a special "wall-runnable" material tag, which also serves as an indicator for the wall run type (vertical / horizontal).
+
+When the player is in air, nearby walls are being detected with raycasts and checked against multiple conditions, like if the wall has an appropriate material-tag, in which direction, if it isn't a corner and so on. This only returns info on all "possible" directions and the final decision is still dependent on the player's input direction. 
 
 <details>
-<summary>Code example of how wall is analyzed for a potential wall run.</summary>
+<summary>Code example of how the nearby walls are analyzed for a potential wall run.</summary>
 	{% include wall_run_code.html %}
 </details>
-
-When a wall run target is detected, the movement curve adjusts to always end up at a pre-defined position from which the animation could start playing.
-
-<span style="color: red; font-weight: bold;">Inserc video with debug rendering of the curve.</span>
 
 ## Wall Scrape System
 

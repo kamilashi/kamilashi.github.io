@@ -48,7 +48,7 @@ sass:
 
 plugins:
   - jekyll-feed
-  - jekyll-soopr-seo-tag
+  - jekyll-seo-tag
 
 include:
   - assets/videos

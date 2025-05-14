@@ -12,7 +12,6 @@ if (isPointInsideSphere(&amp;isInRange, &amp;currentSquareDistance, pInteractibl
   size_t validTransitionIdx = 0u;
   for (size_t iTransition = 0u; iTransition < transitionLibrary.transitions.getSize(); iTransition ++)
   {
-
     if( areTransitionRequirementsMet(pInteractorMovementState, *pInteractibleComponent, pMultistableComponent, *pQuickTimeEventStorage, transitionLibrary.transitions[iTransition], interactorEntityId)
       &amp;&amp;(isStaticInteractor
         || // if we are past this point - our interactor is someone with a movement state component (player / horse / NPC)

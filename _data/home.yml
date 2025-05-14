@@ -18,9 +18,9 @@ project_entries:
     url: snowpack-simulation
     desc: Snow property simulation with Compute Shaders (Compute, C#, Unity)
 
-  - title: Torpor Internship
-    url: overview-post
-    desc: Custom toon shader
+  - title: Internship at Torpor Games
+    url: custom-shader-prototype-for-torpor-games
+    desc: Custom shader prototype (Shaderlab, Unity)
 
 old_project_entries:
   - title: Ghosts Never Talk

@@ -1,0 +1,50 @@
+<div>
+<pre><code>
+if(_EnableDiffraction)
+{
+    float prerAxisDisplacement = _EdgeWidth * -0.5f;
+    float3 axis = i.worldCoord.xyz;
+    float3 axisDisplacement = float3(1, 1, 1) - i.normal;  // get planar coords
+    axisDisplacement *= prerAxisDisplacement;
+
+    float4 shadowCoordShiftedRight = TransformWorldToShadowCoord( axis + axisDisplacement);
+    light = GetMainLight(shadowCoordShiftedRight);
+    float attenuationShiftedRight = light.shadowAttenuation;
+
+    float4 shadowCoordShiftedLeft = TransformWorldToShadowCoord( axis - axisDisplacement);
+    light = GetMainLight(shadowCoordShiftedLeft);
+    float attenuationShiftedLeft = light.shadowAttenuation;
+
+    float lightMask = saturate(attenuation*10);
+    float lightMaskShiftedRight = saturate(attenuationShiftedRight*10);
+    float lightMaskShiftedLeft = saturate(attenuationShiftedLeft*10);
+
+    if (axisDisplacement.x != 0.0f)
+    {
+        axisDisplacement.x = - 2 * axisDisplacement.x;
+    }
+    else if(axisDisplacement.y != 0.0f)
+    {
+        axisDisplacement.y = - 2 * axisDisplacement.y;
+    }
+    else
+    {
+        axisDisplacement.z = - 2 * axisDisplacement.z;
+    }
+
+    shadowCoordShiftedRight = TransformWorldToShadowCoord( axis + axisDisplacement);
+    light = GetMainLight(shadowCoordShiftedRight);
+    attenuationShiftedRight = light.shadowAttenuation;
+
+    shadowCoordShiftedLeft = TransformWorldToShadowCoord( axis - axisDisplacement);
+    light = GetMainLight(shadowCoordShiftedLeft);
+    attenuationShiftedLeft = light.shadowAttenuation;
+
+    lightMask = saturate(attenuation*10);
+    float lightMaskShiftedRight2 = saturate(attenuationShiftedRight*10);
+    float lightMaskShiftedLeft2 = saturate(attenuationShiftedLeft*10);
+
+    diffractionMask = saturate (saturate(lightMask - lightMaskShiftedRight) + saturate(lightMask - lightMaskShiftedLeft) + saturate(lightMask - lightMaskShiftedLeft2) + saturate(lightMask - lightMaskShiftedRight2));
+}
+</code></pre>
+</div>

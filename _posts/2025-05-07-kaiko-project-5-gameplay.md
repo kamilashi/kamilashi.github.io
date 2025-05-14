@@ -74,7 +74,7 @@ System that processes vertical and horizontal wall runs. An experimental iteract
 	  Could not load the video
 	</video >
 	<video controls muted loop playsinline preload="metadata">
-	  <source src="/assets/videos/hwallrun_f.mp4?v=3" type="video/mp4">
+	  <source src="/assets/videos/hwallrun_f.mp4?v=4" type="video/mp4">
 	  Could not load the video
 	</video >
 </div >
@@ -87,7 +87,7 @@ System that processes vertical and horizontal wall runs. An experimental iteract
 <div style="height: 20px;"></div>
 
 <video width="720px" controls muted loop playsinline preload="metadata">
-    <source src="/assets/videos/mwallrun_f.mp4?v=3" type="video/mp4">
+    <source src="/assets/videos/mwallrun_f.mp4?v=4" type="video/mp4">
 	Could not load the video
 </video >
 
@@ -104,13 +104,9 @@ When the player is in air, nearby walls are being detected with raycasts and che
 	{% include wall_run_code.html %}
 </details>
 
-## Wall Scrape System
+<!-- ## Slope Slide System
 
-System that processes a special state after colliding with a wall.
-
-## Slope Slide System
-
-System that processes sliding down a non-walkable slope.
+System that processes sliding down a non-walkable slope. -->
 
 ## Steering System
 
@@ -119,12 +115,18 @@ The steering system was built by combining the idea of [context maps](https://ww
 
 ## Quick Time Event system
 
-System that registers button presses and fills up a smoothed progress bar. The linear progress is incremented with each button press, and the blended progress catches up with it using [lerp-damping](https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/). QTE fails if no input within a certain time. It also plays sound and visual effects attached to progress and/or regress points.
+System that registers button presses and fills up a smoothed progress bar. The linear progress is incremented with each button press, and the blended progress catches up with it using [lerp-damping](https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/). QTE fails if no input is given within a certain time. It also plays sound and visual effects attached to progress and/or regress points.
 
+<video width="720px" autoplay muted loop playsinline preload="metadata">
+    <source src="/assets/videos/qte_f.mp4?v=6" type="video/mp4">
+	Could not load the video
+</video >
+
+<!--
 ```
 float exp = 2.718281828459f;
 float lerpTarget = 1.0f - keen::pf::pow(exp, -1.0f * QuickTimeEventSystem::s_quickTimeEventBlendDamp * timeStep);
 float blendedProgress = keen::lerp(blendedProgress, linearProgress, lerpTarget); 
 ```
 
-*Blended progress uses frame-rate independend damping.*
+*Blended progress uses frame-rate independend damping.*-->

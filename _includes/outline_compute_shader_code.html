@@ -1,0 +1,47 @@
+<div>
+<pre><code>
+void Outline(uint3 id : SV_DispatchThreadID)
+{
+    float3 thisPixelColor = float3(outlineMap[id.xy].x, outlineMap[id.xy].y, outlineMap[id.xy].z);
+    float4 thisPixel = outlineMap[id.xy];
+    float4 thisPixelSource = source[id.xy];
+    float outline = 0;
+    
+    float thisPixelColorLength = length(thisPixelColor);
+    
+    if (thisPixelColorLength == 0)
+    {
+        outputOutline[id.xy] = thisPixel;
+        return;
+    }
+    
+    uint2 lowerPixelId = uint2(id.x, (id.y + 1));
+        
+    if (withinScreen(lowerPixelId))
+    {
+        float3 lowerPixelColor = float3(outlineMap[lowerPixelId].x, outlineMap[lowerPixelId].y, outlineMap[lowerPixelId].z);
+        float4 lowerPixel = outlineMap[lowerPixelId];
+        if (abs(length(lowerPixelColor) - thisPixelColorLength) > outlineThreshold)
+        {
+            thisPixel = float4(0, 0, 0, 1);
+            outline = 1;
+
+        }
+    }
+    
+    uint2 rightPixelId = uint2((id.x + 1), (id.y));
+    if (withinScreen(rightPixelId))
+    {
+        float3 rightPixelColor = float3(outlineMap[rightPixelId].x, outlineMap[rightPixelId].y, outlineMap[rightPixelId].z);
+        float4 rightPixel = outlineMap[rightPixelId];
+        if (abs(length(rightPixelColor) - thisPixelColorLength) > outlineThreshold)
+        {
+            thisPixel = float4(0, 0, 0, 1);
+            outline = 1;
+        }
+    }
+    
+    outputOutline[id.xy] = lerp(thisPixelSource, thisPixel, outline);
+}
+</code></pre>
+</div>

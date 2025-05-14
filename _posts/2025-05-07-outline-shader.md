@@ -40,3 +40,8 @@ results in the final render:
 *Final render with the outline-less sphere.*
 
 <div style="height: 20px;"></div>
+
+<details>
+<summary>Code snippet of the outline kernel.</summary>
+	{% include outline_compute_shader_code.html %}
+</details>

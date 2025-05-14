@@ -33,7 +33,7 @@ theme_config:
   show_tags: false # show tags in a blog posts
   # options for "home" page
   home:
-    title_projects: Associated Projects
+    title_projects: Affiliated Projects
     title_misc_list: Details
     # title_blog: Blog
     title_other_projects: Personal Projects

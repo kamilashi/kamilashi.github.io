@@ -95,7 +95,7 @@ System that processes vertical and horizontal wall runs. An experimental iteract
 
 *Mixed wall runs with manual extenders.*
 
-Manual extenders have a idle time-out after which tha character automatically drops from the extender. Wall-run is only possible into the direction at which the wall is marked by a special "wall-runnable" material tag, which also serves as an indicator for the wall run type (vertical / horizontal).
+Manual extenders have an idle time-out after which tha character automatically drops from the extender. Wall-run is only possible into the direction at which the wall is marked by a special "wall-runnable" material tag, which also serves as an indicator for the wall run type (vertical / horizontal).
 
 When the player is in air, nearby walls are being detected with raycasts and checked against multiple conditions, like if the wall has an appropriate material-tag, in which direction, if it isn't a corner and so on. This only returns info on all "possible" directions and the final decision is still dependent on the player's input direction. 
 

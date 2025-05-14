@@ -16,18 +16,20 @@ project_entries:
 
   - title: Bachelor Thesis
     url: snowpack-simulation
-    desc: Snow property simulation with Compute Shaders (Compute, C#, Unity)
+    desc: Snow property simulation on the GPU (Compute, C#, Unity)
+    highlight: DEMO
 
-  - title: Internship at Torpor Games
+  - title: Torpor Games Internship
     url: custom-shader-prototype-for-torpor-games
     desc: Custom shader prototype (Shaderlab, Unity)
+    highlight: DEMO
 
 old_project_entries:
   - title: Ghosts Never Talk
     url: ghosts-never-talk
-    desc: 2.5D sidescroller in a team of 3 (C#, Unity) 
+    desc: Coding for a 2.5D sidescroller (C#, Unity) 
     # highlight: NEW
-    highlight: WIP
+    highlight: DEMO
 
   - title: Outline Shader in Unity
     url: outline-shader

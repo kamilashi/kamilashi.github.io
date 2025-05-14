@@ -11,7 +11,7 @@ project_entries:
     desc: Gameplay code (C++, proprietary software)
 
   - title: Kaiko Project 5
-    url: kaiko-project-5-particles
+    url: kaiko-project-5-particle-effects
     desc: Particle behavior & shaders (HLSL, C++, proprietary software)
 
   - title: Bachelor Thesis

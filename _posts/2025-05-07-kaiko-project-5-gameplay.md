@@ -122,6 +122,8 @@ System that registers button presses and fills up a smoothed progress bar. The l
 	Could not load the video
 </video >
 
+*The linear progress is rendered with the yellow bar, while the blended progress is rendered with the green one.*
+
 <!--
 ```
 float exp = 2.718281828459f;

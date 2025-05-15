@@ -1,0 +1,45 @@
+<div>
+<pre><code>
+public Vector3 GetPositionOnSpline(ref SplineMovementData movementDataRef, float increment)
+{
+	float newLocalPos = movementDataRef.positionOnSpline + increment;
+
+	int point1Index = 0;
+	for (int i = 0; i < controlPoints.Count - 1; i++)
+	{
+		if (movementDataRef.positionOnSpline >= controlPoints[i].GetLocalPos() && movementDataRef.positionOnSpline < controlPoints[i + 1].GetLocalPos())
+		{
+			point1Index = i;
+			float safetyError = 0.001f;
+
+			// clamp to end points:
+			if (newLocalPos < 0.0f)
+			{
+				newLocalPos = 0.0f + safetyError;
+			}
+
+			if (newLocalPos > totalLength)
+			{
+				newLocalPos = totalLength - safetyError;
+			}
+
+			movementDataRef.positionOnSpline = newLocalPos;
+
+			controlPoints[i].Visit(); // left
+			controlPoints[i + 1].Visit(); // right
+
+			movementDataRef.lastVisitedControlPoint = increment < 0.0f ? controlPoints[i] : controlPoints[i + 1];
+
+			break;
+		}
+	}
+
+	float t = (movementDataRef.positionOnSpline - controlPoints[point1Index].GetLocalPos()) / (controlPoints[point1Index + 1].GetLocalPos() - controlPoints[point1Index].GetLocalPos());
+	{
+		movementDataRef.availableSplinePointObject = scanForSplinePointObjects(point1Index, newLocalPos);
+	}
+
+	return getPositionOnSplineSegment(point1Index, t);
+}
+</code></pre>
+</div>

@@ -4,7 +4,11 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-Snowpack compression simulation done on the GPU inside the Unity Engine. The snowpack is represented by a voxelized grid, each cell storing its properties, such as density, hardness, temperature, mass, applied pressure, etc. Snow compression is calculated in several steps inside a compute shader. Each cell's lifecycle looks like this:
+Snowpack compression simulation done on the GPU inside the Unity Engine. The project demo is available under [this link](https://github.com/kamilashi/Snow-Simulation/tree/main/Build) -> Snow SImulation.exe. The GPU source code can be accessed from the Snow-Simulation/Assets/Shaders folder - files with the .compute and .shader extensions. This page focuses of the core the idea behind the project and its design.
+
+<div style="height: 20px;"></div>
+
+The snowpack is represented by a voxelized grid (Eulerian description of flow), each cell storing its properties, such as density, hardness, temperature, mass, applied pressure, etc. Snow compression is calculated in several steps inside a compute shader. Each cell's lifecycle looks like this:
 
 1. Calculate the total pressure acting on the cell (weight of the snowpack above + extenral pressure)
 2. Calculate the cell hardness based on its density and temperature

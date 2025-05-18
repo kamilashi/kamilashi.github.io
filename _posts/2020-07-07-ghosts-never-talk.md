@@ -19,13 +19,13 @@ Each walkable "ground layer" is bound to exactly one spline, each spline can hav
 *Editor view of the demo scene, with 3 ground layers from 0 (closest) to 2 (farthest).*
 
 <details>
-<summary>Function code that takes in the velocity and samples the current position on the spline, as well as other gampley-specific information.</summary>
-	{% include spline_movement_code.html %}
+<summary>Code snippet that samples the current position on the spline, as well as some other gampley-specific info.</summary>
+	{% include gnt_spline_movement_code.html %}
 </details>
 
 ## A* Path Finding
 
-The code finds the shortest path between the source node and the target node, considering only the already visited nodes. At the moment is implemented as part of the respawn feature, to visualize the "the progress setback" instead of an instant teleport-respawn. The two videos below show auto-steering along the shortest path returned by the A* search.
+The code finds the shortest path between the source node and the target node, considering only the already visited nodes. At the moment it is implemented as part of the respawn feature, to visualize the "the progress setback" instead of an instant teleport-respawn. The two videos below show auto-steering along the shortest path returned by the A* search.
 
 <div class="video-row vid-2" >
 	<video controls muted loop playsinline preload="metadata">
@@ -37,11 +37,11 @@ The code finds the shortest path between the source node and the target node, co
 	  Could not load the video
 	</video >
 </div >
-*Left: before having explored the actual shortest path; right: after having explored the actual shortest path*
+*Before (left video) and after (right video) having explored the actual shortest path*
 
 ## Camera Movement
 
-Camera in the prototype is tasked with the following:
+The main camera in the prototype is tasked with the following:
 
 - Follow the player with lookahead
 - Make sure the current layer's "camera hook" stays at the bottom of the screen
@@ -51,9 +51,36 @@ The movement interpolation is done using the [lerp-damping](https://www.rorydris
 
 When the player goes up the spline, to keep the player within the relative center of the screen and have the screen bottom tied to the camera hook height, the camera automatically dollies backwards - this behavior can be seen when walking over the bridge and up the strairs.
 
+<!-- <details>
+<summary>Camera update code</summary>
+	{% include gnt_camera_movement_code.html %}
+</details> -->
+
+Code snippet that snaps the screen bottom to the y position of the camera hook and dollies back to keep the player in view.
+
+``` csharp
+// match screen bottom with the hook by setting the camera's y position
+float referenceExtentY = (activeGroundLayerRef.ScreenBottomHook.transform.position.z - transform.position.z) * (float)System.Math.Tan(mainCamera.fieldOfView * 0.5 * (System.Math.PI / 180.0));
+fitScreenBottomHookY = activeGroundLayerRef.ScreenBottomHook.transform.position.y + referenceExtentY;
+predictedCameraPosition.y = fitScreenBottomHookY;
+cameraHeightChangeReference = fitScreenBottomHookY;
+
+// dolly the camera back when going up 
+float playerPosDifferenceY = cameraHeightChangeReference - (thisFramePlayerPosition.y + cameraHeightChangeThreshold);
+float dollyAmount = System.Math.Min(System.Math.Abs(playerPosDifferenceY), maxDollyAmount);
+float dollyDirection = System.Math.Sign(playerPosDifferenceY);
+
+predictedCameraPosition.z += dollyDirection * dollyAmount;
+```
+
 ## Gameplay Demo
 
-<video width="720px" controls muted loop playsinline preload="metadata">
+<!-- <video width="720px" controls muted loop playsinline preload="metadata">
     <source src="/assets/videos/gnt_f.mp4?v=4" type="video/mp4">
 	Could not load the video
-</video >
+</video > -->
+<!-- autoplay; -->
+
+<iframe src="https://player.vimeo.com/video/1085071250?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+
+

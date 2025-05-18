@@ -9,5 +9,6 @@ for %%f in ("%input_folder%\*.mp4") do (
 )
 goto :eof
 
+
 :convert
 ffmpeg -i %1 -vcodec libx264 -an -preset fast -crf 23 -movflags +faststart -strict -2 %2

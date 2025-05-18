@@ -66,7 +66,7 @@ The fire effect consists of the following layers:
 
 Below is a code snippet that produces the hourglass-shaped trajectory for the sparks. 
 
-```
+``` hlsl
 float3 getSparksPath(const ParticleParameters& particle, float deltaTime, float time, float maxFreq /* = 23.0f*/, float maxAmp /* = 1.3f*/) 
 {
 	float3 inPos = particle.pos;

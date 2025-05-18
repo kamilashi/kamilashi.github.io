@@ -1,0 +1,15 @@
+@echo off
+
+set "input_folder=raw"
+set "target_width=720"
+
+for %%f in ("%input_folder%\*.mp4") do (
+    set "filename=%%~nxf"
+    call :convert "%%f" "%%~dp0%%~nf_f.mp4"
+)
+goto :eof
+
+
+:convert
+::ffmpeg -i %1 -vcodec libx264 -an -preset fast -crf 23 -movflags +faststart -strict -2 %2
+ffmpeg -i %1 -vf "crop=in_w:in_w*9/16:0:0" -c:a copy %2

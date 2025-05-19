@@ -1,14 +1,12 @@
 {% highlight hlsl %}
 float prerAxisDisplacement = _EdgeWidth * -0.5f;
-float3 axis = i.worldCoord.xyz;
-float3 axisDisplacement = float3(1, 1, 1) - i.normal;  // get planar coords
-axisDisplacement *= prerAxisDisplacement;
+float3 posWS = i.worldCoord.xyz;
 
-float4 shadowCoordShiftedRight = TransformWorldToShadowCoord( axis + axisDisplacement);
+float4 shadowCoordShiftedRight = TransformWorldToShadowCoord( posWS + i.tangentWS * prerAxisDisplacement + i.bitangentWS * prerAxisDisplacement);
 light = GetMainLight(shadowCoordShiftedRight);
 float attenuationShiftedRight = light.shadowAttenuation;
 
-float4 shadowCoordShiftedLeft = TransformWorldToShadowCoord( axis - axisDisplacement);
+float4 shadowCoordShiftedLeft = TransformWorldToShadowCoord( posWS - i.tangentWS * prerAxisDisplacement - i.bitangentWS * prerAxisDisplacement);
 light = GetMainLight(shadowCoordShiftedLeft);
 float attenuationShiftedLeft = light.shadowAttenuation;
 
@@ -16,24 +14,11 @@ float lightMask = saturate(attenuation*10);
 float lightMaskShiftedRight = saturate(attenuationShiftedRight*10);
 float lightMaskShiftedLeft = saturate(attenuationShiftedLeft*10);
 
-if (axisDisplacement.x != 0.0f)
-{
-    axisDisplacement.x = - 2 * axisDisplacement.x;
-}
-else if(axisDisplacement.y != 0.0f)
-{
-    axisDisplacement.y = - 2 * axisDisplacement.y;
-}
-else
-{
-    axisDisplacement.z = - 2 * axisDisplacement.z;
-}
-
-shadowCoordShiftedRight = TransformWorldToShadowCoord( axis + axisDisplacement);
+shadowCoordShiftedRight = TransformWorldToShadowCoord( posWS + i.tangentWS * prerAxisDisplacement - i.bitangentWS * prerAxisDisplacement);
 light = GetMainLight(shadowCoordShiftedRight);
 attenuationShiftedRight = light.shadowAttenuation;
 
-shadowCoordShiftedLeft = TransformWorldToShadowCoord( axis - axisDisplacement);
+shadowCoordShiftedLeft = TransformWorldToShadowCoord( posWS - i.tangentWS * prerAxisDisplacement + i.bitangentWS * prerAxisDisplacement);
 light = GetMainLight(shadowCoordShiftedLeft);
 attenuationShiftedLeft = light.shadowAttenuation;
 

@@ -6,7 +6,7 @@ layout: post
 
 This ongoing project is being developed by a three-person team: [Violetta Pavlovskaia](https://www.artstation.com/puba) (Art & Animation), [Maksim Akulov](https://www.artstation.com/akulov) (Story & Gamedesign) and myself (Programming). <!-- The demo is available under [this link]() by launching the  --> 
 
-The prototype a 2.5D sidescroller that mixes 2D and 3D graphics. It feeatures mostly bi-directional movement (left/right) and only occasional jumps between "ground layers" - hence the 2.5 aspect. It is planned to incorporate puzzles solved by interacting with various objects, as well as enemy characters that will require a stelthy walkthrough. The engine of choise is Unity 2022.3.42f1. Below is a breakdown of some of the already implemented features. There is footage of the current state of the prototype at the end of this article.
+The prototype a 2.5D sidescroller that mixes 2D and 3D graphics. It feeatures mostly bi-directional movement (left/right) and only occasional jumps between "ground layers" - hence the 2.5 aspect. It is planned to incorporate puzzles solved by interacting with various objects, as well as enemy characters that will require a stelthy walkthrough. The engine of choise is Unity 2022.3.42f1, using the Universal Render Pipeline. Below is a breakdown of some of the already implemented features. There is footage of the current state of the prototype at the end of this article.
 
 
 ## Spline Movement
@@ -82,5 +82,5 @@ predictedCameraPosition.z += dollyDirection * dollyAmount;
 <!-- autoplay; -->
 
 <iframe src="https://player.vimeo.com/video/1085071250?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
-*The video shows some additional gameplay features, like the layer switching, teleport interactions and a dialogue. The dialogue system is powered by Yarn Spinner.*
+*The video shows some additional gameplay features, like ground layer switching, teleport interactions and a dialogue. The dialogue system is powered by the Yarn Spinner package.*
 

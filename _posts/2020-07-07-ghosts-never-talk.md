@@ -28,11 +28,11 @@ Each walkable "ground layer" is bound to exactly one spline, each spline can hav
 The code finds the shortest path between the source node and the target node, considering only the already visited nodes. At the moment it is implemented as part of the respawn feature, to visualize the "the progress setback" instead of an instant teleport-respawn. The two videos below show auto-steering along the shortest path returned by the A* search.
 
 <div class="video-row vid-2" >
-	<video controls muted loop playsinline preload="metadata">
+	<video autoplay muted loop playsinline preload="metadata">
 	  <source src="/assets/videos/pathfinding_unexplored_f.mp4?v=1" type="video/mp4">
 	  Could not load the video
 	</video >
-	<video controls muted loop playsinline preload="metadata">
+	<video autoplay muted loop playsinline preload="metadata">
 	  <source src="/assets/videos/pathfinding_explored_f.mp4?v=1" type="video/mp4">
 	  Could not load the video
 	</video >

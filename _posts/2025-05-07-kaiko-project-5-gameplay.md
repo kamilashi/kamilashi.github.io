@@ -77,7 +77,7 @@ Ground Movement System (entity movement)
 </div>-->
 
 ![Alt text](/assets/images/kaiko/systems.png) 
-*system hierarchy*
+*System hierarchy.*
 
 In the video examples, the NPC controller sets the desired behavior like *pursuit* a dynamic target (the player), *flee* from the target (after attacking) and *seek* the spawn position (when the player goes out of range).
 
@@ -92,7 +92,7 @@ The attracting forces are: pursuit/pursuit with offset, seek, flee and flocking 
 *A small group of enemies, switches between pursuit, flee and seek behaviors.*
 
 <iframe src="https://player.vimeo.com/video/1085290416?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
-*A larger group of enemies with static collision*
+*A larger group of enemies navigating around the static collision.*
 
 
 

@@ -105,13 +105,6 @@ h1, h2, h3, h4, h5, h6 {
 p, strong, b, em, small, li, hr, table, figcaption {
     color: var(--text);
 }
-.highlight, pre code, blockquote {
-  border-radius: 0.5em;
-}
-blockquote {
-  background-color: var(--bg-secondary);
-  border: 1px var(--border) solid;
-}
 a {
   color: var(--links);
 }
@@ -195,25 +188,62 @@ div.highlighter-rouge pre code, pre code.highlighter-rouge {
 }
 */
 
-div.highlighter-rouge pre, details pre {
+/* .highlight, pre code, */ blockquote {
+  border-radius: 0.5em;
+}
+
+blockquote {
+  background-color: var(--bg-secondary);
+  border: 1px var(--border) solid;
+}
+
+/* details {
+  display: block;
+  width: 100%;
+  margin: 0%;
+} */
+
+div.highlight pre, div.highlighter-rouge pre, details pre , details .highlight pre {
   padding: 1em;
   border-radius: 6px;
   background-color: #c8d7d2;
   font-family: "Roboto Mono", "Courier New", monospace;
   font-size: 0.9rem;
-  color: #2d2d2d;
+  //color: #2d2d2d;
   overflow-x: auto;
   line-height: 1.5;
+  width: 100%;
+  margin: 0%;
+  box-sizing: border-box;
 }
 
-div.highlighter-rouge code {
+/* div.highlight pre {
+  box-sizing: border-box;      
+  min-width: 100%;
+  overflow-x: visible;
+  margin: 100rem;
+  display: inline;
+}
+ */
+
+ details .highlight, div.highlight{
+  margin: 0%;
+  padding: 0em;
+  padding-top: 1em;
+  width: 100%;
+}
+
+pre code, div.highlighter-rouge code
+{
+  width: 100%;
   background: none;
   padding: 0;
   display: inline;
+  white-space: pre-wrap;
 }
 
 p code, li code {
-  //background-color: var(--bg-secondary);
+  background-color: var(--bg-secondary);
   padding: 0.2rem;
   color: #6366f1;
   font-weight: bold;

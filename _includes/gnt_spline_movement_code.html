@@ -1,5 +1,4 @@
-<div>
-<pre><code class="language-csharp">
+{% highlight csharp %}
 public Vector3 GetPositionOnSpline(ref SplineMovementData movementDataRef, float increment)
 {
 	float newLocalPos = movementDataRef.positionOnSpline + increment;
@@ -41,5 +40,4 @@ public Vector3 GetPositionOnSpline(ref SplineMovementData movementDataRef, float
 
 	return getPositionOnSplineSegment(point1Index, t);
 }
-</code></pre>
-</div>
+{% endhighlight %}

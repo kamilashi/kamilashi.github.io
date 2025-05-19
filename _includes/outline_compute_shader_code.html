@@ -1,5 +1,4 @@
-<div>
-<pre><code>
+{% highlight hlsl %}
 void Outline(uint3 id : SV_DispatchThreadID)
 {
     float3 thisPixelColor = float3(outlineMap[id.xy].x, outlineMap[id.xy].y, outlineMap[id.xy].z);
@@ -42,5 +41,4 @@ void Outline(uint3 id : SV_DispatchThreadID)
     
     outputOutline[id.xy] = lerp(thisPixelSource, thisPixel, outline);
 }
-</code></pre>
-</div>
+{% endhighlight %}

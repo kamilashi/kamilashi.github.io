@@ -1,45 +1,45 @@
-<div class="highlight">
-<pre><code class="language-cpp">
-float expandedRadius = pInteractibleComponent-&gt;interactorSensorSphereData.sensorSphereRadius * ((isThisLastAvailableInteractionInRange &amp;&amp; pInteractorComponent-&gt;pSetupData-&gt;interactionSensorPointData.canExpand) ? pInteractibleComponent-&gt;interactorSensorSphereData.inRangeSphereExpandFactor : 1.0f);
+{% highlight cpp %}
 
-if (isPointInsideSphere(&amp;isInRange, &amp;currentSquareDistance, pInteractibleComponent-&gt;interactorSensorSphereData.worldSpacePosition, expandedRadius, interactorPoint)
-  &amp;&amp; (pInteractorComponent-&gt;exclusiveInteraction == tix::ecs::InvalidEntityId || isExclusiveInteraction(*pInteractibleComponent, *pInteractorComponent))
-  &amp;&amp; MultistableUtility::isUnlocked(pMultistableComponent)
-  &amp;&amp; !pInteractorComponent-&gt;isInteractionLocked
-  &amp;&amp; !InteractibleUtility::isInteractedWith(*pInteractibleComponent))
+//for every interactable from the pre-filtererd array: 
+
+float expandedRadius = pInteractibleComponent->interactorSensorSphereData.sensorSphereRadius * ((isThisLastAvailableInteractionInRange && pInteractorComponent->pSetupData->interactionSensorPointData.canExpand) ? pInteractibleComponent->interactorSensorSphereData.inRangeSphereExpandFactor : 1.0f);
+
+if (isPointInsideSphere(&isInRange, &currentSquareDistance, pInteractibleComponent->interactorSensorSphereData.worldSpacePosition, expandedRadius, interactorPoint)
+  && (pInteractorComponent->exclusiveInteraction == tix::ecs::InvalidEntityId || isExclusiveInteraction(*pInteractibleComponent, *pInteractorComponent))
+  && MultistableUtility::isUnlocked(pMultistableComponent)
+  && !pInteractorComponent->isInteractionLocked
+  && !InteractibleUtility::isInteractedWith(*pInteractibleComponent))
 {
   bool foundValidTransition = false;
   size_t validTransitionIdx = 0u;
   for (size_t iTransition = 0u; iTransition < transitionLibrary.transitions.getSize(); iTransition ++)
   {
     if( areTransitionRequirementsMet(pInteractorMovementState, *pInteractibleComponent, pMultistableComponent, *pQuickTimeEventStorage, transitionLibrary.transitions[iTransition], interactorEntityId)
-      &amp;&amp;(isStaticInteractor
+      &&(isStaticInteractor
         || // if we are past this point - our interactor is someone with a movement state component (player / horse / NPC)
         (isMovementStateCorrect(*pInteractorMovementState, horsemanStorage, interactorEntityId)
-        &amp;&amp; isInteractibleWithinViewAndReachable(&amp;currentAngleDiff, pData-&gt;interactibleFacingDirectionCache[interactibleIdx], transitionLibrary.transitions[iTransition], pFacingStorage-&gt;getComponentReadOnly(interactorEntityId), interactorPositionComponent, interactiblePositionComponent, pInteractibleComponent-&gt;interactorViewAngleRange, pInteractibleComponent-&gt;maxHeightDifference)))
-      &amp;&amp; isInteractorTypeRequirementMet(&amp;potentialInteraction, *pInteractorComponent, playerData, transitionLibrary.transitions[iTransition], interactorEntityId))
+        && isInteractibleWithinViewAndReachable(&currentAngleDiff, pData->interactibleFacingDirectionCache[interactibleIdx], transitionLibrary.transitions[iTransition], pFacingStorage->getComponentReadOnly(interactorEntityId), interactorPositionComponent, interactiblePositionComponent, pInteractibleComponent->interactorViewAngleRange, pInteractibleComponent->maxHeightDifference)))
+      && isInteractorTypeRequirementMet(&potentialInteraction, *pInteractorComponent, playerData, transitionLibrary.transitions[iTransition], interactorEntityId))
       {
         foundValidTransition = true;
         validTransitionIdx = iTransition;
 
-        if (transitionLibrary.transitions[iTransition].autoTriggerOption != AutoTrigger_Never &amp;&amp; !autoTriggerInteractions.isFull())
+        if (transitionLibrary.transitions[iTransition].autoTriggerOption != AutoTrigger_Never && !autoTriggerInteractions.isFull())
         {
-          InteractibleUtility::AvailableInteraction autoTriggerInteraction(pInteractibleComponent-&gt;interactibleEntityId, iTransition, transitionLibrary.transitions[iTransition].autoTriggerOption, pInteractibleComponent);
+          InteractibleUtility::AvailableInteraction autoTriggerInteraction(pInteractibleComponent->interactibleEntityId, iTransition, transitionLibrary.transitions[iTransition].autoTriggerOption, pInteractibleComponent);
           autoTriggerInteractions.pushBack(autoTriggerInteraction);
         }
       }
   }
 
-  bool hasHigherPrio = hasSmallerAngleOrHigherPrio(currentAngleDiff, smallestAngleDiff, static_cast&lt;int&gt; (pInteractibleComponent-&gt;interactionPriority), highestPriority);
-  if (foundValidTransition &amp;&amp; (isStaticInteractor || hasHigherPrio))
+  bool hasHigherPrio = hasSmallerAngleOrHigherPrio(currentAngleDiff, smallestAngleDiff, static_cast<int> (pInteractibleComponent->interactionPriority), highestPriority);
+  if (foundValidTransition && (isStaticInteractor || hasHigherPrio))
   {
-    overwriteAvailableInteraction(pInteractorComponent, &amp;highestPriority, &amp;smallestAngleDiff, /* &amp;newAvailableInteractionInRange,*/ currentAngleDiff, *pInteractibleComponent, validTransitionIdx, transitionLibrary.transitions[validTransitionIdx]);
+    overwriteAvailableInteraction(pInteractorComponent, &highestPriority, &smallestAngleDiff, /* &newAvailableInteractionInRange,*/ currentAngleDiff, *pInteractibleComponent, validTransitionIdx, transitionLibrary.transitions[validTransitionIdx]);
   }
-  else if (potentialInteraction.type != PotentialInteractionType::PotentialInteractionType_Count &amp;&amp; !isStaticInteractor &amp;&amp; !foundValidTransition &amp;&amp; hasHigherPrio) // it would have won if not for the requirements check;
+  else if (potentialInteraction.type != PotentialInteractionType::PotentialInteractionType_Count && !isStaticInteractor && !foundValidTransition && hasHigherPrio) // it would have won if not for the requirements check;
   {
     overwritePotentialInteraction(pInteractorComponent, potentialInteraction);
   }
 }
-
-</code></pre> 
-</div>
+{% endhighlight %}

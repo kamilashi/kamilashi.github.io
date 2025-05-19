@@ -4,7 +4,7 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-During my part-time employment at Kaiko I created 3 particle effects, designing and implementing their behavior (C++, engine side) and visuals (HLSL, graphics side). The early iteration of the particle engine itself was provided by [Jan Enders](https://aldurethar.github.io/kkp5-particles).
+During my part-time employment at Kaiko I created 3 particle effects, designed and implemented their behavior (C++, engine side) and visuals (HLSL, graphics side). The early iteration of the particle engine itself was provided by [Jan Enders](https://aldurethar.github.io/kkp5-particles).
 
 Each particle effect is split into layers, each layer can be thought of as a collection of particles grouped by their shared material, shader and movement behavior. All particles have the *same* set of properties, mostly defined per layer, simetimes per particle (like those that require randomization), sometimes globally for the entire effect (like wind direction, scale, root position and so on).
 
@@ -66,7 +66,7 @@ The fire effect consists of the following layers:
 
 Below is a code snippet that produces the hourglass-shaped trajectory for the sparks. 
 
-``` hlsl
+``` cpp
 float3 getSparksPath(const ParticleParameters& particle, float deltaTime, float time, float maxFreq /* = 23.0f*/, float maxAmp /* = 1.3f*/) 
 {
 	float3 inPos = particle.pos;
@@ -96,7 +96,7 @@ The most detailed one of the 5 layers, the embers follow a path with an increase
 
 <details>
 <summary>Shader code snippet that produces the start glow, the outer rim and the fade to black effects on the embers.</summary>
-<pre> <code>
+{% highlight hlsl %}
 GpuFireParticle particleData = g_particleParams[input.billboard_index];
 int subdiv = 2; // subdivide texture atlas
 uint textID = (particleData.randomInt % (subdiv * subdiv));
@@ -128,7 +128,7 @@ float brightness = 10.0f;
 gradientColor *= brightness;
 alphaMask = max(startGlow,alphaMask);
 return half4(gradientColor, saturate(alphaMask));
-</code> </pre>
+{% endhighlight %}
 </details>
 
 ## Leaves and Dust Effect
@@ -156,7 +156,7 @@ This effect has an option to have its movement controlled by a 4-point spline, w
 
 Code snippet that samples the movement trajectory, for all dust effect layers:
 
-```
+``` cpp
 float lerpPosition1 = (currentParticle.age / m_systemParameters.maxLifetime);
 float lerpPosition2 = ((currentParticle.age + timeStep * m_layerParameters[layer].agingSpeed) / m_systemParameters.maxLifetime);
 
@@ -168,11 +168,11 @@ currentParticle.dir = {vDir.x, vDir.y, vDir.z};
 currentParticle.dir = scaleFloat3(currentParticle.dir, m_systemParameters.windSpeed);
 ```
 
-In addition to that, the FlakeThreads layer was designed to simulate trailing particles, the head and the trailed particles share a single array and are differentiated by their indexes. The head particles are the ones that sample the main path and apply an optional "wave" offset, and each trailing one uses the data of its parent.
+In addition, the FlakeThreads layer was designed to simulate trailing particles, the head and the trailed particles share a single array and are differentiated by their indexes. The head particles are the ones that sample the main path and apply an optional "wave" offset, and each trailing one uses the data of its parent.
 
 <details>
 <summary>Code snippet that processes the particles from the FlakeThreads layer.</summary>
-<pre> <code>
+{% highlight cpp %}
 size_t trailIndex = currentParticle.index % (m_layerParameters[layer].trailParticleCount + 1u);
 
 if (trailIndex == 0) // head particle
@@ -199,12 +199,12 @@ else  // trail particle
 	currentParticle.currentVelocity = frontParticle.currentVelocity;
 	currentParticle.prevPos = currentParticle.pos;
 }
-</code> </pre>
+{% endhighlight %}
 </details>
 
 ## Fog Effect
 
-A simple efect that consists of a single Base layer that blends sprites from an atlas texture and has optional rotation:
+A simple effect that consists of a single Base layer that blends sprites from an atlas texture and has a configurable rotation speed:
 
 <div class="video-row vid-2" >
 	<video autoplay muted loop>

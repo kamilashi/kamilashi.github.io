@@ -4,11 +4,11 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-During my full-time employment at Kaiko I created severall gameplay systems for the unreleased project 5 from a beloved THQNordic IP. The project was done in ECS, with entities being defined by their components, components operated on by their respective systems. Each component stored data and settings relevant for its container entity, managing those was done with the help of proprietary tools and converters. All system code was written in C++.
+During my full-time employment at Kaiko I created severall gameplay systems for the unreleased project 5 from a beloved THQNordic IP. The project was done in ECS, with entities being defined by their components, components operated on by their respective systems. Each component stored data and settings relevant for its container entity, which were managed with the help of proprietary tools and converters. All system code was written in C++.
 
 ## Wall Movement System
 
-System that processes vertical and horizontal wall runs. An experimental iteraction featured a manual switch of the wall run direction when reaching so-called "wall run extenders", while the default one had automatic wall run extension in the same direction. During a wall run, if a so called "wall-run target" is detected (wall run extender or a horizontal rail), the movement curve adjusts to always end up at a pre-defined position relative to the target, from which the transition animation could start playing. If an extender is detected below the player, the system either pulls the player closer to the extender to play the "jump-over" animation, or pulls away if a correct landing cannot be predicted. There are multiple transitions to a wall scrape, like after a vertical wall run that has no target or when failing to make a corner jump during a horizontal wall run. 
+System that processes vertical and horizontal wall runs. An experimental iteraction features a manual switch of the wall run direction when reaching the "wall run extenders", while the default one has automatic wall run extension in the same direction. During a wall run, if a so called "wall-run target" is detected (wall run extender or a horizontal rail), the movement curve adjusts to always end up at a pre-defined position relative to the target, from which the transition animation could start playing. If an extender is detected below the player, the system either pulls the player closer to the extender to play the "jump-over" animation, or pulls away if a correct landing cannot be predicted. There are multiple transitions to a wall scrape, like after completing a vertical wall run that has no target or when failing to perform a corner jump during a horizontal wall run. 
 
 <div style="height: 20px;"></div>
 
@@ -41,9 +41,9 @@ System that processes vertical and horizontal wall runs. An experimental iteract
 
 *Mixed wall runs with manual extenders.*
 
-Manual extenders have an idle time-out after which tha character automatically drops from the extender. Wall-run is only possible into the direction at which the wall is marked by a special "wall-runnable" material tag, which also serves as an indicator for the wall run type (vertical / horizontal).
+Manual extenders have an idle time-out after which the character automatically drops from the extender. Wall-run is only possible into the direction at which the wall is marked by a special "wall-runnable" material tag, which also serves as an indicator for the wall run type (vertical / horizontal).
 
-When the player is in air, nearby walls are being detected with raycasts and checked against multiple conditions, like if the wall has an appropriate material-tag, in which direction, if it isn't a corner and so on. This only returns info on all "possible" directions and the final decision is still dependent on the player's input direction. 
+When the player is in air, nearby walls are being detected with raycasts and checked against multiple conditions, like whether the wall has an appropriate material-tag, in which direction, if it isn't a corner and so on. This only returns info on all "possible" directions and the final decision is still dependent on the player's input direction. 
 
 <details>
 <summary>Code example of how the nearby walls are analyzed for a potential wall run.</summary>
@@ -83,13 +83,15 @@ In the video examples, the NPC controller sets the desired behavior like *pursui
 
 The system has two direction maps - an interest map and a danger map. The maps are represented by arrays of weights, each entry mapped onto a direction in world space. Map entries are created through "contributions" from various steering forces - the yellow debug text in the videos. Contributions from attracting and repelling forces are being written into the interest and the danger map respectively, in the end the normalized maps are superimposed and the result gets converted into a single direction. To reduce the direction jitter a running mean is applied.
 
-The attracting forces are: pursuit/pursuit with offset, seek, flee and flocking behaviors. Repelling forces are: static collision avoidance and dynamic collision avoidance (player and NPC movement). <!--The seeking behavior uses the target position as a static one, while pursuit takes into account the current speed of the target entity and predicts the position by using a modified version --> On the videos below, entities and their final desired directions are denoted by circles with a debug line, red and blue for the player (target) and the NPCs respectively. Each enemy reserves one attack slot around the player (attack scheduler done by Tobias Opfermann) which becomes the offset for the pursuit target - denoted by magenta crosses. The weighted danger directions are shown by the red lines around the enemies, and valid interest directions after the subtraction by green.
+The attracting forces are: **pursuit/pursuit with offset, seek, flee** and **flocking** behaviors. Repelling forces are: **static collision avoidance** and **dynamic collision avoidance (player and NPC movement)**. <!--The seeking behavior uses the target position as a static one, while pursuit takes into account the current speed of the target entity and predicts the position by using a modified version --> On the videos below, entities and their final desired directions are denoted by circles with a debug line, red and blue for the player (target) and the NPCs respectively. Each enemy reserves one attack slot around the player (attack scheduler done by Tobias Opfermann) which becomes the offset for the pursuit target - denoted by magenta crosses. The weighted danger directions are shown by the red lines around the enemies, and valid interest directions after the subtraction by green.
 
 <!-- ``` cpp
 ```  -->
 
 <iframe src="https://player.vimeo.com/video/1085289445?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 *A small group of enemies, switches between pursuit, flee and seek behaviors.*
+
+<div style="height: 30px;"></div>
 
 <iframe src="https://player.vimeo.com/video/1085290416?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 *A larger group of enemies navigating around the static collision.*
@@ -98,26 +100,26 @@ The attracting forces are: pursuit/pursuit with offset, seek, flee and flocking 
 
 ## Interactable System
 
-Processed a (usually) pair of interacting entities (interactor and interactable) in a state machine. The state machine can be logically split into:
+Processes what is (usually) a pair of interacting entities (interactor and interactable) in a state machine. The state machine can be logically split into:
 
 - Positioning both entities at predefined positions (if needed)
 - Playing synced animations (if available)
 - Handling interaction outcomes
 
-If an entity can be interacted with it would get an "Interactable" component. Each of such interactables could have an arbitrary number of transitions defined in its setup data. Transitions held their requirements, setup for the "body" of the interaction itself (animations, which steps from the state machine to process and how) and the interaction outcome. This allowed for a context-based choise of the current available interaction. For example, interacting with an object from behind could have different animations than interacting from the front. Context was defined in the "Requirements" part of the transition's setup. Examples of that could be: interactor type (player, npc, object, etc) directoin from interactable, initial state of the interactable and so on. 
+Every interactable entity gets an "Interactable" component. Each of such interactables can have an arbitrary number of transitions defined in its setup data. Transitions hold their requirements, setup for the "body" of the interaction itself (animations, which steps from the state machine to process and how) and the interaction outcome. This allows for a context-based choise of the current available interaction. For example, interacting with an object from behind could have different animations than interacting from the front. The context in which a certain transition should be triggered is defined in the "Requirements" part of the transition's setup. Examples of that could be: interactor type (player, npc, object, etc), directoin from interactable, initial state of the interactable and so on. 
 
-The setup for the interaction "body" could skip the positioning part or cut directly to the outcome, i.e. instant interaction. The latter was especially useful for auto-triggered interactions like throwing objects that activate something when coming in range or stepping on platform-switches. 
+The setup for the interaction "body" can define a skip of the positioning part or cut directly to the outcome, i.e. instant interaction. The latter was especially useful for auto-triggered interactions like throwing objects that trigger other objects or stepping on platform-switches. 
 
-The outcome setup is the most compact one, and was mainly used to exit the interaction into a specific gameplay action, like triggering a quick time event other than giving the player back the movement controls.
+The outcome setup is the most compact one, and is mainly used to exit the interaction into a specific gameplay action, like a quick time event, other than giving the player back the movement controls.
 
 <!-- The system also allowed to temporarily spawn additinal animated models.  -->
 
-The system was also responsible for filtering the nearby interactables and their transitions. Only one interaction could be available at a time, with the exception for the auto-triggered ones (E.g. picking up an object while stepping onto a platform-switch was still possible). Having a clear view of the priority of the filtering conditions allowed to easily cash out the "potential interactions" to be later used for displaying player-hints.
+The system is also responsible for filtering the nearby interactables and their transitions. Only one interaction can be available at a time, with the exception for the auto-triggered ones (E.g. picking up an object while stepping onto a platform-switch is still possible). Having a clear view of the priority of the filtering conditions allowed to easily cash out the "potential interactions" to be later used for displaying player-hints.
 
 Examples of interactions: pulling/pushing levers, picking up objects, executing enemies, initiating dalogues, etc.
 
 <details>
-<summary>Code example of how the current available interaction and transition is chosen.</summary>
+<summary>The code that looks for the available transition within one interactable object.</summary>
 	{% include interactable_code.html %}
 </details>
 

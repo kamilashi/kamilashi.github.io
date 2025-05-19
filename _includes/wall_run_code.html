@@ -1,115 +1,111 @@
-<div>
-<pre><code>
+{% highlight cpp %}
 simulation::WallMovementUtility::WallCollisionResult getWallCollisionResult(const keen::Vector3& position, const keen::Angle& playerDirection, const physics::PhysicsWorld& physicsWorld, 
 bool processWallRun, bool skipNearHorizontalWallCheck = false, bool skipSideWallTests = false, bool alwaysTestBothAxes = false, bool skipCornerTest = false)
 {
-	using namespace simulation;
+WallMovementUtility::WallCollisionResult wallCollisionResult;
+keen::fillMemoryWithZero(&wallCollisionResult, sizeof(wallCollisionResult));
 
-	WallMovementUtility::WallCollisionResult wallCollisionResult;
-	keen::fillMemoryWithZero(&wallCollisionResult, sizeof(wallCollisionResult));
+keen::Vector3 rayStartPosition(position);
+keen::Vector3 endPositionFrontOfCharacter(rayStartPosition);
 
-	keen::Vector3 rayStartPosition(position);
-	keen::Vector3 endPositionFrontOfCharacter(rayStartPosition);
+keen::Vector3 directionVector;
+directionVector.set2DDirection(playerDirection);
+endPositionFrontOfCharacter.addScaled(directionVector, WallMovementUtility::getFrontWallCastLength());
 
-	keen::Vector3 directionVector;
-	directionVector.set2DDirection(playerDirection);
-	endPositionFrontOfCharacter.addScaled(directionVector, WallMovementUtility::getFrontWallCastLength());
+keen::Vector3 rayStartHandsPosition(rayStartPosition);
+keen::Vector3 rayEndHandsPositionFrontOfCharacter(endPositionFrontOfCharacter);
+rayStartHandsPosition.y += 1.4f * HorizontalRailSystem::getRailUserHeightOffset();
+rayEndHandsPositionFrontOfCharacter.y += 1.4f * HorizontalRailSystem::getRailUserHeightOffset();
 
-	keen::Vector3 rayStartHandsPosition(rayStartPosition);
-	keen::Vector3 rayEndHandsPositionFrontOfCharacter(endPositionFrontOfCharacter);
-	rayStartHandsPosition.y += 1.4f * HorizontalRailSystem::getRailUserHeightOffset();
-	rayEndHandsPositionFrontOfCharacter.y += 1.4f * HorizontalRailSystem::getRailUserHeightOffset();
+physics::CastResult upperFrontHitResult;
+bool hasUpperFrontRayHit = physicsWorld.castRay(&upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physics::CollisionCaster_EntityMovement);
 
-	physics::CastResult upperFrontHitResult;
-	bool hasUpperFrontRayHit = physicsWorld.castRay(&upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physics::CollisionCaster_EntityMovement);
+bool hasCloseFrontDiagonalHits = skipCornerTest || hasCloseDiagonalHits(position, playerDirection, physicsWorld);
 
-	bool hasCloseFrontDiagonalHits = skipCornerTest || hasCloseDiagonalHits(position, playerDirection, physicsWorld);
+bool isAtEdge = !hasCloseFrontDiagonalHits && hasUpperFrontRayHit;
+bool isAtGap = hasCloseFrontDiagonalHits && !hasUpperFrontRayHit;
+bool hasBothValidRayHitsForVertical = false;
+bool hasBothValidRayHitsForHorizontal = false;
+bool isValidForWallScrape = false;
+wallCollisionResult.nearCastWallHitNormal.clear();
 
-	bool isAtEdge = !hasCloseFrontDiagonalHits && hasUpperFrontRayHit;
-	bool isAtGap = hasCloseFrontDiagonalHits && !hasUpperFrontRayHit;
-	bool hasBothValidRayHitsForVertical = false;
-	bool hasBothValidRayHitsForHorizontal = false;
-	bool isValidForWallScrape = false;
-	wallCollisionResult.nearCastWallHitNormal.clear();
+if (processWallRun && !isAtEdge)
+{
+	hasBothValidRayHitsForVertical = hasUpperFrontRayHit && isVerticallyRunnable(upperFrontHitResult, physicsWorld);
 
-	if (processWallRun && !isAtEdge)
+	if (alwaysTestBothAxes || !hasBothValidRayHitsForVertical)
 	{
-		hasBothValidRayHitsForVertical = hasUpperFrontRayHit && isVerticallyRunnable(upperFrontHitResult, physicsWorld);
-
-		if (alwaysTestBothAxes || !hasBothValidRayHitsForVertical)
+		if (hasUpperFrontRayHit && (skipNearHorizontalWallCheck || isHorizontallyRunnable(upperFrontHitResult, physicsWorld))
+			&& (isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionRight, true, upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physicsWorld ) 
+				|| isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionLeft, false, upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physicsWorld)))
 		{
-			if (hasUpperFrontRayHit && (skipNearHorizontalWallCheck || isHorizontallyRunnable(upperFrontHitResult, physicsWorld))
-				&& (isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionRight, true, upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physicsWorld ) 
-					|| isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionLeft, false, upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physicsWorld)))
+			// check the left side still, in case we have a valid wall run from both sides
+			if (wallCollisionResult.hasAvailableDirectionRight)
 			{
-				// check the left side still, in case we have a valid wall run from both sides
-				if (wallCollisionResult.hasAvailableDirectionRight)
-				{
-					isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionLeft, false, upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physicsWorld);
-				}
-
-				wallCollisionResult.nearCastWallHitNormal = upperFrontHitResult.hitNormal;
-				hasBothValidRayHitsForHorizontal = true;
+				isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionLeft, false, upperFrontHitResult, rayStartHandsPosition, rayEndHandsPositionFrontOfCharacter, physicsWorld);
 			}
-			else if(!skipSideWallTests)
+
+			wallCollisionResult.nearCastWallHitNormal = upperFrontHitResult.hitNormal;
+			hasBothValidRayHitsForHorizontal = true;
+		}
+		else if(!skipSideWallTests)
+		{
+			keen::Vector3 endPositionLeftOfCharacter(rayStartPosition);
+			keen::Vector3 endPositionRightOfCharacter(rayStartPosition);
+
+			directionVector.clear();
+			directionVector.set2DDirection(keen::normalizeAngle(playerDirection - KEEN_ANGLE_QUARTER * 0.5f));
+			endPositionLeftOfCharacter.addScaled(directionVector, WallMovementUtility::getSideWallCastLength());
+			directionVector.set2DDirection(keen::normalizeAngle(playerDirection + KEEN_ANGLE_QUARTER * 0.5f));
+			endPositionRightOfCharacter.addScaled(directionVector, WallMovementUtility::getSideWallCastLength());
+
+			// only cast the second ray if the first one was successful AND hit the valid wall running material
+			physics::CastResult nearSideCastResult;
+			bool hasFirstSideRayHit = physicsWorld.castRay(&nearSideCastResult, rayStartPosition, endPositionLeftOfCharacter, physics::CollisionCaster_EntityMovement);
+			if (hasFirstSideRayHit && isHorizontallyRunnable(nearSideCastResult, physicsWorld))
 			{
-				keen::Vector3 endPositionLeftOfCharacter(rayStartPosition);
-				keen::Vector3 endPositionRightOfCharacter(rayStartPosition);
+				wallCollisionResult.nearCastWallHitNormal = nearSideCastResult.hitNormal;
 
-				directionVector.clear();
-				directionVector.set2DDirection(keen::normalizeAngle(playerDirection - KEEN_ANGLE_QUARTER * 0.5f));
-				endPositionLeftOfCharacter.addScaled(directionVector, WallMovementUtility::getSideWallCastLength());
-				directionVector.set2DDirection(keen::normalizeAngle(playerDirection + KEEN_ANGLE_QUARTER * 0.5f));
-				endPositionRightOfCharacter.addScaled(directionVector, WallMovementUtility::getSideWallCastLength());
-
-				// only cast the second ray if the first one was successful AND hit the valid wall running material
-				physics::CastResult nearSideCastResult;
-				bool hasFirstSideRayHit = physicsWorld.castRay(&nearSideCastResult, rayStartPosition, endPositionLeftOfCharacter, physics::CollisionCaster_EntityMovement);
+				// hit the wall from the left side; so cast the second ray to the right of the character:
+				hasBothValidRayHitsForHorizontal = isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionRight, true, nearSideCastResult, rayStartPosition, endPositionLeftOfCharacter, physicsWorld);
+			}
+			else
+			{
+				hasFirstSideRayHit = physicsWorld.castRay(&nearSideCastResult, rayStartPosition, endPositionRightOfCharacter, physics::CollisionCaster_EntityMovement);
 				if (hasFirstSideRayHit && isHorizontallyRunnable(nearSideCastResult, physicsWorld))
 				{
 					wallCollisionResult.nearCastWallHitNormal = nearSideCastResult.hitNormal;
 
-					// hit the wall from the left side; so cast the second ray to the right of the character:
-					hasBothValidRayHitsForHorizontal = isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionRight, true, nearSideCastResult, rayStartPosition, endPositionLeftOfCharacter, physicsWorld);
-				}
-				else
-				{
-					hasFirstSideRayHit = physicsWorld.castRay(&nearSideCastResult, rayStartPosition, endPositionRightOfCharacter, physics::CollisionCaster_EntityMovement);
-					if (hasFirstSideRayHit && isHorizontallyRunnable(nearSideCastResult, physicsWorld))
-					{
-						wallCollisionResult.nearCastWallHitNormal = nearSideCastResult.hitNormal;
-
-						// hit the wall from the right side; so cast the second ray to the left of the character:
-						hasBothValidRayHitsForHorizontal = isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionLeft, false, nearSideCastResult, rayStartPosition, endPositionRightOfCharacter, physicsWorld);
-					}
+					// hit the wall from the right side; so cast the second ray to the left of the character:
+					hasBothValidRayHitsForHorizontal = isFarCastHorizontallyRunnable(&wallCollisionResult.hasAvailableDirectionLeft, false, nearSideCastResult, rayStartPosition, endPositionRightOfCharacter, physicsWorld);
 				}
 			}
 		}
 	}
-
-	if (hasUpperFrontRayHit && !(hasBothValidRayHitsForHorizontal || hasBothValidRayHitsForVertical) && !isAtEdge)
-	{
-		keen::Vector3 wallNormalVector = upperFrontHitResult.hitNormal;
-
-		keen::Vector3 planarVector;
-		planarVector.set2DDirection((wallNormalVector.get2DDirection()));
-		float cosAngle = wallNormalVector.dotProduct(planarVector);
-
-		if ((cosAngle >= (float)cos(KEEN_ANGLE_FROM_DEG(PlayerControllerSystem::s_wallScrapeThreshold))) && (cosAngle <= 1.0f)) // 90 > angle > 70
-		{
-			isValidForWallScrape = hasUpperFrontRayHit && isScrapeable(upperFrontHitResult, physicsWorld);
-		}
-	}
-
-	wallCollisionResult.frontHitResult = upperFrontHitResult;
-	wallCollisionResult.hasFrontHit = hasUpperFrontRayHit;
-	wallCollisionResult.isAtWallEdge = isAtEdge;
-	wallCollisionResult.isAtWallGap = isAtGap;
-	wallCollisionResult.isValidForHorizontalWallRun = hasBothValidRayHitsForHorizontal;
-	wallCollisionResult.isValidForVerticalWallRun = hasBothValidRayHitsForVertical;
-	wallCollisionResult.isValidForWallScrape = isValidForWallScrape;
-
-	return wallCollisionResult;
 }
-</code></pre>
-</div>
+
+if (hasUpperFrontRayHit && !(hasBothValidRayHitsForHorizontal || hasBothValidRayHitsForVertical) && !isAtEdge)
+{
+	keen::Vector3 wallNormalVector = upperFrontHitResult.hitNormal;
+
+	keen::Vector3 planarVector;
+	planarVector.set2DDirection((wallNormalVector.get2DDirection()));
+	float cosAngle = wallNormalVector.dotProduct(planarVector);
+
+	if ((cosAngle >= (float)cos(KEEN_ANGLE_FROM_DEG(PlayerControllerSystem::s_wallScrapeThreshold))) && (cosAngle <= 1.0f)) // 90 > angle > 70
+	{
+		isValidForWallScrape = hasUpperFrontRayHit && isScrapeable(upperFrontHitResult, physicsWorld);
+	}
+}
+
+wallCollisionResult.frontHitResult = upperFrontHitResult;
+wallCollisionResult.hasFrontHit = hasUpperFrontRayHit;
+wallCollisionResult.isAtWallEdge = isAtEdge;
+wallCollisionResult.isAtWallGap = isAtGap;
+wallCollisionResult.isValidForHorizontalWallRun = hasBothValidRayHitsForHorizontal;
+wallCollisionResult.isValidForVerticalWallRun = hasBothValidRayHitsForVertical;
+wallCollisionResult.isValidForWallScrape = isValidForWallScrape;
+
+return wallCollisionResult;
+}
+{% endhighlight %}

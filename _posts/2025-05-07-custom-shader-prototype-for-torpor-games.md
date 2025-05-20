@@ -13,7 +13,7 @@ All objects in the scene use the same shader. The shader supports the use of til
 	Could not load the video
 </video > -->
 
-<iframe src="https://player.vimeo.com/video/1085267362?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1085267362?h=bbcfbc1f3e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 <div style="height: 20px;"></div>
 

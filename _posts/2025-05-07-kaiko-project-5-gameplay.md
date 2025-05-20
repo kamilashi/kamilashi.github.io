@@ -35,7 +35,7 @@ System that processes vertical and horizontal wall runs. An experimental iteract
 	Could not load the video
 </video > -->
 
-<iframe src="https://player.vimeo.com/video/1085447324?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1085447324?h=57a4ec6af9&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 <div style="height: 1px;"></div>
 
@@ -85,17 +85,17 @@ The system has two direction maps - an interest map and a danger map. The maps a
 
 The attracting forces are: **pursuit/pursuit with offset, seek, flee** and **flocking** behaviors. Repelling forces are: **static collision avoidance** and **dynamic collision avoidance (player and NPC movement)**. <!--The seeking behavior uses the target position as a static one, while pursuit takes into account the current speed of the target entity and predicts the position by using a modified version --> On the videos below, entities and their final desired directions are denoted by circles with a debug line, red and blue for the player (target) and the NPCs respectively. Each enemy reserves one attack slot around the player (attack scheduler done by Tobias Opfermann) which becomes the offset for the pursuit target - denoted by magenta crosses. The weighted danger directions are shown by the red lines around the enemies, and valid interest directions after the subtraction by green.
 
-<!-- ``` cpp
-```  -->
 
-<iframe src="https://player.vimeo.com/video/1085289445?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+
+<iframe src="https://player.vimeo.com/video/1085289445?h=25fce98fe4&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 *A small group of enemies, switches between pursuit, flee and seek behaviors.*
+
+<!-- <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1085289445?h=25fce98fe4&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Gameplay: Enemy Steering - Small Group"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>-->
 
 <div style="height: 30px;"></div>
 
-<iframe src="https://player.vimeo.com/video/1085290416?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1085290416?h=a4679863c2&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 *A larger group of enemies navigating around the static collision.*
-
 
 
 ## Interactable System
@@ -130,7 +130,7 @@ Examples of interactions: pulling/pushing levers, picking up objects, executing 
 	Could not load the video
 </video > -->
 
-<iframe src="https://player.vimeo.com/video/1085462219?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1085462219?h=10cd5d3a97&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 <div style="height: 1px;"></div>
 
@@ -154,7 +154,9 @@ In hindsight, a separate system for processing the positioning of entities durin
 
 System that processes entering and exiting the carrying state, handles some special cases. When the place command is given by the player the system performs a number of radial ground checks around the player, in order to place the object on a collision-free ground. Picking the objects up, socketing them in and out are interactions and are processed by the Interactable system.
 
-<iframe src="https://player.vimeo.com/video/1085470271?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1085470271?h=2e21ed7e15&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+
+<!-- <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1085470271?h=2e21ed7e15&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Gameplay: Carry Heavy Objects"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script> -->
 
 The carried object gets parented to the player via the **Attachment System**, to which I contributed by creating an attachment type that keeps the original child orientation and addding interpolation option to smoothely match the child orientation, facing and position with those of the parent.
 
@@ -167,7 +169,7 @@ System that registers button presses and fills up a smoothed progress bar. The l
 	Could not load the video
 </video > -->
 
-<iframe src="https://player.vimeo.com/video/1085459902?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1085459902?h=16a97251ed&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 
 *The linear progress is rendered with the yellow bar, while the blended progress is rendered with the green one.*

@@ -19,7 +19,7 @@ if (isPointInsideSphere(&isInRange, &currentSquareDistance, pInteractibleCompone
         || // if we are past this point - our interactor is someone with a movement state component (player / horse / NPC)
         (isMovementStateCorrect(*pInteractorMovementState, horsemanStorage, interactorEntityId)
         && isInteractibleWithinViewAndReachable(&currentAngleDiff, pData->interactibleFacingDirectionCache[interactibleIdx], transitionLibrary.transitions[iTransition], pFacingStorage->getComponentReadOnly(interactorEntityId), interactorPositionComponent, interactiblePositionComponent, pInteractibleComponent->interactorViewAngleRange, pInteractibleComponent->maxHeightDifference)))
-      && isInteractorTypeRequirementMet(&potentialInteraction, *pInteractorComponent, playerData, transitionLibrary.transitions[iTransition], interactorEntityId))
+        && isInteractorTypeRequirementMet(&potentialInteraction, *pInteractorComponent, playerData, transitionLibrary.transitions[iTransition], interactorEntityId))
       {
         foundValidTransition = true;
         validTransitionIdx = iTransition;
@@ -35,9 +35,9 @@ if (isPointInsideSphere(&isInRange, &currentSquareDistance, pInteractibleCompone
   bool hasHigherPrio = hasSmallerAngleOrHigherPrio(currentAngleDiff, smallestAngleDiff, static_cast<int> (pInteractibleComponent->interactionPriority), highestPriority);
   if (foundValidTransition && (isStaticInteractor || hasHigherPrio))
   {
-    overwriteAvailableInteraction(pInteractorComponent, &highestPriority, &smallestAngleDiff, /* &newAvailableInteractionInRange,*/ currentAngleDiff, *pInteractibleComponent, validTransitionIdx, transitionLibrary.transitions[validTransitionIdx]);
+    overwriteAvailableInteraction(pInteractorComponent, &highestPriority, &smallestAngleDiff, currentAngleDiff, *pInteractibleComponent, validTransitionIdx, transitionLibrary.transitions[validTransitionIdx]);
   }
-  else if (potentialInteraction.type != PotentialInteractionType::PotentialInteractionType_Count && !isStaticInteractor && !foundValidTransition && hasHigherPrio) // it would have won if not for the requirements check;
+  else if (potentialInteraction.type != PotentialInteractionType::PotentialInteractionType_Count && !isStaticInteractor && !foundValidTransition && hasHigherPrio) // transition would have been valid if not for the failed requirements check;
   {
     overwritePotentialInteraction(pInteractorComponent, potentialInteraction);
   }

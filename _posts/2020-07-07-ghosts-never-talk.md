@@ -18,10 +18,10 @@ Each walkable "ground layer" is bound to exactly one spline, each spline can hav
 ![Alt text](/assets/images/ghosts/editorscene2.png)
 *Editor view of the demo scene, with 3 ground layers from 0 (closest) to 2 (farthest).*
 
-<details>
+<!-- <details>
 <summary>Code snippet that samples the current position on the spline, as well as some other gampley-specific info.</summary>
 	{% include gnt_spline_movement_code.html %}
-</details>
+</details> -->
 
 ## A* Path Finding
 
@@ -81,6 +81,9 @@ predictedCameraPosition.z += dollyDirection * dollyAmount;
 </video > -->
 <!-- autoplay; -->
 
-<iframe src="https://player.vimeo.com/video/1085071250?share=copy" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<!-- <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1085071250?h=ec64e917bb&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Ghosts Never Talk Demo"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script> -->
+
+<iframe src="https://player.vimeo.com/video/1085071250?h=ec64e917bb&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe> 
+
 *The video shows some additional gameplay features, like ground layer switching, teleport interactions and a dialogue. The dialogue system is powered by the Yarn Spinner package.*
 

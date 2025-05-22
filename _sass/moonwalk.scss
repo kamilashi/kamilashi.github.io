@@ -329,3 +329,26 @@ summary {
   cursor: pointer;
 }
 
+.LI-profile-badge-container {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  object-fit: cover;
+  object-position: center;
+  gap: 0px;
+  padding: 0;
+}
+
+.LI-profile-badge {
+  margin: 0 auto;
+  display: grid;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  gap: 0px;
+  padding: 0;
+  margin-left: 16px;
+}

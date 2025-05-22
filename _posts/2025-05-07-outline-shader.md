@@ -4,7 +4,7 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-All objects in the scene have a "normal" sub-shader that controls the actual colors rendered on the screen, and an "outlines" substitute sub-shader that controls what and how is written into the discontinuity map. The discontinuity map is then processed inside a compute kernel that compares neighboring pixels' values based on a defined threshold and produces the outlines. The outline is then mixed with the actual colors from the "normal" subshader and is rendered onto the screen.
+All objects in the scene have a "normal" sub-shader that controls the actual colors rendered on the screen, and an "outline" substitute sub-shader that controls what is written into the discontinuity map. The discontinuity map is then processed inside a compute kernel using a naive approach of pixel comparison. When the difference between the pixels is greater than a defined threshold, an outline is produced. The outline map is then mixed with the actual colors from the "normal" subshader and is rendered onto the screen.
 
 ![Alt text](/assets/images/outlines/discontinuity_map_full.png) 
 *Discontinuity map*

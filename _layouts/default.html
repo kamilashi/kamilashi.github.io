@@ -9,9 +9,9 @@
           {% include toggle_theme_button.html %}
         {% endif %}
         <div class="credits">
+          <div style="width: 100%; text-align: center; display: inline;">
           {%- if site.theme_config.show_copyright == true -%}
-          &copy;&nbsp;{{ "now" | date: "%Y" }}&nbsp;{{site.author}}
-          &nbsp;
+          &copy;&nbsp;{{"now"|date:"%Y"}}&nbsp;{{site.author}}
           •
 <!--           &nbsp;
           {%- endif -%}
@@ -21,7 +21,8 @@
           •-->
           &nbsp;
           {%- endif -%}
-          Based on&nbsp; <a href="https://github.com/abhinavs/moonwalk" target="_blank" rel="noreferrer">Moonwalk by abhinavs</a>
+          Based on&nbsp;<a href="https://github.com/abhinavs/moonwalk" target="_blank" rel="noreferrer">Moonwalk by abhinavs</a>
+          </div>
         </div>
       </div>
     </main>

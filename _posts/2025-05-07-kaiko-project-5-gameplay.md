@@ -4,7 +4,9 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-During my full-time employment at Kaiko I created severall gameplay systems for the unreleased project 5 from a beloved THQNordic IP. The project was done in ECS, with entities being defined by their components, components operated on by their respective systems. Each component stored data and settings relevant for its container entity, which were managed with the help of proprietary tools and converters. All system code was written in C++.
+During my full-time employment at Kaiko as a Junior Programmer, I was responsible for several gameplay features, ranging from player traversal to enemy AI. All work was done for Project 5, an unreleased title based on a well-known THQ Nordic IP. The game was developed using an Entity Component System (ECS) architecture, where entities were defined by their components, and logic was implemented through dedicated systems operating on those components. Each component stored data and configuration specific to its associated entity, which was managed with the help of proprietary tools and converters. 
+
+Throughout the process, I collaborated closely with a number of other departments, including Game Design, Art, Animation, VFX, Rendering, and Level Design. Many features were the result of tight cross-disciplinary coordination, and I was fortunate to work alongside incredibly skilled and talented people, many of whom I will mention later in this post.
 
 ## Wall Movement System
 
@@ -83,7 +85,7 @@ In the video examples, the NPC controller sets the desired behavior like *pursui
 
 The system has two direction maps - an interest map and a danger map. The maps are represented by arrays of weights, each entry mapped onto a direction in world space. Map entries are created through "contributions" from various steering forces - the yellow debug text in the videos. Contributions from attracting and repelling forces are being written into the interest and the danger map respectively, in the end the normalized maps are superimposed and the result gets converted into a single direction. To reduce the direction jitter a running mean is applied.
 
-The attracting forces are: **pursuit/pursuit with offset, seek, flee** and **flocking** behaviors. Repelling forces are: **static collision avoidance** and **dynamic collision avoidance (player and NPC movement)**. <!--The seeking behavior uses the target position as a static one, while pursuit takes into account the current speed of the target entity and predicts the position by using a modified version --> On the videos below, entities and their final desired directions are denoted by circles with a debug line, red and blue for the player (target) and the NPCs respectively. Each enemy reserves one attack slot around the player (attack scheduler done by Tobias Opfermann) which becomes the offset for the pursuit target - denoted by magenta crosses. The weighted danger directions are shown by the red lines around the enemies, and valid interest directions after the subtraction by green.
+The attracting forces are: **pursuit/pursuit with offset, seek, flee** and **flocking** behaviors. Repelling forces are: **static collision avoidance** and **dynamic collision avoidance (player and NPC movement)**. <!--The seeking behavior uses the target position as a static one, while pursuit takes into account the current speed of the target entity and predicts the position by using a modified version --> On the videos below, entities and their final desired directions are denoted by circles with a debug line, red and blue for the player (target) and the NPCs respectively. Each enemy reserves one attack slot around the player (attack scheduler done by [Tobias Opfermann](https://www.linkedin.com/in/tobias-opfermann-477179210/?originalSubdomain=de)) which becomes the offset for the pursuit target - denoted by magenta crosses. The weighted danger directions are shown by the red lines around the enemies, and valid interest directions after the subtraction by green.
 
 
 
@@ -152,9 +154,10 @@ In hindsight, a separate system for processing the positioning of entities durin
 
 ## Carriable System
 
-System that processes entering and exiting the carrying state, handles some special cases. When the place command is given by the player the system performs a number of radial ground checks around the player, in order to place the object on a collision-free ground. Picking the objects up, socketing them in and out are interactions and are processed by the Interactable system.
+System that processes entering and exiting the carrying state, handles some special cases. When the place command is given by the player the system performs a number of radial ground checks around the player, in order to place the object on a collision-free ground. Picking the objects up, socketing them in and out are interactions and are processed by the Interactable system. 
 
 <iframe src="https://player.vimeo.com/video/1085470271?h=2e21ed7e15&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+*Sphere VFX by [Adrian Vögtle](https://exaii.artstation.com/).*
 
 <!-- <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1085470271?h=2e21ed7e15&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Gameplay: Carry Heavy Objects"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script> -->
 
@@ -162,7 +165,7 @@ The carried object gets parented to the player via the **Attachment System**, to
 
 ## Quick Time Event system
 
-System that registers button presses and fills up a smoothed progress bar. The linear progress is incremented with each button press, and the blended progress catches up with it using [lerp-damping](https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/). QTE fails if no input is given within a certain time. It also plays sound and visual effects attached to progress and/or regress points.
+System that registers button presses and fills up a smoothed progress bar. The linear progress is incremented with each button press, and the blended progress catches up with it using [lerp-damping](https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/). QTE fails if no input is given within a certain time. There is an option to attach sound and visual effects to progress and/or regress points, which will be triggered by the system.  
 
 <!-- <video width="720px" autoplay muted loop playsinline preload="metadata">
     <source src="/assets/videos/qte_f.mp4?v=6" type="video/mp4">
@@ -172,7 +175,18 @@ System that registers button presses and fills up a smoothed progress bar. The l
 <iframe src="https://player.vimeo.com/video/1085459902?h=16a97251ed&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 
-*The linear progress is rendered with the yellow bar, while the blended progress is rendered with the green one.*
+*The linear progress is rendered with the yellow bar, while the blended progress is rendered with the green one. There is also a 20% progress VFX event. Switch model by [Clemens Petri](https://miesepetri.artstation.com/), animations by [Phi Kernbach](https://hirngespinst.artstation.com/)*.
+
+## Boss Fight
+
+During the development, I was responcible for a few enemy units. Adding an enemy unit into the runtime involved creating and setting up its entity template, requesting the missing animations and implementing custom logic inside the enemy behavior stripts. The behavior scripting environment was provided by Tobias Opfermann. For this post, I singled out the boss unit, due to its unique design and a high level of interdisciplinary complexity.
+
+Apart from the 2 health-stages and their attacks, the design incorporated the surroundings of the boss arena. Part of the battle logic I implemented resided in the level scripts, level scripting environment provided by [Markus Wall](https://portfolio.rpg-hacker.de/). The VFX were created by [Adrian Vögtle](https://exaii.artstation.com/) and [Alexandra Anokhina](https://pyrrhulla.xyz/), boss animations outsourced from Metricminds. Player combat system created by [Pascal Scheuber](https://pascalscheuber.wixsite.com/portfolio).
+
+<iframe src="https://player.vimeo.com/video/1086475744?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+*The battle features a special arena-wide attack, where the boss becomes invincible and "summons" the trees which have to be destroyed before the attack ends. If the player manages to do so, the boss becomess stunned, otherwise the player gets damaged by the explosion. The video shows both outcomes (fail ; success).*
+
+
 
 <!--
 ```

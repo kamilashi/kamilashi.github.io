@@ -4,7 +4,7 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-During my part-time employment at Kaiko I created 3 particle effects, designed and implemented their behavior (C++, engine side) and visuals (HLSL, graphics side). The early iteration of the particle engine itself was provided by [Jan Enders](https://aldurethar.github.io/kkp5-particles).
+During my part-time employment at Kaiko I created 3 particle effects, designed and implemented their behavior (C++, engine side) and visuals (HLSL, graphics side). The early prototype of the particle runtime was provided by [Jan Enders](https://aldurethar.github.io/kkp5-particles).
 
 Each particle effect is split into layers, each layer can be thought of as a collection of particles grouped by their shared material, shader and movement behavior. All particles have the *same* set of properties, mostly defined per layer, simetimes per particle (like those that require randomization), sometimes globally for the entire effect (like wind direction, scale, root position and so on).
 
@@ -28,8 +28,8 @@ The fire effect consists of the following layers:
  - Base
  - Glow
  - Flames
- - Embers
  - Sparks
+ - Embers
 
 <div class="video-row vid-3" >
 	<video autoplay muted loop >
@@ -62,7 +62,7 @@ The fire effect consists of the following layers:
 
 *Sparks and embers.*
 
-### Sparks: 
+<!-- ### Sparks: 
 
 Below is a code snippet that produces the hourglass-shaped trajectory for the sparks. 
 
@@ -88,11 +88,33 @@ float3 getSparksPath(const ParticleParameters& particle, float deltaTime, float 
 	return outPos;
 }
 
-```
+``` -->
 
 ### Embers: 
 
 The most detailed one of the 5 layers, the embers follow a path with an increased jittering towards the end of their lifecycle and feature a shader that simulates the "burning" of the embers.
+
+<details>
+<summary>C++ code snippet that produces the movement path for the embers</summary>
+{% highlight cpp %}
+float3 getEmbersPath(float3 inPos, float3 dir , float deltaTime, float time, float seedPerParticle) 
+{
+	float maxFreq = 1.0f; 
+	float maxAmp = 0.2f; 
+	float frequency = (seedPerParticle) * 0.01f * maxFreq; //will give percentage of maxFreq
+	float amplitude = maxAmp /(frequency + 0.1f); // reverse proportion
+	float sign = getRandomSign(seedPerParticle);
+	float randomPhaseOffset = (seedPerParticle * 0.01f) * (float)PI;
+
+	float3 outPos = { sign * amplitude * sin(time * frequency + randomPhaseOffset) * dir.x,
+								inPos.y + deltaTime * dir.y,
+								inPos.z + deltaTime * 0 };
+	return outPos;
+}
+{% endhighlight %}
+</details>
+
+<div style="height: 20px;"></div>
 
 <details>
 <summary>Shader code snippet that produces the start glow, the outer rim and the fade to black effects on the embers.</summary>
@@ -154,9 +176,10 @@ This effect has an option to have its movement controlled by a 4-point spline, w
 
 <div style="height: 20px;"></div>
 
-Code snippet that samples the movement trajectory, for all dust effect layers:
 
-``` cpp
+<details>
+<summary>Code snippet that samples the movement trajectory, for all dust effect layers</summary>
+{% highlight cpp %}
 float lerpPosition1 = (currentParticle.age / m_systemParameters.maxLifetime);
 float lerpPosition2 = ((currentParticle.age + timeStep * m_layerParameters[layer].agingSpeed) / m_systemParameters.maxLifetime);
 
@@ -166,7 +189,8 @@ Vector3 vDir = Vector3(addFloat3(point2, scaleFloat3(point1, -1.0f)));
 vDir.normalize();
 currentParticle.dir = {vDir.x, vDir.y, vDir.z};
 currentParticle.dir = scaleFloat3(currentParticle.dir, m_systemParameters.windSpeed);
-```
+{% endhighlight %}
+</details>
 
 In addition, the FlakeThreads layer was designed to simulate trailing particles, the head and the trailed particles share a single array and are differentiated by their indexes. The head particles are the ones that sample the main path and apply an optional "wave" offset, and each trailing one uses the data of its parent.
 

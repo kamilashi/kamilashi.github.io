@@ -1,5 +1,5 @@
 {% highlight hlsl %}
-float prerAxisDisplacement = _EdgeWidth * -0.5f;
+float prerAxisDisplacement = _EdgeWidth * 0.5f;
 float3 posWS = i.worldCoord.xyz;
 
 float4 shadowCoordShiftedRight = TransformWorldToShadowCoord( posWS + i.tangentWS * prerAxisDisplacement + i.bitangentWS * prerAxisDisplacement);

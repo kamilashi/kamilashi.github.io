@@ -4,7 +4,7 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-All objects in the scene have a "normal" sub-shader that controls the actual colors rendered on the screen, and an "outline" substitute sub-shader that controls what is written into the discontinuity map. The discontinuity map is then processed inside a compute kernel using a naive approach of pixel comparison. When the difference between the pixels is greater than a defined threshold, an outline is produced. The outline map is then mixed with the actual colors from the "normal" subshader and is rendered onto the screen.
+A small experiment I did during my studies. All objects in the scene use a "normal" sub-shader to control the actual colors rendered on the screen, and an "outline" substitute sub-shader to determine what is written into the discontinuity map. This map is then processed in a compute kernel using a naive pixel comparison approach. When the difference between neighboring pixels exceeds a defined threshold, an outline is generated. The resulting outline map is then combined with the colors from the "normal" sub-shader and rendered to the screen.
 
 ![Alt text](/assets/images/outlines/discontinuity_map_full.png) 
 *Discontinuity map*
@@ -21,7 +21,7 @@ All objects in the scene have a "normal" sub-shader that controls the actual col
 
 <div style="height: 20px;"></div>
 
-The grass blades are instanced procedurally, hence the use of a surface shader. All the other objects (two planes and a sphere) use a minimal custom vert-frag shader. Below is the snipped of the shader setup of the grass blades, that features the options for both the "normal" and the "outlines" shaders. Other objects, such as the grass plane, the sphere and the background plane have a similar setup that allows to control the actual colors and the colors that will end up in the discontinuity map.
+The grass blades are instanced procedurally, hence the use of a surface shader. All other objects (two planes and a sphere) use a minimal custom vertex-fragment shader. Below is a snippet of the shader setup for the grass blades, featuring options for both the "normal" and the "outlines" shaders. Other objects—such as the grass plane, the sphere, and the background plane—use a similar setup that allows control over both the actual rendered colors and the colors written to the discontinuity map.
 
 ![Alt text](/assets/images/outlines/editor.png) 
 *Shader setup for the grass blades.*

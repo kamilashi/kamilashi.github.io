@@ -341,7 +341,8 @@ summary {
 
 .LI-profile-badge {
   margin: 0 auto;
-  display: grid;
+  display: inline-block;
+  //margin-left: 16px;
   text-align: center;
   justify-content: center;
   align-items: center;
@@ -350,5 +351,4 @@ summary {
   object-position: center;
   gap: 0px;
   padding: 0;
-  margin-left: 16px;
 }

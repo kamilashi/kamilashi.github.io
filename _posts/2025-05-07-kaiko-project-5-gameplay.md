@@ -8,7 +8,15 @@ During my full-time employment at Kaiko as a Junior Programmer, I was responsibl
 
 Throughout the process, I collaborated closely with a number of other departments, including Game Design, Art, Animation, VFX, Rendering, and Level Design. Many features were the result of tight cross-disciplinary coordination, and I was fortunate to work alongside incredibly skilled and talented people, many of whom I will mention later in this post.
 
-## Wall Movement System
+Contents of this post:
+- <a href="#wall-syst">Wall Movement System</a>
+- <a href="#steer-syst">Steering System</a>
+- <a href="#inter-syst">Interactable System</a>
+- <a href="#carr-syst">Carriable System</a>
+- <a href="#qte-syst">Quick Time Event System</a>
+- <a href="#boss-fight">Boss Battle</a>
+
+<h2 id="wall-syst">Wall Movement System</h2> 
 
 System that processes vertical and horizontal wall runs. An experimental iteraction features a manual switch of the wall run direction when reaching the "wall run extenders", while the default one has automatic wall run extension in the same direction. During a wall run, if a so called "wall-run target" is detected (wall run extender or a horizontal rail), the movement curve adjusts to always end up at a pre-defined position relative to the target, from which the transition animation could start playing. If an extender is detected below the player, the system either pulls the player closer to the extender to play the "jump-over" animation, or pulls away if a correct landing cannot be predicted. There are multiple transitions to a wall scrape, like after completing a vertical wall run that has no target or when failing to perform a corner jump during a horizontal wall run. 
 
@@ -56,7 +64,7 @@ When the player is in air, nearby walls are being detected with raycasts and che
 
 System that processes sliding down a non-walkable slope. -->
 
-## Steering System
+<h2 id="steer-syst">Steering System</h2> 
 
 The steering system was implemented by combining the notion of [context maps](https://www.gameaipro.com/GameAIPro2/GameAIPro2_Chapter18_Context_Steering_Behavior-Driven_Steering_at_the_Macro_Scale.pdf) with <!-- the dynamic collision prediction by [Stephen J. Guy and Ioannis Karamouzas](https://www.gameaipro.com/GameAIPro2/GameAIPro2_Chapter19_Guide_to_Anticipatory_Collision_Avoidance.pdf) and --> the steering behaviors by [Craig W. Reynolds](https://www.red3d.com/cwr/steer/gdc99/). 
 
@@ -100,7 +108,7 @@ The attracting forces are: **pursuit/pursuit with offset, seek, flee** and **flo
 *A larger group of enemies navigating around the static collision.*
 
 
-## Interactable System
+<h2 id="inter-syst">Interactable System</h2> 
 
 Processes what is (usually) a pair of interacting entities (interactor and interactable) in a state machine. The state machine can be logically split into:
 
@@ -152,7 +160,7 @@ Examples of interactions: pulling/pushing levers, picking up objects, executing 
 
 In hindsight, a separate system for processing the positioning of entities during an execution would've made more sence, as it required a very different behavior than the regular interactions did and resulted in a lot of special code to handle all the corner cases.
 
-## Carriable System
+<h2 id="carr-syst">Carriable System</h2> 
 
 System that processes entering and exiting the carrying state, handles some special cases. When the place command is given by the player the system performs a number of radial ground checks around the player, in order to place the object on a collision-free ground. Picking the objects up, socketing them in and out are interactions and are processed by the Interactable system. 
 
@@ -163,7 +171,7 @@ System that processes entering and exiting the carrying state, handles some spec
 
 The carried object gets parented to the player via the **Attachment System**, to which I contributed by creating an attachment type that keeps the original child orientation and addding interpolation option to smoothely match the child orientation, facing and position with those of the parent.
 
-## Quick Time Event system
+<h2 id="qte-syst">Quick Time Event System</h2> 
 
 System that registers button presses and fills up a smoothed progress bar. The linear progress is incremented with each button press, and the blended progress catches up with it using [lerp-damping](https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/). QTE fails if no input is given within a certain time. There is an option to attach sound and visual effects to progress and/or regress points, which will be triggered by the system.  
 
@@ -177,14 +185,14 @@ System that registers button presses and fills up a smoothed progress bar. The l
 
 *The linear progress is rendered with the yellow bar, while the blended progress is rendered with the green one. There is also a 20% progress VFX event. Switch model by [Clemens Petri](https://miesepetri.artstation.com/), animations by [Phi Kernbach](https://hirngespinst.artstation.com/)*.
 
-## Boss Fight
+<h2 id="boss-fight">Boss Battle</h2> 
 
-During the development, I was responcible for a few enemy units. Adding an enemy unit into the runtime involved creating and setting up its entity template, requesting the missing animations and implementing custom logic inside the enemy behavior stripts. The behavior scripting environment was provided by Tobias Opfermann. For this post, I singled out the boss unit, due to its unique design and a high level of interdisciplinary complexity.
+During development, I took ownership of several enemy units. Adding a new enemy into the runtime involved creating and setting up its entity template, requesting any missing animations, and implementing custom logic within the enemy behavior scripts. The behavior scripting environment was provided by Tobias Opfermann. I've chosen to highlight the boss unit, due to its unique design and the high level of interdisciplinary complexity it required. In addition to the boss, the video example contains a separate feature I was responsible for - **ground surface types that apply buff/debuff status effects when walked on**.
 
-Apart from the 2 health-stages and their attacks, the design incorporated the surroundings of the boss arena. Part of the battle logic I implemented resided in the level scripts, level scripting environment provided by [Markus Wall](https://portfolio.rpg-hacker.de/). The VFX were created by [Adrian Vögtle](https://exaii.artstation.com/) and [Alexandra Anokhina](https://pyrrhulla.xyz/), boss animations outsourced from Metricminds. Player combat system created by [Pascal Scheuber](https://pascalscheuber.wixsite.com/portfolio).
+Apart from the 2 health-stages and their attacks, the design incorporated the surroundings of the boss arena. Part of the boss battle logic I implemented resided inside the level scripts; the level scripting environment provided by [Markus Wall](https://portfolio.rpg-hacker.de/). This battle required a temporary spawn of damaging areas, which I implemented as a standalone re-usable feature. The VFX were created by [Adrian Vögtle](https://exaii.artstation.com/) and [Alexandra Anokhina](https://pyrrhulla.xyz/), boss animations outsourced from Metricminds. Player combat system created by [Pascal Scheuber](https://pascalscheuber.wixsite.com/portfolio), whip traversal by [Manuela Schildknecht](https://schildka.github.io/).
 
 <iframe src="https://player.vimeo.com/video/1086475744?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
-*The battle features a special arena-wide attack, where the boss becomes invincible and "summons" the trees which have to be destroyed before the attack ends. If the player manages to do so, the boss becomess stunned, otherwise the player gets damaged by the explosion. The video shows both outcomes (fail ; success).*
+*The battle includes a special arena-wide attack in which the boss becomes invincible and "summons" trees that must be destroyed before the attack ends. If the player manages to do so, the boss becomess stunned, otherwise the player gets damaged by the explosion. The video shows both outcomes (failure and success), as well as a special ground surface - lava-like terrain around the arena - that applies a status effect to the player.*
 
 
 

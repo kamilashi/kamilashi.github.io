@@ -19,12 +19,14 @@
         border: 2px solid black;
         border-top-style: hidden;
         border-bottom-style: hidden;
-        animation: stretch-right 2s infinite ease-in-out;
+        animation: stretch-right 2s infinite ease-in-out; 
         animation-delay: var(--delay, 0s);
     }
 
     .left .inner-box {
         animation-name: stretch-left;
+        right: 0;
+        transform-origin: right;
     }
 
     .right .inner-box {
@@ -49,7 +51,7 @@
 
     @keyframes stretch-left {
         0%, 100% {
-            width: 100%;
+            width: 0%;
             transform: translateX(100%);
         }
 
@@ -91,30 +93,48 @@
 
         const colors = ['red', 'black', '#0064b9', '#41a9ac', '#41a9ac', '#fec72c', '#fec72c'];
 
-        let containerWidth = root.offsetWidth; //720;
+        const borderWidth = 2;
+        const containerWidth = root.offsetWidth; //720;
 
         rows.forEach((row, rowIndex) => {
 
             let rowWidthSoFar = 0;
             let boxIndex = 0;
             const boxes = []; // store to determine left-most / right-most later
+            const maxWidth = 60;
+            const minWidth = row.height;
 
             do{
                 const outer = document.createElement('div');
                 outer.className = 'outer-box';
                 outer.style.height = `${row.height}px`;
 
-                const randomWidth = Math.floor(Math.random() * 60) + row.height;
-                const clampedWidth = Math.min(randomWidth, containerWidth - rowWidthSoFar);
+                const randomWidth = Math.floor(Math.random() * maxWidth) + minWidth;
+                const availableWidth = containerWidth - rowWidthSoFar;
+
+                if (rowIndex != 0) 
+                {
+                    outer.style.borderTopStyle = 'hidden';
+                }
+
+                let clampedWidth = Math.min(randomWidth, availableWidth);
+                const remainingWidth = availableWidth - clampedWidth;
+
+                if(remainingWidth < minWidth && remainingWidth > 0)
+                {
+                    clampedWidth += remainingWidth; // combine the left over with the current box
+                } 
+
+                if (clampedWidth <= 0) 
+                {
+                    break;
+                }
+
                 outer.style.width = `${clampedWidth}px`;
 
                 boxes.push({ element: outer, width: clampedWidth });
+
                 rowWidthSoFar += clampedWidth;
-
-
-                if (rowIndex != 0) {
-                    outer.style.borderTopStyle = 'hidden';
-                }
             }
             while (rowWidthSoFar < containerWidth)
 
@@ -133,6 +153,7 @@
                     outer.classList.add('right'); // use stretch-right 
                 } else if (isLast) {
                     outer.classList.add('left'); // use stretch-left
+                    inner.style.transformOrigin = 'right';
                     outer.style.borderRightStyle = 'solid';
                 } else {
                     outer.classList.add('center'); // will apply stretch-both

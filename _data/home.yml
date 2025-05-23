@@ -3,7 +3,7 @@ navbar_entries:
     url: about
 
   - title: artstation
-    url: https://www.artstation.com/hgw27
+    url: https://hgw27.artstation.com/
 
 project_entries:
   - title: Kaiko Project 5
@@ -27,13 +27,13 @@ project_entries:
 old_project_entries:
   - title: Ghosts Never Talk
     url: ghosts-never-talk
-    desc: Coding for a 2.5D sidescroller (C#, Unity) 
+    desc: Gameplay & VFX coding for a 2.5D side-view adventure (C#, Unity) 
     # highlight: NEW
     highlight: DEMO
 
-  - title: Outline Shader in Unity
+  - title: Custom Outlines in Unity
     url: outline-shader
-    desc: Outlines done via a compute shader in Unity (Compute, HLSL, Unity)
+    desc: Outline compute shader using a discontinuity map (Compute, HLSL, Unity)
 
 footer_entries:
   - title: linkedin

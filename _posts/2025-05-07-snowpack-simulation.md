@@ -4,19 +4,19 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-Snowpack compression simulation done on the GPU inside the Unity Engine. The project demo is available under [this link](https://github.com/kamilashi/Snow-Simulation/tree/main/Build) -> Snow SImulation.exe. The GPU source code can be accessed from the Snow-Simulation/Assets/Shaders folder - files with the .compute and .shader extensions. This page focuses of the core the idea behind the project and its design.
+This project simulates snowpack compression on the GPU within the Unity Engine. A demo of the project is available under [this link](https://github.com/kamilashi/Snow-Simulation/tree/main/Build) -> Snow SImulation.exe. The GPU source code can be found in the Snow-Simulation/Assets/Shaders folder - files with the .compute and .shader extensions. This page focuses on the core concept behind the project and the design of the systems.
 
 <div style="height: 20px;"></div>
 
-The snowpack is represented by a voxelized grid (Eulerian description of flow), each cell storing its properties, such as density, hardness, temperature, mass, applied pressure, etc. Snow compression is calculated in several steps inside a compute shader. Each cell's lifecycle looks like this:
+The snowpack is represented by a voxelized grid using an Eulerian flow description. Each cell stores a set of physical properties such as density, hardness, temperature, mass, and applied pressure. Snow compression is simulated in multiple stages within a compute shader. Each cell follows the following lifecycle:
 
-1. Calculate the total pressure acting on the cell (weight of the snowpack above + extenral pressure)
-2. Calculate the cell hardness based on its density and temperature
-3. Calculate the cell stiffness (spring coefficient) based on its density
-4. Calculate the compression indent based on the total pressure, hardness and stiffness
-5. Calculate the new temporary cell density candidate based on the cell indent amount
+1. Calculate total **pressure** acting on the cell (sum of the snowpack's weight above it and any external pressure).
+2. Calculate **hardness** based on the cell's current density and temperature.
+3. Calculate **stiffness** (spring coefficient), derived from the cell's density.
+4. Calculate compression **indent**, using the total pressure, hardness, and stiffness.
+5. Calculate a temporary **density candidate** based on the indent amount.
 
-The final step 6 takes the temporary density and resamples all the cells to get rid of "half-empty" cells except for the top-most ones. The result produces the final height of the column which then feeds into a plane that represents the surface of the snowpack. Then the cycle repeates.
+In step 6, the simulation resamples all cells using the temporary density values, eliminating "half-empty" cells except at the top of each column. The final result defines the updated height of each column, which is used to update the height-plane representing the snowpack's visible surface. This cycle continues each frame until the snowpack stabilizes and reaches a steady state.
 
 ![Alt text](/assets/images/snowsim/compresionIllu1.png)
 *Result of steps 1-5: new density candidate and the cell indent*
@@ -32,8 +32,7 @@ The final step 6 takes the temporary density and resamples all the cells to get 
 
 <div style="height: 20px;"></div>
 
-
-The external pressure is taken from test objects, called "snow colliders" with a defined mass and is calculated from the snow surface area that they collide with. 
+The external pressure is introduced through objects referred to as snow colliders, which are defined by their mass and volume. The pressure they apply is calculated based on the area of the snow surface they intersect.
 
 <div style="height: 20px;"></div>
 
@@ -53,7 +52,7 @@ Colliders in this example:
 <div style="height: 20px;"></div>
 
 
-For a snowpack of 5.8m in height and a uniform density of 20 kg/m^3 and temperature of -3 deg. C., the initial total pressure looks like this:
+For a snowpack with a height of 5.8 meters, a uniform density of 20 kg/m³, and a temperature of -3 °C, the initial total pressure is as follows:
 
 ![Alt text](/assets/images/snowsim/vis_start_pressure.png) 
 *Pressure that exceeds the cell's hardness (enough for the snow to compress) is rendered into the green channell.*
@@ -79,7 +78,7 @@ For a snowpack of 5.8m in height and a uniform density of 20 kg/m^3 and temperat
 	</div >
 </div >
 
-*Visualization of simulation run for test 1.a. Screenshots show the pressure profile mixed with the current temperature of -3 deg. C at simulation time = 0 s (a), 30 s (b) and approx. 2 minutes (c). Sub-figure (d) shows the stable-state density gradient.*
+*Visualization of simulation run for test 1.a. Screenshots show the pressure profile (green) mixed with the current temperature of -3 °C (red). C at simulation time = 0 s (a), 30 s (b) and approx. 2 minutes (c). Sub-figure (d) shows the stable-state density gradient.*
 
 
 

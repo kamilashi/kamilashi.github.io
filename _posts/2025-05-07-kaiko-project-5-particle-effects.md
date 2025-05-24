@@ -4,24 +4,15 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-During my part-time employment at Kaiko I created 3 particle effects, designed and implemented their behavior (C++, engine side) and visuals (HLSL, graphics side). The early prototype of the particle runtime was provided by [Jan Enders](https://aldurethar.github.io/kkp5-particles).
+During my part-time employment at Kaiko, I created three particle effects - designing and implementing both their behavior (C++, engine-side) and visuals (HLSL, graphics-side). The early prototype of the particle runtime was provided by [Jan Enders](https://aldurethar.github.io/).
 
-Each particle effect is split into layers, each layer can be thought of as a collection of particles grouped by their shared material, shader and movement behavior. All particles have the *same* set of properties, mostly defined per layer, simetimes per particle (like those that require randomization), sometimes globally for the entire effect (like wind direction, scale, root position and so on).
+Each particle effect is organized into layers, where each layer represents a group of particles sharing the same material, shader, and movement behavior. All particles use the same set of properties, which are primarily defined at the layer level. Some parameters are set per particle - for example, properties requiring randomization - while others are defined globally for the entire effect, such as wind direction, scale, and root position.
 
 ## Fire Effect
 
 <video width="720px" autoplay muted loop >
     <source src="/assets/videos/firefx_f.mp4?v=1" type="video/mp4">
 </video >
-
-<!-- <div class="video-row vid-2" >
-	<video autoplay muted loop controls >
-	  <source src="/assets/videos/firefx_f.mp4" type="video/mp4">
-	</video >
-	<video autoplay muted loop controls >
-	  <source src="/assets/videos/embers_f.mp4" type="video/mp4">
-	</video >
-</div > -->
 
 The fire effect consists of the following layers:
  
@@ -92,7 +83,7 @@ float3 getSparksPath(const ParticleParameters& particle, float deltaTime, float 
 
 ### Embers: 
 
-The most detailed one of the 5 layers, the embers follow a path with an increased jittering towards the end of their lifecycle and feature a shader that simulates the "burning" of the embers.
+The most detailed of the five layers, the embers follow a path with increasing jitter toward the end of their lifecycle and feature a shader that simulates the "burning" of the embers.
 
 <details>
 <summary>C++ code snippet that produces the movement path for the embers</summary>
@@ -161,7 +152,7 @@ Consists of layers:
  - SingleFlakes
  - FlakeThreads (Trails)
 
-This effect has an option to have its movement controlled by a 4-point spline, which allows building complex trajectories, like whirls, seen on the right video below:
+This effect includes an option to have its movement controlled by a 4-point spline, allowing for complex trajectories - such as swirling motions, as seen in the right-hand video below.
 
  <div class="video-row vid-2" >
 	<video autoplay muted loop>
@@ -192,7 +183,9 @@ currentParticle.dir = scaleFloat3(currentParticle.dir, m_systemParameters.windSp
 {% endhighlight %}
 </details>
 
-In addition, the FlakeThreads layer was designed to simulate trailing particles, the head and the trailed particles share a single array and are differentiated by their indexes. The head particles are the ones that sample the main path and apply an optional "wave" offset, and each trailing one uses the data of its parent.
+### Flake Threads: 
+
+This layer was designed to simulate trailing particles. The leading (or "head") and trailing particles are stored in a shared array and are distinguished by their indices. Head particles sample the main path and apply an optional wave-like offset, while each trailing particle inherits data from its corresponding head.
 
 <details>
 <summary>Code snippet that processes the particles from the FlakeThreads layer.</summary>
@@ -228,7 +221,7 @@ else  // trail particle
 
 ## Fog Effect
 
-A simple effect that consists of a single Base layer that blends sprites from an atlas texture and has a configurable rotation speed:
+A simple effect made up of a single Base layer. It blends sprites from an atlas texture and supports configurable rotation speed.
 
 <div class="video-row vid-2" >
 	<video autoplay muted loop>

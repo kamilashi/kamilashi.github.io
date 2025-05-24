@@ -7,7 +7,7 @@ title: About
 <div style="height: 50px;"></div>
 
 <div style="widht: 100%;">
-My name is Kamila Shirinova, and I am a game developer living in Germany. I started my career in games as an artist and transitioned into game programming while finishing my studies. Over the years, I’ve gained experience in creating concept art and illustrations for games, art directing, as well as shader and gameplay programming—and I feel comfortable working across all of these areas.
+My name is Kamila Shirinova, and I am a game developer living in Germany. I started my career in games as an artist and transitioned into game programming while finishing my studies. Over the years, I've gained experience in creating concept art and illustrations for games, art directing, as well as shader and gameplay programming - and I feel comfortable working across all of these areas.
 </div>
 
 <div style="height: 50px;"></div>

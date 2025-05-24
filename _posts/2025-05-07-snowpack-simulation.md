@@ -78,7 +78,7 @@ For a snowpack with a height of 5.8 meters, a uniform density of 20 kg/m³, and 
 	</div >
 </div >
 
-*Visualization of simulation run for test 1.a. Screenshots show the pressure profile (green) mixed with the current temperature of -3 °C (red). C at simulation time = 0 s (a), 30 s (b) and approx. 2 minutes (c). Sub-figure (d) shows the stable-state density gradient.*
+*Visualization of simulation run for test 1.a. Screenshots show the pressure profile (green) mixed with the current temperature of -3 °C (red). C at simulation time = 0 s (a), 30 s (b) and approx. 2 minutes (c). Sub-figure (d) shows the stable-state density gradient. The white plane resperents the deformed surface of the snowpack*
 
 
 

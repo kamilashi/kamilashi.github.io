@@ -21,7 +21,7 @@ A small experiment I did during my studies. All objects in the scene use a "norm
 
 <div style="height: 20px;"></div>
 
-The grass blades are instanced procedurally, hence the use of a surface shader. All other objects (two planes and a sphere) use a minimal custom vertex-fragment shader. Below is a snippet of the shader setup for the grass blades, featuring options for both the "normal" and the "outlines" shaders. Other objects—such as the grass plane, the sphere, and the background plane—use a similar setup that allows control over both the actual rendered colors and the colors written to the discontinuity map.
+The grass blades are instanced procedurally, with the use of a surface shader. All other objects (two planes and a sphere) use a minimal custom vertex-fragment shader. Below is a snippet of the shader setup for the grass blades, featuring options for both the "normal" and the "outlines" shaders. Other objects - such as the grass plane, the sphere, and the background plane - use a similar setup that allows controlling both the actual rendered colors and the colors written into the discontinuity map.
 
 ![Alt text](/assets/images/outlines/editor.png) 
 *Shader setup for the grass blades.*

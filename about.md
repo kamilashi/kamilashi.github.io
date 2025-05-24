@@ -20,8 +20,8 @@ My name is Kamila Shirinova, and I am a game developer living in Germany. I star
         data-locale="en_US"
         data-type="horizontal"
         data-theme="light"
-        data-vanity="kamila-shirinova-737121184">
-        <a class="LI-simple-link" href="https://www.linkedin.com/in/kamila-shirinova-737121184/"></a>
+        data-vanity="kamilashi">
+        <a class="LI-simple-link" href="https://www.linkedin.com/in/kamilashi/"></a>
         </div>
     </div>
 <!--     <div style="display: flex; align-items: center; gap: 1em; border: 1px solid #ccc; padding: 1em; border-radius: 8px; max-width: 300px; background-color: #f9f9f9;">

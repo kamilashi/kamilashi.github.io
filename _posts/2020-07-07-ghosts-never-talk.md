@@ -42,7 +42,7 @@ This system calculates the shortest path between a source node and a target node
 
 The main camera in the prototype is responsible for:
 
-- Following the player with **lookahead** offset
+- Following the player with a **lookahead** offset
 - Ensuring the current layer's camera hook remains **anchored to the bottom of the screen**
 - **Dollying in/out** on demand (e.g., triggered by teleportation or other special actions)
 

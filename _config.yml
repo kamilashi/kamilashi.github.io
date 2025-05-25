@@ -1,8 +1,8 @@
 title: Kamila Codes
 author: # Abhinav Saxena
-url:  "https://kamilashi.github.io" # root address of the site
-description: > # description of the site (multiple lines allowed)
-  Kamila's coding portfolio
+url:  # "https://kamilashi.github.io"  root address of the site
+description: Kamila's coding portfolio # description of the site (multiple lines allowed)
+  
 
 permalink: /:slug
 

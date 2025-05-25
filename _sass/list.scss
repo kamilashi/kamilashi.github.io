@@ -1,51 +1,64 @@
 ul.horizontal-list {
   display: flex;
-  //justify-content: space-between;
   margin-top: 0em;
-  //margin-left: -40px;
   gap: 1em; 
   flex-wrap: wrap;
 
   justify-content: left;
-  //margin: 0 auto;
   padding: 0;
 
   li {
     display:inline-block;
     list-style: none;
-    //margin-right: 1em;
   }
 
   li a {
     text-decoration: none;
     font-weight: normal
   }
-
 }
 
 .card {
-  padding: 1em;
   border: 1px var(--text) solid;
-  width: 318px;
+  width: calc(50% - 0.8em);
   height: auto;
-  text-align: center;
   font-size: 1em;
   align-items: center;
   background-color: var(--bg-secondary);
   border-radius: 0.5em;
+  overflow: hidden;
 
   .header {
     color: var(--links);
+    padding: 1em;
+    height: auto;
+    align-items: center;
+    object-position: center;
+    text-align: center;
+    overflow: hidden;
   }
 
   .body {
     font-size: 0.8em;
+    padding: 1em;
+    text-align: center;
   }
 
   hr {
     margin: 0.5em 0;
   }
+}
 
+.card img 
+{
+  width: auto;
+  aspect-ratio: 16 / 9;
+  padding: 0em;
+  display: block;
+  overflow: hidden;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 /* Responsive cards - one column layout on small screens */

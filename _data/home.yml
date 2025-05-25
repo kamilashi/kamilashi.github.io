@@ -9,31 +9,36 @@ project_entries:
   - title: Kaiko Project 5
     url: kaiko-project-5-gameplay
     desc: Gameplay code (C++, proprietary software)
+    image: /assets/images/cover/kaikog.jpg
 
   - title: Kaiko Project 5
     url: kaiko-project-5-particle-effects
     desc: Particle behavior & shaders (HLSL, C++, proprietary software)
+    image: /assets/images/cover/kaikop.jpg
 
   - title: Bachelor Thesis
     url: snowpack-simulation
     desc: Snow property simulation on the GPU (Compute, C#, Unity)
     highlight: DEMO
+    image: /assets/images/cover/grid.png
 
   - title: Torpor Games Internship
     url: custom-shader-prototype-for-torpor-games
     desc: Custom shader prototype (Shaderlab, Unity)
     highlight: DEMO
+    image: /assets/images/cover/torpor.png
 
 old_project_entries:
   - title: Ghosts Never Talk
     url: ghosts-never-talk
     desc: Gameplay & VFX coding for a 2.5D side-view adventure (C#, Unity) 
-    # highlight: NEW
     highlight: DEMO
+    image: /assets/images/cover/ghost.png
 
   - title: Custom Outlines in Unity
     url: outline-shader
     desc: Outline compute shader using a discontinuity map (Compute, HLSL, Unity)
+    image: /assets/images/outlines/outlines_full.png
 
 footer_entries:
   - title: linkedin

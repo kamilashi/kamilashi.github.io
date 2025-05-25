@@ -1,6 +1,12 @@
 ---
 ---
 
+:root {
+  --page-width: 720px;
+  --header-height: 90px;
+}
+
+
 @import "moonwalk";
 @import "list";
 @import "syntax";

@@ -283,9 +283,15 @@ p code, li code {
     padding: 0;
 }
 
+.single-video 
+{
+  width: 100%; 
+}
+
 .single-video video {
     width: 100%; // should be --page-width
-    //display: block;
+    object-fit: cover;
+    object-position: center;
   }
 
 .video-row video {

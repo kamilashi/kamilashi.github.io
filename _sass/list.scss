@@ -20,7 +20,7 @@ ul.horizontal-list {
 
 .card {
   border: 1px var(--text) solid;
-  width: calc(50% - 0.8em);
+  width: calc((100% - 1em - 4px) / 2);
   height: auto;
   font-size: 1em;
   align-items: center;

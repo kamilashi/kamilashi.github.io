@@ -10,9 +10,11 @@ Each particle effect is organized into layers, where each layer represents a gro
 
 ## Fire Effect
 
-<video width="720px" autoplay muted loop >
-    <source src="/assets/videos/firefx_f.mp4?v=1" type="video/mp4">
-</video >
+<div class="single-video">
+	<video autoplay muted loop >
+		<source src="/assets/videos/firefx_f.mp4?v=1" type="video/mp4">
+	</video >
+</div >
 
 The fire effect consists of the following layers:
  
@@ -236,17 +238,23 @@ A simple effect made up of a single Base layer. It blends sprites from an atlas 
 
 ## Level Examples
 
-<video width="720px" autoplay muted loop >
-    <source src="/assets/videos/fire_f.mp4?v=12" type="video/mp4">
-	Could not load the video
-</video >
+<div class="single-video" >
+	<video autoplay muted loop >
+		<source src="/assets/videos/fire_f.mp4?v=12" type="video/mp4">
+		Could not load the video
+	</video >
+</div>
 
-<video width="720px" autoplay muted loop >
-    <source src="/assets/videos/wind_f.mp4?v=2" type="video/mp4">
-	Could not load the video
-</video >
+<div class="single-video" >
+	<video autoplay muted loop >
+		<source src="/assets/videos/wind_f.mp4?v=2" type="video/mp4">
+		Could not load the video
+	</video >
+</div>
 
-<video width="720px" autoplay muted loop >
-    <source src="/assets/videos/wind_fire_cloud_f.mp4?v=2" type="video/mp4">
-	Could not load the video
-</video >
+<div class="single-video" >
+	<video autoplay muted loop >
+		<source src="/assets/videos/wind_fire_cloud_f.mp4?v=2" type="video/mp4">
+		Could not load the video
+	</video >
+</div>

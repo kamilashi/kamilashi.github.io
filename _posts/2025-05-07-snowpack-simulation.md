@@ -43,11 +43,11 @@ The external pressure is introduced through objects referred to as snow collider
 
 Colliders in this example:
 
-|		    | mass (kg)     | collision area (m^2) |
-|:----------|:-------------:|:--------------------:|
-| Collider 1|		100     |			16		   |
-| Collider 2|		100		|			1		   |
-| Collider 3|		100		|			0.1		   |
+|		     | mass (kg)     | collision area (m²)  |
+|:-----------|:-------------:|:--------------------:|
+| Collider 1 |		100      |			16		    |
+| Collider 2 |		100		 |			1		    |
+| Collider 3 |		100		 |			0.1		    |
 
 <div style="height: 20px;"></div>
 

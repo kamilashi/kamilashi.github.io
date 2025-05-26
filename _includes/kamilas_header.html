@@ -81,13 +81,13 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const root = document.getElementById("animated-boxes-root");
-        if (!root) return;
+    function createAnimatedRibbon() {
 
         const rootStyles = getComputedStyle(document.documentElement);
-        const containerWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
+        const basePageWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
         const ribbonHeight = parseFloat(rootStyles.getPropertyValue('--animated-ribbon-height').trim()); 
+        const borderWidth = 2;
+        const maxOuterBoxWidth = 80;
 
         const rows = [
             { height: ribbonHeight * 0.375 },
@@ -97,33 +97,34 @@
 
         const colors = ['red', 'black', '#0064b9', '#41a9ac', '#41a9ac', '#fec72c', '#fec72c'];
 
-        const borderWidth = 2;
+        const root = document.getElementById("animated-boxes-root");
+        const currentContainerWidth = root.offsetWidth;
+        if (!root) return;
 
         rows.forEach((row, rowIndex) => {
 
             let rowWidthSoFar = 0;
             let boxIndex = 0;
             const boxes = []; // store to determine left-most / right-most later
-            const maxWidth = 80;
-            const minWidth = row.height;
+            const minOuterBoxWidth = row.height;
 
             do{
                 const outer = document.createElement('div');
                 outer.className = 'outer-box';
                 outer.style.height = `${row.height}px`;
 
-                const randomWidth = Math.floor(Math.random() * maxWidth) + minWidth;
-                const availableWidth = containerWidth - rowWidthSoFar;
+                const randomBoxWidth = Math.floor(Math.random() * maxOuterBoxWidth) + minOuterBoxWidth;
+                const availableWidth = basePageWidth - rowWidthSoFar;
 
                 if (rowIndex != 0) 
                 {
                     outer.style.borderTopStyle = 'hidden';
                 }
 
-                let clampedWidth = Math.min(randomWidth, availableWidth);
+                let clampedWidth = Math.min(randomBoxWidth, availableWidth);
                 const remainingWidth = availableWidth - clampedWidth;
 
-                if(remainingWidth < minWidth && remainingWidth > 0)
+                if(remainingWidth < minOuterBoxWidth && remainingWidth > 0)
                 {
                     clampedWidth += remainingWidth; // combine the left over with the current box
                 } 
@@ -133,14 +134,15 @@
                     break;
                 }
 
-                outer.style.width = `${clampedWidth}px`;
                 outer.style.setProperty('--base-width', `${clampedWidth}px`);
+                const relativeBoxWidth = (clampedWidth * currentContainerWidth) / basePageWidth;
+                outer.style.width =`${relativeBoxWidth}px`;
 
                 boxes.push({ element: outer, width: clampedWidth });
 
                 rowWidthSoFar += clampedWidth;
             }
-            while (rowWidthSoFar < containerWidth)
+            while (rowWidthSoFar < basePageWidth)
 
             let currentX = 0;
 
@@ -181,9 +183,9 @@
                 currentX += box.width;
             });
         });
-    });
+    }
 
-    window.addEventListener('resize', function () {
+    function resizeAnimatedRibbon() {
 
         const root = document.getElementById('animated-boxes-root');
         const rootStyles = getComputedStyle(document.documentElement);
@@ -197,5 +199,8 @@
             const newBoxWidth = (boxBaseWidth * currentContainerWidth) / basePageWidth;
             box.style.width =`${newBoxWidth}px`;
         });
-    });
+    }
+    
+    document.addEventListener("DOMContentLoaded", createAnimatedRibbon);
+    window.addEventListener('resize', resizeAnimatedRibbon);
 </script>

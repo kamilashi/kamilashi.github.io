@@ -391,7 +391,9 @@ summary {
   z-index: 1;
 }
 
-#animated-boxes-root {
+.animated-boxes-root {
+  display: flex; 
+  flex-wrap: wrap;
   width: 100%;
   height: 100%;
 }

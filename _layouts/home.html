@@ -17,9 +17,8 @@ layout: default
     </h1>
 
     <div class="animated-ribbon">
-      <div style="display: flex; flex-wrap: wrap; width: 100%; height: 100%;" id="animated-boxes-root"> </div>
+      <div class="animated-boxes-root"></div>
     </div>
-
 
     {% if site.theme_config.show_description == true %}
     <!--<p>{{ site.description }}</p>-->
@@ -52,7 +51,9 @@ layout: default
 
 {% if site.theme_config.show_footer == true %}
   <footer>
+
     <div class="dashed"></div>
+
     {% include horizontal_list.html collection=site.data.home.footer_entries %}
   </footer>
 {% endif %}

@@ -81,8 +81,7 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function createAnimatedRibbon() {
-
+    function createAnimatedRibbons() {
         const rootStyles = getComputedStyle(document.documentElement);
         const basePageWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
         const ribbonHeight = parseFloat(rootStyles.getPropertyValue('--animated-ribbon-height').trim()); 
@@ -97,110 +96,113 @@
 
         const colors = ['red', 'black', '#0064b9', '#41a9ac', '#41a9ac', '#fec72c', '#fec72c'];
 
-        const root = document.getElementById("animated-boxes-root");
-        const currentContainerWidth = root.offsetWidth;
-        if (!root) return;
+        const ribbonRoots = document.querySelectorAll('.animated-boxes-root');
+        ribbonRoots.forEach(root => {
+            //const root = document.getElementById("animated-boxes-root");
+            const currentContainerWidth = root.offsetWidth;
 
-        rows.forEach((row, rowIndex) => {
+            rows.forEach((row, rowIndex) => {
 
-            let rowWidthSoFar = 0;
-            let boxIndex = 0;
-            const boxes = []; // store to determine left-most / right-most later
-            const minOuterBoxWidth = row.height;
+                let rowWidthSoFar = 0;
+                let boxIndex = 0;
+                const boxes = []; // store to determine left-most / right-most later
+                const minOuterBoxWidth = row.height;
 
-            do{
-                const outer = document.createElement('div');
-                outer.className = 'outer-box';
-                outer.style.height = `${row.height}px`;
+                do{
+                    const outer = document.createElement('div');
+                    outer.className = 'outer-box';
+                    outer.style.height = `${row.height}px`;
 
-                const randomBoxWidth = Math.floor(Math.random() * maxOuterBoxWidth) + minOuterBoxWidth;
-                const availableWidth = basePageWidth - rowWidthSoFar;
+                    const randomBoxWidth = Math.floor(Math.random() * maxOuterBoxWidth) + minOuterBoxWidth;
+                    const availableWidth = basePageWidth - rowWidthSoFar;
 
-                if (rowIndex != 0) 
-                {
-                    outer.style.borderTopStyle = 'hidden';
+                    if (rowIndex != 0) 
+                    {
+                        outer.style.borderTopStyle = 'hidden';
+                    }
+
+                    let clampedWidth = Math.min(randomBoxWidth, availableWidth);
+                    const remainingWidth = availableWidth - clampedWidth;
+
+                    if(remainingWidth < minOuterBoxWidth && remainingWidth > 0)
+                    {
+                        clampedWidth += remainingWidth; // combine the left over with the current box
+                    } 
+
+                    if (clampedWidth <= 0) 
+                    {
+                        break;
+                    }
+
+                    outer.style.setProperty('--base-width', `${clampedWidth}px`);
+                    const relativeBoxWidth = (clampedWidth * currentContainerWidth) / basePageWidth;
+                    outer.style.width =`${relativeBoxWidth}px`;
+
+                    boxes.push({ element: outer, width: clampedWidth });
+
+                    rowWidthSoFar += clampedWidth;
                 }
+                while (rowWidthSoFar < basePageWidth)
 
-                let clampedWidth = Math.min(randomBoxWidth, availableWidth);
-                const remainingWidth = availableWidth - clampedWidth;
+                let currentX = 0;
 
-                if(remainingWidth < minOuterBoxWidth && remainingWidth > 0)
-                {
-                    clampedWidth += remainingWidth; // combine the left over with the current box
-                } 
+                boxes.forEach((box, i) => {
+                    const outer = box.element;
+                    const isFirst = i === 0;
+                    const isLast = i === boxes.length - 1;
 
-                if (clampedWidth <= 0) 
-                {
-                    break;
-                }
+                    const inner = document.createElement('div');
+                    inner.className = 'inner-box';
 
-                outer.style.setProperty('--base-width', `${clampedWidth}px`);
-                const relativeBoxWidth = (clampedWidth * currentContainerWidth) / basePageWidth;
-                outer.style.width =`${relativeBoxWidth}px`;
+                    // Assign animation type
+                    if (isFirst) {
+                        outer.classList.add('right'); // use stretch-right 
+                    } else if (isLast) {
+                        outer.classList.add('left'); // use stretch-left
+                        inner.style.transformOrigin = 'right';
+                        outer.style.borderRightStyle = 'solid';
+                    } else {
+                        outer.classList.add('center'); // will apply stretch-both
+                    }
 
-                boxes.push({ element: outer, width: clampedWidth });
+                    if (i % 2 == 0 && !isLast && !isFirst) {
+                        inner.style.setProperty('--box-color', 'white');
+                        inner.style.borderWidth = '0px';
+                    }
+                    else {
+                        const randomColorIdx = getRandomInt(0, colors.length-1);
+                        inner.style.setProperty('--box-color', colors[randomColorIdx]);
+                    }
 
-                rowWidthSoFar += clampedWidth;
-            }
-            while (rowWidthSoFar < basePageWidth)
+                    // Assign dynamic properties
+                    inner.style.setProperty('--delay', `${(i + rowIndex) * 0.15}s`);
 
-            let currentX = 0;
+                    outer.appendChild(inner);
+                    root.appendChild(outer);
 
-            boxes.forEach((box, i) => {
-                const outer = box.element;
-                const isFirst = i === 0;
-                const isLast = i === boxes.length - 1;
-
-                const inner = document.createElement('div');
-                inner.className = 'inner-box';
-
-                // Assign animation type
-                if (isFirst) {
-                    outer.classList.add('right'); // use stretch-right 
-                } else if (isLast) {
-                    outer.classList.add('left'); // use stretch-left
-                    inner.style.transformOrigin = 'right';
-                    outer.style.borderRightStyle = 'solid';
-                } else {
-                    outer.classList.add('center'); // will apply stretch-both
-                }
-
-                if (i % 2 == 0 && !isLast && !isFirst) {
-                    inner.style.setProperty('--box-color', 'white');
-                    inner.style.borderWidth = '0px';
-                }
-                else {
-                    const randomColorIdx = getRandomInt(0, colors.length-1);
-                    inner.style.setProperty('--box-color', colors[randomColorIdx]);
-                }
-
-                // Assign dynamic properties
-                inner.style.setProperty('--delay', `${(i + rowIndex) * 0.15}s`);
-
-                outer.appendChild(inner);
-                root.appendChild(outer);
-
-                currentX += box.width;
+                    currentX += box.width;
+                });
             });
         });
     }
 
-    function resizeAnimatedRibbon() {
+    function resizeAnimatedRibbons() {
+        const ribbonRoots = document.querySelectorAll('.animated-boxes-root');
+        ribbonRoots.forEach(root => {
+            const rootStyles = getComputedStyle(document.documentElement);
+            const basePageWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
+            
+            const currentContainerWidth = root.offsetWidth;
 
-        const root = document.getElementById('animated-boxes-root');
-        const rootStyles = getComputedStyle(document.documentElement);
-        const basePageWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
-        
-        const currentContainerWidth = root.offsetWidth;
-
-        const boxes = root.querySelectorAll('.outer-box');
-        boxes.forEach(box => {
-            const boxBaseWidth = parseFloat(box.style.getPropertyValue('--base-width'));
-            const newBoxWidth = (boxBaseWidth * currentContainerWidth) / basePageWidth;
-            box.style.width =`${newBoxWidth}px`;
+            const boxes = root.querySelectorAll('.outer-box');
+            boxes.forEach(box => {
+                const boxBaseWidth = parseFloat(box.style.getPropertyValue('--base-width'));
+                const newBoxWidth = (boxBaseWidth * currentContainerWidth) / basePageWidth;
+                box.style.width =`${newBoxWidth}px`;
+            });
         });
     }
     
-    document.addEventListener("DOMContentLoaded", createAnimatedRibbon);
-    window.addEventListener('resize', resizeAnimatedRibbon);
+    document.addEventListener("DOMContentLoaded", createAnimatedRibbons);
+    window.addEventListener('resize', resizeAnimatedRibbons);
 </script>

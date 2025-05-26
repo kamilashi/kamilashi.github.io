@@ -85,16 +85,19 @@
         const root = document.getElementById("animated-boxes-root");
         if (!root) return;
 
+        const rootStyles = getComputedStyle(document.documentElement);
+        const containerWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
+        const ribbonHeight = parseFloat(rootStyles.getPropertyValue('--animated-ribbon-height').trim()); 
+
         const rows = [
-            { height: 15 },
-            { height: 10 },
-            { height: 15 }
+            { height: ribbonHeight * 0.375 },
+            { height: ribbonHeight * 0.25  },
+            { height: ribbonHeight * 0.375  }
         ];
 
         const colors = ['red', 'black', '#0064b9', '#41a9ac', '#41a9ac', '#fec72c', '#fec72c'];
 
         const borderWidth = 2;
-        const containerWidth = 720;
 
         rows.forEach((row, rowIndex) => {
 
@@ -131,6 +134,7 @@
                 }
 
                 outer.style.width = `${clampedWidth}px`;
+                outer.style.setProperty('--base-width', `${clampedWidth}px`);
 
                 boxes.push({ element: outer, width: clampedWidth });
 
@@ -176,6 +180,22 @@
 
                 currentX += box.width;
             });
+        });
+    });
+
+    window.addEventListener('resize', function () {
+
+        const root = document.getElementById('animated-boxes-root');
+        const rootStyles = getComputedStyle(document.documentElement);
+        const basePageWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
+        
+        const currentContainerWidth = root.offsetWidth;
+
+        const boxes = root.querySelectorAll('.outer-box');
+        boxes.forEach(box => {
+            const boxBaseWidth = parseFloat(box.style.getPropertyValue('--base-width'));
+            const newBoxWidth = (boxBaseWidth * currentContainerWidth) / basePageWidth;
+            box.style.width =`${newBoxWidth}px`;
         });
     });
 </script>

@@ -358,6 +358,11 @@ summary {
   width: var(--page-width);
   height: var(--header-height);
   overflow: hidden;
+  flex-shrink: 0;
+}
+
+.animated-ribbon {
+  height: var(--animated-ribbon-height);
 }
 
 .overlay {

@@ -1,8 +1,9 @@
 <style>
     .outer-box {
+        height: 100%;
         display: inline-flex;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: flex-start; 
         background-color: white;
         overflow: hidden;
         box-sizing: border-box;
@@ -98,10 +99,13 @@
 
         const ribbonRoots = document.querySelectorAll('.animated-boxes-root');
         ribbonRoots.forEach(root => {
-            //const root = document.getElementById("animated-boxes-root");
             const currentContainerWidth = root.offsetWidth;
 
             rows.forEach((row, rowIndex) => {
+
+                const rootRow = document.createElement('div');
+                rootRow.className = 'animated-boxes-root-row';
+                rootRow.style.height = `${row.height}px`;
 
                 let rowWidthSoFar = 0;
                 let boxIndex = 0;
@@ -111,7 +115,6 @@
                 do{
                     const outer = document.createElement('div');
                     outer.className = 'outer-box';
-                    outer.style.height = `${row.height}px`;
 
                     const randomBoxWidth = Math.floor(Math.random() * maxOuterBoxWidth) + minOuterBoxWidth;
                     const availableWidth = basePageWidth - rowWidthSoFar;
@@ -178,10 +181,13 @@
                     inner.style.setProperty('--delay', `${(i + rowIndex) * 0.15}s`);
 
                     outer.appendChild(inner);
-                    root.appendChild(outer);
+                    rootRow.appendChild(outer);
 
                     currentX += box.width;
                 });
+
+                
+                root.appendChild(rootRow);
             });
         });
     }

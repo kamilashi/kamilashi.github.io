@@ -4,29 +4,40 @@
     <li class="card">
       <a href="{{ item.url }}">
 
-        <div class="header">
-        
-            <div >
+        <div class="header-and-image">
+            
+          <div class="header">
             {{ item.title }}
 
             {% if item.highlight %}
               <mark>{{ item.highlight }}</mark>
             {% endif %}
-            </div>
+          </div>
+
+
+          {% if item.image %}
+          <img src = "{{ item.image }}" alt="Cover">
+          {% else %}
+          <hr/>
+          {% endif %}
+
         </div>
 
+        <div class="body">
+          
+          {% if item.desc != false %}
+            <p class="tools">
+            {{ item.desc }}
+            </p>
+          {% endif %}
+          
+          {% if item.tools != false %} 
+            <p class="tools">
+              {{ item.tools }}
+            </p>
+          {% endif %}
 
-        {% if item.image %}
-        <img src = "{{ item.image }}" alt="Cover">
-        {% else %}
-        <hr/>
-        {% endif %}
-
-        {% if item.desc != false %}
-        <p class="body">
-          {{ item.desc }}
-        </p>
-        {% endif %}
+        </div>
       </a>
     </li>
 

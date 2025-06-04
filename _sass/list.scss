@@ -100,12 +100,12 @@ ul.horizontal-list {
 }
 
 /* Responsive cards - one column layout on small screens */
-@media screen and (max-width: var(--page-width)) {
+@media screen and (max-width: 570px) {
   ul.horizontal-list li.card {
     width: 100%;
     display: block;
     margin-bottom: 1em;
-    margin-left: 1em;
+    //margin-left: 1em;
     a, .header {
       font-size: 1em;
     }

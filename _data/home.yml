@@ -40,6 +40,12 @@ old_project_entries:
     highlight: DEMO
     image: /assets/images/cover/ghost.png
 
+  - title: Cthulhu High Rising
+    url: cthulhu-high-rising
+    desc: Tower defence in a Lovecraftian setting 
+    tools: (C#, Unity)
+    image: /assets/images/cthulhu/cthulhu_high_rising_cover.png
+
   - title: Custom Outlines in Unity
     url: outline-shader
     desc: Outline compute shader using a discontinuity map 

@@ -48,6 +48,7 @@ const Boundaries = {
 //Game state variables
 const GameState = {
   running: false,
+  lockInput: false,
   intervalId: 0
 }
 
@@ -71,6 +72,7 @@ const cubeGeom = new THREE.BoxGeometry(Sizes.cube, Sizes.cube, Sizes.cube);
 
 //their correspoonding speeds
 let speed = new THREE.Vector3(0, 0, 0);
+let lastPressedDirection = '';
 const speedValue = 0.004;
 let speeds = new Array(cubes.length);
 
@@ -135,34 +137,62 @@ const ball = new THREE.Mesh(new THREE.SphereGeometry(Sizes.ballRadius, 32, 16), 
 spawnBall();
 scene.add(ball);
 
+function isInputValid(forbiddenLastDirection){
+  if (cubes.length == 1) return true;
+  if(lastPressedDirection === forbiddenLastDirection) return false;
+  return true;
+}
+
 function onArrowKey(event) {
   let arrowKeyPressed = false;
-  if (event.key === "a") {   
+
+  if(GameState.lockInput){
+    return;
+  }
+
+  if (event.key === 'a') { 
+    if(!isInputValid('d')){
+        return;
+      }  
     arrowKeyPressed = true;
     speed.x = -speedValue;
     speed.y = 0;
   }
-  if (event.key === "d") {   
+  if (event.key === 'd') {   
+    if(!isInputValid('a')){
+        return;
+      }  
     arrowKeyPressed = true;
     speed.x = speedValue;
     speed.y = 0;
   }
-  if (event.key === "w") {  
+  if (event.key === 'w') {  
+    if(!isInputValid('s')){
+        return;
+      }  
     arrowKeyPressed = true;
     speed.y = speedValue;
     speed.x = 0;
   }
-  if (event.key === "s") {   
+  if (event.key === 's') {   
+    if(!isInputValid('w')){
+        return;
+      }  
     arrowKeyPressed = true;
     speed.y = -speedValue;
     speed.x = 0;
   }
 
-  //initialize arrays only if first time key press
-  if ((!GameState.running) && (arrowKeyPressed == true)) {
-    GameState.running = true
-    speeds.fill(speed.clone());
-    GameState.intervalId = setInterval(move, 250);
+  if(arrowKeyPressed)
+  {
+    lastPressedDirection = event.key;
+    GameState.lockInput = true;
+
+    if (!GameState.running) {
+      GameState.running = true
+      speeds.fill(speed.clone());
+      GameState.intervalId = setInterval(move, 250);
+    }
   }
 }
 
@@ -193,13 +223,10 @@ function move() {
     return;
   }
   checkCollisionWithBall();
+
+  GameState.lockInput = false;
 }
 
-//since the async alert function somehow interferes with frame rendering schedule 
-//(also window switching and controling it with the mouse), 
-//the only way to deal with the weird zooming out of camera is to only start rotation 
-//after on manual user key press, after the first game over.
-//ideally it would be after the user hits okay on alert, but as I understood the alert doesn't return anything.
 function resetGameState()
 { 
   GameState.running = false;
@@ -222,6 +249,9 @@ function resetScene()
   speeds = new Array(cubes.length);
   spawnSnake();
   spawnBall();
+
+  GameState.lockInput = false;
+  lastPressedDirection = '';
 }
 
 function grow() {

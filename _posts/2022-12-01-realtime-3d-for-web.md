@@ -14,7 +14,7 @@ All geometry is constructed from basic primitive shapes provided by the library.
 ## Snake Game
 
 Use the **WASD** keys to start and control the game.
-You can swap the snake's head and tail by pressing the key opposite to its current direction. The source code can be viewed under [this link](https://github.com/kamilashi/Snake-Game). 
+Only the first input within each 250 ms update cycle is registered. The source code can be viewed under [this link](https://github.com/kamilashi/Snake-Game). 
 
 <iframe src="/assets/threejs/SnakeGame.html" width="720" height="405" scrolling="no" frameborder="0"  style="border: 1px solid"></iframe>
 

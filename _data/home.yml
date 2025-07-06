@@ -46,6 +46,13 @@ old_project_entries:
     tools: (C#, Unity)
     image: /assets/images/cthulhu/cthulhu_high_rising_cover.png
 
+  - title: Realtime 3D for Web
+    url: realtime-3D-for-web
+    desc: Live embeds of realtime 3D experiments
+    highlight: DEMO
+    tools: (javascript, Three.js, html)
+    image: /assets/images/cover/threejs.png
+
   - title: Custom Outlines in Unity
     url: outline-shader
     desc: Outline compute shader using a discontinuity map 

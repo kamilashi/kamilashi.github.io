@@ -47,7 +47,7 @@ old_project_entries:
     image: /assets/images/cthulhu/cthulhu_high_rising_cover.png
 
   - title: Realtime 3D for Web
-    url: realtime-3D-for-web
+    url: realtime-3d-for-web
     desc: Live embeds of realtime 3D experiments
     highlight: DEMO
     tools: (javascript, Three.js, html)

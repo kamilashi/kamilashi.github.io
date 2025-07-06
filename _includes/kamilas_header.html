@@ -193,13 +193,13 @@
     }
 
     function resizeAnimatedRibbons() {
+        const rootStyles = getComputedStyle(document.documentElement);
+        const basePageWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
+        
+        const currentContainerWidth = root.offsetWidth;
+
         const ribbonRoots = document.querySelectorAll('.animated-boxes-root');
         ribbonRoots.forEach(root => {
-            const rootStyles = getComputedStyle(document.documentElement);
-            const basePageWidth = parseFloat(rootStyles.getPropertyValue('--page-width').trim()); 
-            
-            const currentContainerWidth = root.offsetWidth;
-
             const boxes = root.querySelectorAll('.outer-box');
             boxes.forEach(box => {
                 const boxBaseWidth = parseFloat(box.style.getPropertyValue('--base-width'));

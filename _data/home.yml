@@ -21,7 +21,7 @@ project_entries:
   - title: Bachelor Thesis
     url: snowpack-simulation
     desc: Snow property simulation on the GPU 
-    tools: (Compute, C#, Unity)
+    tools: (Python, Compute, C#, Unity)
     highlight: DEMO
     image: /assets/images/cover/grid.png
 
@@ -40,18 +40,18 @@ old_project_entries:
     highlight: DEMO
     image: /assets/images/cover/ghost.png
 
-  - title: Cthulhu High Rising
-    url: cthulhu-high-rising
-    desc: Tower defence in a Lovecraftian setting 
-    tools: (C#, Unity)
-    image: /assets/images/cthulhu/cthulhu_high_rising_cover.png
-
   - title: Numerical Approximator
     url: numerical-approximator
     desc: Numerical calculator with GUI
     highlight: DEMO
     tools: (C++, Qt6)
     image: /assets/images/cover/numaprx.png
+
+  - title: Cthulhu High Rising
+    url: cthulhu-high-rising
+    desc: Tower defence in a Lovecraftian setting 
+    tools: (C#, Unity)
+    image: /assets/images/cthulhu/cthulhu_high_rising_cover.png
 
   - title: Realtime 3D for Web
     url: realtime-3d-for-web
@@ -65,6 +65,12 @@ old_project_entries:
     desc: Outline compute shader using a discontinuity map 
     tools: (Compute, HLSL, Unity)
     image: /assets/images/outlines/outlines_full.png
+
+  - title: Networked Robot with RMI
+    url: networked-robot-simulation
+    desc: Network syncing via message queue  
+    tools: (Java, Apache ActiveMQ, Figma)
+    image: /assets/images/cover/javarobot.png
 
 footer_entries:
   - title: linkedin

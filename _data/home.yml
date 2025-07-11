@@ -46,11 +46,18 @@ old_project_entries:
     tools: (C#, Unity)
     image: /assets/images/cthulhu/cthulhu_high_rising_cover.png
 
+  - title: Numerical Approximator
+    url: numerical-approximator
+    desc: Numerical calculator with GUI
+    highlight: DEMO
+    tools: (C++, Qt6)
+    image: /assets/images/cover/numaprx.png
+
   - title: Realtime 3D for Web
     url: realtime-3d-for-web
     desc: Live embeds of realtime 3D experiments
     highlight: DEMO
-    tools: (javascript, Three.js, html)
+    tools: (JavaScript, Three.js, HTML)
     image: /assets/images/cover/threejs.png
 
   - title: Custom Outlines in Unity

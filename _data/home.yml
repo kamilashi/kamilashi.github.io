@@ -40,6 +40,13 @@ old_project_entries:
     highlight: DEMO
     image: /assets/images/cover/ghost.png
 
+  - title: Multiplayer Battleships
+    url: battleships
+    desc: Local and remote multiplayer 
+    tools: (C#, Unity, Mirror, Steamworks) 
+    highlight: DEMO
+    image: /assets/images/cover/battleships.png
+
   - title: Numerical Approximator
     url: numerical-approximator
     desc: Numerical calculator with GUI

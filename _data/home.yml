@@ -51,7 +51,7 @@ old_project_entries:
     url: numerical-approximator
     desc: Numerical calculator with GUI
     highlight: DEMO
-    tools: (C++, Qt6)
+    tools: (C++, Qt6, CMake)
     image: /assets/images/cover/numaprx.png
 
   - title: Cthulhu High Rising

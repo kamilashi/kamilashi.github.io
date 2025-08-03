@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+    </style>
+</head>
+  <body>
+    <canvas id="landscapeGenCanvas" width="720" height="405" style="width: 100%; height: auto; max-width: 720px;"></canvas>
+    Your browser does not support Canvas.
+    </canvas>
+    
+    <script id="waterVert" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
+    }
+    </script>
+
+    <script id="waterFrag" type="x-shader/x-fragment">
+    uniform sampler2D uNormalMap;
+    uniform float uTime, uSpeed, uScale;
+    uniform vec3 uLightDir, uLightColor, uDarkColor;
+
+    varying vec2 vUv;
+
+    vec3 unpackNormal(vec3 n){ return n*2.0-1.0; }
+
+    void main(){
+      vec2 uv1 = vUv * uScale + uTime * uSpeed;
+      vec2 uv2 = vUv * uScale - uTime * uSpeed;
+
+      vec3 n1 = unpackNormal(texture2D(uNormalMap, uv1).xyz);
+      vec3 n2 = unpackNormal(texture2D(uNormalMap, uv2).xyz);
+
+      vec3 normal  = normalize(n1+n2);
+
+      float lambert = max(dot(normal, uLightDir), 0.0);
+
+      vec2 radialUv = vUv * 2.0 - 1.0;
+      float radius =  length(radialUv);   
+
+      vec3 color = mix(uDarkColor, uLightColor, lambert * radius);
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+    </script>
+
+    <script id="landVert" type="x-shader/x-vertex">
+      
+    attribute vec3 aColor;
+    attribute float aHeight;
+
+    uniform float uDispScale;   
+
+    varying vec3 vColor;
+
+    void main() {  
+      
+      vec3 displaced = position + normal * aHeight * uDispScale;
+
+      vColor = aColor;
+
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
+    }
+    </script>
+
+    <script id="landFrag" type="x-shader/x-fragment">
+
+    varying vec3 vColor;
+
+    void main () {
+      gl_FragColor = vec4(vColor.xyz, 1.0);
+    }
+    </script>
+
+    <script src="./three.min.js"> </script>
+    <script src="./GLTFLoader.js"> </script>
+    <script src="./OrbitControls.js"> </script>
+    <script src="./LandscapeGen.js"></script>
+  </body>
+</html>

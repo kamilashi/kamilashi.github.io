@@ -33,6 +33,19 @@ project_entries:
     image: /assets/images/cover/torpor.png
 
 old_project_entries:
+  - title: Jet Loop
+    url: jet-loop
+    desc: OpenGL practice project.
+    tools: (C++, OpenGL, CMake)
+    image: /assets/images/cover/jetloop.png
+
+  - title: Numerical Approximator
+    url: numerical-approximator
+    desc: Numerical calculator with GUI
+    highlight: DEMO
+    tools: (C++, Qt6, CMake)
+    image: /assets/images/cover/numaprx.png
+
   - title: Ghosts Never Talk
     url: ghosts-never-talk
     desc: Gameplay & VFX coding for a 2.5D adventure 
@@ -46,13 +59,6 @@ old_project_entries:
     tools: (C#, Unity, Mirror, Steamworks) 
     highlight: DEMO
     image: /assets/images/cover/battleships.png
-
-  - title: Numerical Approximator
-    url: numerical-approximator
-    desc: Numerical calculator with GUI
-    highlight: DEMO
-    tools: (C++, Qt6, CMake)
-    image: /assets/images/cover/numaprx.png
 
   - title: Cthulhu High Rising
     url: cthulhu-high-rising

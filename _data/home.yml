@@ -36,8 +36,8 @@ old_project_entries:
   - title: Jet Loop
     url: jet-loop
     desc: OpenGL practice project.
-    tools: (C++, OpenGL, CMake)
-    image: /assets/images/cover/jetloop.png
+    tools: (C++, OpenGL, Dear ImGui, CMake)
+    image: /assets/images/jetloop/cappadocia1.png
 
   - title: Numerical Approximator
     url: numerical-approximator

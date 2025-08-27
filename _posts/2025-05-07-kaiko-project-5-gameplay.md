@@ -4,7 +4,7 @@ layout: post
 
 <div style="height: 50px;"></div>
 
-During my full-time employment at Kaiko as a Junior Programmer, I was responsible for several gameplay features, ranging from player traversal to enemy AI. All work was done for Project 5, an unreleased title based on a well-known THQ Nordic IP. The game was developed using an Entity Component System (ECS) architecture, where entities were defined by their components, and logic was implemented through dedicated systems operating on those components. Each component stored data and configuration specific to its associated entity, which was managed with the help of proprietary tools and converters. 
+During my full-time employment at Kaiko, I was responsible for several gameplay features, ranging from player traversal to enemy AI. All work was done for Project 5, an unreleased title based on a well-known THQ Nordic IP. The game was developed using an Entity Component System (ECS) architecture, where entities were defined by their components, and logic was implemented through dedicated systems operating on those components. Each component stored data and configuration specific to its associated entity, which was managed with the help of proprietary tools and converters. 
 
 Throughout the process, I collaborated closely with a number of other departments, including Game Design, Art, Animation, VFX, Rendering, and Level Design. Many features were the result of tight cross-disciplinary coordination, and I was fortunate to work alongside incredibly skilled and talented people, many of whom I will mention later in this post.
 

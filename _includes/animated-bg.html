@@ -1,0 +1,33 @@
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<style>
+  #bg-canvas{
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;            
+    pointer-events: none;  
+  }
+
+   .page-content > * {
+    position: relative;
+    z-index: 2;
+  } 
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    #bg-canvas { display: none; }
+  }
+</style>
+
+<!-- <script type="module">
+  import * as PIXI from 'https://unpkg.com/pixi.js@8/dist/pixi.mjs';
+
+  import '../assets/js/animated-bg.js';
+</script> -->
+
+<script src="https://unpkg.com/pixi.js@8/dist/pixi.min.js"></script>
+<!-- Then your code (make sure the path is absolute) -->
+<script defer src="../assets/js/animated-bg.js"></script>
+

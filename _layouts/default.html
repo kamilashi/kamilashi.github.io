@@ -2,6 +2,11 @@
 <html lang="en" data-theme="light">
         {%- include head.html -%}
   <body>
+    
+     {% if site.background_config.enable_everywhere %}
+        {% include animated-bg.html %}
+     {% endif %}
+
     <main class="page-content" aria-label="Content">
       <div class="w">
         {{ content }}

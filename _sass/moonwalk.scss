@@ -1,7 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-html { height: 100%; }
+
+html { 
+  height: 100%;
+ }
 
 body {
   font-family:  "Inter", -apple-system, "avenir next", avenir, roboto, noto, ubuntu, "helvetica neue", helvetica, sans-serif;
@@ -31,6 +34,9 @@ p { margin: 1em 0; }
   max-width: var(--page-width);
   margin: 0 auto;
   padding: 4em 2em;
+  background-color: var(--bg);   
+  position: relative;
+  z-index: 2;
 }
 
 table, th, td {

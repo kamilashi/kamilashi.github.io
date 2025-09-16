@@ -2,58 +2,66 @@
 layout: default
 ---
 
-<header>
-    {% if site.theme_config.show_navbar == true %}
-    {% include horizontal_list.html collection=site.data.home.navbar_entries %}
-    <!--<div style="height: 4px; background-color: #cc0000; margin-bottom: 20px;"></div>-->
+
+    {% if site.background_config.3d_landing_page %}
+      {% include animated-bg3.html %}
+    {% else %}
+    
+    <header>
+        {% if site.theme_config.show_navbar == true %}
+        {% include horizontal_list.html collection=site.data.home.navbar_entries %}
+        <!--<div style="height: 4px; background-color: #cc0000; margin-bottom: 20px;"></div>-->
+        {% endif %}
+
+        <div class="dashed"></div>
+        
+        {% include kamilas_header.html %}
+
+        <h1>
+            Kamila codes
+        </h1>
+
+        <div class="animated-ribbon">
+          <div class="animated-boxes-root"></div>
+        </div>
+
+        {% if site.theme_config.show_description == true %}
+        <!--<p>{{ site.description }}</p>-->
+        {% endif%}
+        
+    </header>
+
+
+    {{ content }}
+
+    {% if site.theme_config.show_projects == true %}
+      <h2>{{ site.theme_config.home.title_projects }}</h2>
+      {% include card_list.html collection=site.data.home.project_entries %}
     {% endif %}
 
-    <div class="dashed"></div>
-    
-    {% include kamilas_header.html %}
+    {% if site.theme_config.show_misc_list == true %}
+      <h2>{{ site.theme_config.home.title_misc_list }}</h2>
+      {% include vertical_list.html collection=site.data.home.misc_entries %}
+    {% endif %}
 
-    <h1>
-        Kamila codes
-    </h1>
+    {% if site.theme_config.show_blog == true %}
+      <h2>{{ site.theme_config.home.title_blog }}</h2>
+      {% include post_list.html %}
+    {% endif %}
 
-    <div class="animated-ribbon">
-      <div class="animated-boxes-root"></div>
-    </div>
+    {% if site.theme_config.show_other_projects == true %}
+      <h2>{{ site.theme_config.home.title_other_projects }}</h2>
+      {% include card_list.html collection=site.data.home.old_project_entries %}
+    {% endif %}
 
-    {% if site.theme_config.show_description == true %}
-    <!--<p>{{ site.description }}</p>-->
-    {% endif%}
-    
-</header>
+    {% if site.theme_config.show_footer == true %}
+      <footer>
+
+        <div class="dashed"></div>
+
+        {% include horizontal_list.html collection=site.data.home.footer_entries %}
+      </footer>
+    {% endif %}
+  {% endif %}
 
 
-{{ content }}
-
-{% if site.theme_config.show_projects == true %}
-  <h2>{{ site.theme_config.home.title_projects }}</h2>
-  {% include card_list.html collection=site.data.home.project_entries %}
-{% endif %}
-
-{% if site.theme_config.show_misc_list == true %}
-  <h2>{{ site.theme_config.home.title_misc_list }}</h2>
-  {% include vertical_list.html collection=site.data.home.misc_entries %}
-{% endif %}
-
-{% if site.theme_config.show_blog == true %}
-  <h2>{{ site.theme_config.home.title_blog }}</h2>
-  {% include post_list.html %}
-{% endif %}
-
-{% if site.theme_config.show_other_projects == true %}
-  <h2>{{ site.theme_config.home.title_other_projects }}</h2>
-  {% include card_list.html collection=site.data.home.old_project_entries %}
-{% endif %}
-
-{% if site.theme_config.show_footer == true %}
-  <footer>
-
-    <div class="dashed"></div>
-
-    {% include horizontal_list.html collection=site.data.home.footer_entries %}
-  </footer>
-{% endif %}

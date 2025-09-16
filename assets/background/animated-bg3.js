@@ -5,6 +5,27 @@
     return;
   }
 
+  const cardEl = document.getElementById('project-card');
+
+  function showCard(entryId) {
+    const tpl = document.getElementById(entryId);
+    if (!tpl) return;
+
+    cardEl.replaceChildren(tpl.content.cloneNode(true)); // swap contents
+
+    cardEl.hidden = false;
+    cardEl.dataset.open = "true";
+    cardEl.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideCard() {
+    cardEl.dataset.open = "false";
+    setTimeout(() => {
+      cardEl.hidden = true;
+      cardEl.setAttribute('aria-hidden', 'true');
+    }, 130);
+  }
+
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -14,11 +35,6 @@
 
   const raycaster = new THREE.Raycaster();
   const mousePos = new THREE.Vector2();
-
-  window.addEventListener('pointermove', (e) => {
-  mousePos.x =  (e.clientX / innerWidth) * 2 - 1;
-  mousePos.y = -(e.clientY / innerHeight) * 2 + 1;
-});
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
@@ -31,6 +47,7 @@
   
   const clock = new THREE.Clock();
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enabled = false;
 
   camera.position.set(-1, 1.5, 2);
   controls.target.set(0, 0.5, 0.5);
@@ -41,7 +58,7 @@
     cabinetSize: 0.5,
     cabinetsSpacing: 0.01,
     cabinetShellScaleMultiplier: 1.1,
-    entriesCount: 5,
+    entriesCount: [4,8],
     sectionsCount: 2,
     titleTopMargin: 0.1,
     titleXOffsetStep: 0.17,
@@ -67,8 +84,13 @@
 
   const HoverHandlers = {
   [Layers.entries]: {
-    onHoverIn:  (obj) => { runSymmetricalAnimation(obj, 1); },
-    onHoverOut: (obj) => { runSymmetricalAnimation(obj, -1); }  
+    onHoverIn:  (obj) => { 
+      runSymmetricalAnimation(obj, 1);
+      showCard(obj.userData.id);
+     },
+    onHoverOut: (obj) => { 
+      runSymmetricalAnimation(obj, -1); 
+    }  
     },
   [Layers.sections]: {
     onHoverIn:  (obj) => { 
@@ -88,7 +110,7 @@
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0x6699ff, wireframe: false, transparent: false }),
     text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-    sensor: new THREE.MeshStandardMaterial({ color: 0x6699ff, wireframe: true, transparent: true }),
+    sensor: new THREE.MeshStandardMaterial({ color: 0x6699ff, wireframe: false, transparent: true, opacity: 0 }),
   }
 
   const entryGeometry = new THREE.PlaneGeometry( Params.cabinetSize * 0.95, Params.cabinetSize );
@@ -106,10 +128,12 @@
   const cabinetSensorGeometry = new THREE.BoxGeometry( Params.cabinetSize + 0.01, Params.cabinetSize, Params.cabinetSize * 0.8 /*  * 2.0 */); 
   cabinetSensorGeometry.translate(0, cabinetSensorGeometry.parameters.height * 0.5, cabinetSensorGeometry.parameters.depth * 0.5);
 
-  let entriesSpacing = Params.cabinetSize / Params.entriesCount;
+  let entriesCount = 0;
+  Params.entriesCount.forEach(count => entriesCount += count);
+  
   const cabinetHalfSize = Params.cabinetSize * 0.5;
 
-  let entries = new Array(Params.entriesCount * Params.sectionsCount);
+  let entries = new Array(entriesCount);
   let sections = new Array(Params.sectionsCount);
   
   const entryShiftTimes = [0, 0.25 * Params.entryHoverShiftDuration, 0.5 * Params.entryHoverShiftDuration,  0.75 * Params.entryHoverShiftDuration, 1 * Params.entryHoverShiftDuration];
@@ -168,11 +192,12 @@
   scene.add(cabinetShellBackModel);
   scene.add(cabinetShellTopModel);
 
+  let i = 0;
   loader.load( 'https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
   
     for(let sIdx = 0; sIdx < Params.sectionsCount; sIdx++){
-      
-      const cabinetPosition = new THREE.Vector3(0, sIdx * (Params.cabinetSize + Params.cabinetsSpacing), 0);
+      const maxIndex =  Params.sectionsCount - 1;
+      const cabinetPosition = new THREE.Vector3(0, (maxIndex - sIdx) * (Params.cabinetSize + Params.cabinetsSpacing), 0);
       sections[sIdx] = new THREE.Mesh(cabinetSensorGeometry, Materials.sensor);
       sections[sIdx].name = "section" + sIdx;
       sections[sIdx].position.set(cabinetPosition.x, cabinetPosition.y, cabinetPosition.z);
@@ -213,12 +238,15 @@
 
       sections[sIdx].add(cabinetFloorModel);
 
-      sections[sIdx].userData.entrySensors = new Array(Params.entriesCount);
+      sections[sIdx].userData.entrySensors = new Array(Params.entriesCount[sIdx]);
 
       scene.add(sections[sIdx]);
 
-      for (let eIdx = 0; eIdx < Params.entriesCount; eIdx++) {
-        const i = eIdx + sIdx*(Params.entriesCount);
+      
+      const entriesSpacing = Params.cabinetSize / Params.entriesCount[sIdx];
+
+      for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) {
+
         entries[i] = new THREE.Mesh(entrySensorGeometry, Materials.sensor);
         entries[i].scale.y = 0; 
         entries[i].name = "sec" + sIdx + "_entry"+eIdx;
@@ -250,11 +278,13 @@
         const textMesh = new THREE.Mesh(textGeometry, Materials.text);
         textMesh.position.set(+cabinetHalfSize - eIdx * Params.titleXOffsetStep, Params.cabinetSize - Params.titleTopMargin, 0.01); 
         entries[i].userData.model.add(textMesh);
-
+        entries[i].userData.id = `s${sIdx}e${eIdx}`
         entries[i].add(entryModel);
 
         sections[sIdx].userData.entrySensors[eIdx] = entries[i];
         sections[sIdx].userData.model.add(entries[i]);
+        
+        i += 1;
       }
     }
 
@@ -268,7 +298,11 @@
 
   renderer.setClearColor(Params.bgColor);  
 
-  // Resize handling
+  window.addEventListener('pointermove', (e) => {
+  mousePos.x =  (e.clientX / innerWidth) * 2 - 1;
+  mousePos.y = -(e.clientY / innerHeight) * 2 + 1;
+  });
+
   window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -282,10 +316,8 @@ function processHover() {
   raycaster.setFromCamera(mousePos, camera);
 
   const processStickyHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {
-    if(newH != null && newH !== oldH )
-    {
-      if(oldH != null)
-      {
+    if(newH != null && newH !== oldH ){
+      if(oldH != null) {
         HoverHandlers[oldHHandlerId].onHoverOut(oldH);
       }
       
@@ -297,18 +329,18 @@ function processHover() {
   };
   
     const processHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {
-      if(newH !== oldH)
-    {
-      if(oldH != null)
-      {
-        console.log("hover Out " + oldH.name);
-        HoverHandlers[oldHHandlerId].onHoverOut(oldH);
-      }
+      if(newH !== oldH){
+        if(oldH != null) {
+          console.log("hover Out " + oldH.name);
+          HoverHandlers[oldHHandlerId].onHoverOut(oldH);
+        }
 
-      if(newH != null)
-      {
-        HoverHandlers[newHHandlerId].onHoverIn(newH);
-      }
+        if(newH != null){
+          HoverHandlers[newHHandlerId].onHoverIn(newH);
+        }
+        else{
+          hideCard();
+        }
     }
 
     lastHoveredItem.item = newH;

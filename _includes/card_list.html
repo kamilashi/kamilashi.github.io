@@ -1,45 +1,7 @@
 <ul class="horizontal-list">
   {% for item in include.collection %}
 
-    <li class="card">
-      <a href="{{ item.url }}">
-
-        <div class="header-and-image">
-            
-          <div class="header">
-            {{ item.title }}
-
-            {% if item.highlight %}
-              <mark>{{ item.highlight }}</mark>
-            {% endif %}
-          </div>
-
-
-          {% if item.image %}
-          <img src = "{{ item.image }}" alt="Cover">
-          {% else %}
-          <hr/>
-          {% endif %}
-
-        </div>
-
-        <div class="body">
-          
-          {% if item.desc != false %}
-            <p class="tools">
-            {{ item.desc }}
-            </p>
-          {% endif %}
-          
-          {% if item.tools != false %} 
-            <p class="tools">
-              {{ item.tools }}
-            </p>
-          {% endif %}
-
-        </div>
-      </a>
-    </li>
+    {% include card.html cardItem = item %}
 
   {% endfor %}
 </ul>

@@ -1,0 +1,39 @@
+<li class="card">
+      <a href="{{ include.cardItem.url }}">
+        
+        <div class="header-and-image">
+            
+          <div class="header">
+            {{ include.cardItem.title }}
+
+            {% if include.cardItem.highlight %}
+              <mark>{{ include.cardItem.highlight }}</mark>
+            {% endif %}
+          </div>
+
+
+          {% if include.cardItem.image %}
+          <img src = "{{ include.cardItem.image }}" alt="Cover">
+          {% else %}
+          <hr/>
+          {% endif %}
+
+        </div>
+
+        <div class="body">
+          
+          {% if include.cardItem.desc != false %}
+            <p class="tools">
+            {{ include.cardItem.desc }}
+            </p>
+          {% endif %}
+          
+          {% if include.cardItem.tools != false %} 
+            <p class="tools">
+              {{ include.cardItem.tools }}
+            </p>
+          {% endif %}
+
+        </div>
+    </a>
+</li>

@@ -1,6 +1,42 @@
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-<style>
+
+  {% for item in site.data.home.project_entries %}
+    <template id="s0e{{ forloop.index0 }}">
+      {% include card.html cardItem = item %}
+    </template>
+  {% endfor %}
+
+  {% for item in site.data.home.old_project_entries %}
+    <template id="s1e{{ forloop.index0 }}">
+      {% include card.html cardItem = item %}
+    </template>
+  {% endfor %}
+
+  <div id="project-card" class="project-card" hidden aria-hidden="true"></div>
+
+  <style>
+    .project-card {
+      position: fixed;     
+      z-index: 9999;
+      top: 2rem;    
+      left: 2rem; 
+      width: 72em;
+      pointer-events: none; 
+      opacity: 0;
+      transition: opacity .12s ease;
+    }
+    .project-card[data-open="true"] { opacity: 1; }
+    
+    #project-card > li.card {
+    list-style: none;
+    display: block;
+    background: var(--card-bg, rgba(22,22,28,.95));
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.35);
+    overflow: hidden;
+    }
+
   #bg-canvas{
     position: fixed;
     inset: 0;

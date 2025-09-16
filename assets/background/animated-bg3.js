@@ -55,23 +55,34 @@
     sections: 2
   }
 
-  const HoverHandlers = {
-  //[Layers.entries]: {
-    onHoverIn:  (obj) => { 
+  function runSymmetricalAnimation(obj, direction)
+  {
       const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, Params.entryHoverShiftDuration);
       //console.log("Up from " + localTime);
-      obj.userData.actions.hoverIn.timeScale = 1;
+      obj.userData.actions.hoverIn.timeScale = direction;
       obj.userData.actions.hoverIn.time = localTime;
       obj.userData.actions.hoverIn.paused = false;
-      obj.userData.actions.hoverIn.play(); },
+      obj.userData.actions.hoverIn.play();
+  }
+
+  const HoverHandlers = {
+  [Layers.entries]: {
+    onHoverIn:  (obj) => { runSymmetricalAnimation(obj, 1); },
+    onHoverOut: (obj) => { runSymmetricalAnimation(obj, -1); }  
+    },
+  [Layers.sections]: {
+    onHoverIn:  (obj) => { 
+      runSymmetricalAnimation(obj, 1); 
+      obj.userData.entrySensors.forEach(sensor => {
+        sensor.scale.y = 1;
+      });
+    },
     onHoverOut: (obj) => { 
-      const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, Params.entryHoverShiftDuration);
-      //console.log("Down from " + localTime);
-      obj.userData.actions.hoverIn.timeScale = -1;
-      obj.userData.actions.hoverIn.time = localTime;
-      obj.userData.actions.hoverIn.paused = false;
-      obj.userData.actions.hoverIn.play();  }
-//   }
+      runSymmetricalAnimation(obj, -1); 
+      obj.userData.entrySensors.forEach(sensor => {
+        sensor.scale.y = 0;
+      });}  
+    },
   };
 
   const Materials = {
@@ -202,11 +213,14 @@
 
       sections[sIdx].add(cabinetFloorModel);
 
+      sections[sIdx].userData.entrySensors = new Array(Params.entriesCount);
+
       scene.add(sections[sIdx]);
 
       for (let eIdx = 0; eIdx < Params.entriesCount; eIdx++) {
         const i = eIdx + sIdx*(Params.entriesCount);
         entries[i] = new THREE.Mesh(entrySensorGeometry, Materials.sensor);
+        entries[i].scale.y = 0; 
         entries[i].name = "sec" + sIdx + "_entry"+eIdx;
         entries[i].position.set(0, 0.0, Params.cabinetSize - entriesSpacing * (0.5 + eIdx));
 
@@ -239,6 +253,7 @@
 
         entries[i].add(entryModel);
 
+        sections[sIdx].userData.entrySensors[eIdx] = entries[i];
         sections[sIdx].userData.model.add(entries[i]);
       }
     }
@@ -247,8 +262,8 @@
   });
   
   scene.add(new THREE.AmbientLight('#606060'));
-  const light = new THREE.PointLight();
-  light.position.set(0, 1, 1);
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(1, 10, 20);
   scene.add(light);
 
   renderer.setClearColor(Params.bgColor);  
@@ -271,10 +286,10 @@ function processHover() {
     {
       if(oldH != null)
       {
-        HoverHandlers.onHoverOut(oldH);
+        HoverHandlers[oldHHandlerId].onHoverOut(oldH);
       }
       
-      HoverHandlers.onHoverIn(newH);
+      HoverHandlers[newHHandlerId].onHoverIn(newH);
 
       lastHoveredStickyItem.item = newH;
       lastHoveredStickyItem.handlerId = newHHandlerId;
@@ -287,12 +302,12 @@ function processHover() {
       if(oldH != null)
       {
         console.log("hover Out " + oldH.name);
-        HoverHandlers.onHoverOut(oldH);
+        HoverHandlers[oldHHandlerId].onHoverOut(oldH);
       }
 
       if(newH != null)
       {
-        HoverHandlers.onHoverIn(newH);
+        HoverHandlers[newHHandlerId].onHoverIn(newH);
       }
     }
 

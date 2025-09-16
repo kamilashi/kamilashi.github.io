@@ -26,6 +26,18 @@
     }, 130);
   }
 
+  function tryOpenCard()
+  {
+    if(cardEl.hidden == true) return;
+
+    const link = cardEl.querySelector('a[href]');
+    if (link) {
+      console.log("Card link:", link.href);
+      // open in new tab
+      window.open(link.href);
+    }
+  }
+
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -298,35 +310,27 @@
 
   renderer.setClearColor(Params.bgColor);  
 
-  window.addEventListener('pointermove', (e) => {
-  mousePos.x =  (e.clientX / innerWidth) * 2 - 1;
-  mousePos.y = -(e.clientY / innerHeight) * 2 + 1;
-  });
-
-  window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-  });
-
   let lastHoveredItem = { item: null, handlerId: null};
   let lastHoveredStickyItem = { item: null, handlerId: null};
+  let hoverEnabled = false;
 
-function processHover() {
-  raycaster.setFromCamera(mousePos, camera);
+  function processHover() {
+    if(hoverEnabled == false) return;
+    
+    raycaster.setFromCamera(mousePos, camera);
 
-  const processStickyHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {
-    if(newH != null && newH !== oldH ){
-      if(oldH != null) {
-        HoverHandlers[oldHHandlerId].onHoverOut(oldH);
+    const processStickyHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {
+      if(newH != null && newH !== oldH ){
+        if(oldH != null) {
+          HoverHandlers[oldHHandlerId].onHoverOut(oldH);
+        }
+        
+        HoverHandlers[newHHandlerId].onHoverIn(newH);
+
+        lastHoveredStickyItem.item = newH;
+        lastHoveredStickyItem.handlerId = newHHandlerId;
       }
-      
-      HoverHandlers[newHHandlerId].onHoverIn(newH);
-
-      lastHoveredStickyItem.item = newH;
-      lastHoveredStickyItem.handlerId = newHHandlerId;
-    }
-  };
+    };
   
     const processHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {
       if(newH !== oldH){
@@ -346,7 +350,6 @@ function processHover() {
     lastHoveredItem.item = newH;
     lastHoveredItem.handlerId = newHHandlerId;
     };
-
     
     let newHoveredItem = { item: null, handlerId: null };
     let hits = raycaster.intersectObjects(sections , false);
@@ -370,6 +373,22 @@ function processHover() {
 
     processHit(newHoveredItem.item, lastHoveredItem.item, newHoveredItem.handlerId, lastHoveredItem.handlerId); 
   }
+
+  window.addEventListener('pointermove', (e) => {
+  mousePos.x =  (e.clientX / innerWidth) * 2 - 1;
+  mousePos.y = -(e.clientY / innerHeight) * 2 + 1;
+  hoverEnabled = true;
+  });
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  });
+
+  renderer.domElement.addEventListener('click', (e) => {
+    tryOpenCard();
+  });
 
   // Animation loop
   function animate(){

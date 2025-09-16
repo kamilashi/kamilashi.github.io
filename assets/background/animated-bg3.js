@@ -27,8 +27,13 @@
     0.1, 
     100
   );
-camera.position.set(-1, 1, 1);
-camera.lookAt(0, 0, 0);
+
+  
+  const clock = new THREE.Clock();
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+  camera.position.set(-1, 1.5, 2);
+  controls.target.set(0, 0.5, 0.5);
 
   const Params =
   {
@@ -75,7 +80,7 @@ camera.lookAt(0, 0, 0);
     sensor: new THREE.MeshStandardMaterial({ color: 0x6699ff, wireframe: true, transparent: true }),
   }
 
-  const entryGeometry = new THREE.PlaneGeometry( Params.cabinetSize, Params.cabinetSize );
+  const entryGeometry = new THREE.PlaneGeometry( Params.cabinetSize * 0.95, Params.cabinetSize );
   entryGeometry.translate(0, entryGeometry.parameters.height * 0.5, 0);
 
   const entrySensorGeometry = new THREE.PlaneGeometry( Params.cabinetSize, Params.cabinetSize + Params.entryHoverShiftDistance );
@@ -132,7 +137,7 @@ camera.lookAt(0, 0, 0);
   cabinetShellSideLeftModel.scale.x *= Params.cabinetShellScaleMultiplier;
   cabinetShellSideLeftModel.scale.z += 0.01;
   cabinetShellSideLeftModel.scale.y *= Params.sectionsCount;
-  cabinetShellSideLeftModel.scale.y += (Params.sectionsCount+2) * Params.cabinetsSpacing;
+  cabinetShellSideLeftModel.scale.y += (Params.sectionsCount+4) * Params.cabinetsSpacing;
 
   cabinetShellSideRightModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
   cabinetShellSideRightModel.position.set(cabinetHalfSize + Params.cabinetsSpacing * 0.5, -Params.cabinetsSpacing, 0.0);
@@ -143,10 +148,14 @@ camera.lookAt(0, 0, 0);
   cabinetShellBackModel.rotateY(Math.PI / 2);
   cabinetShellBackModel.scale.set(cabinetShellSideLeftModel.scale.x, cabinetShellSideLeftModel.scale.y, cabinetShellSideLeftModel.scale.z);
  
+  cabinetShellTopModel = new THREE.Mesh(cabinetFloorGeometry, Materials.default);
+  //cabinetShellTopModel.scale.set(cabinetShellSideLeftModel.scale.x, 1.0, cabinetShellSideLeftModel.scale.z);
+  cabinetShellTopModel.position.set(0, Params.sectionsCount * Params.cabinetSize + (Params.sectionsCount-1) * Params.cabinetsSpacing, 0);
 
   scene.add(cabinetShellSideLeftModel);
   scene.add(cabinetShellSideRightModel);
   scene.add(cabinetShellBackModel);
+  scene.add(cabinetShellTopModel);
 
   loader.load( 'https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
   
@@ -159,6 +168,13 @@ camera.lookAt(0, 0, 0);
 
       cabinetFloorModel = new THREE.Mesh(cabinetFloorGeometry, Materials.default);
       cabinetFloorModel.position.set(0, 0.0, 0.0);
+
+      cabinetShellDelimeter = new THREE.Mesh(cabinetFloorGeometry, Materials.default);
+      cabinetShellDelimeter.position.set(0, 0.0, 0.0);
+      cabinetShellDelimeter.position.z += 0.005;
+      cabinetShellDelimeter.position.y = sIdx * Params.cabinetSize;
+
+      scene.add(cabinetShellDelimeter);
 
       cabinetSideLeftModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
       cabinetSideLeftModel.position.set(-cabinetHalfSize, 0.0, 0.0);
@@ -236,8 +252,6 @@ camera.lookAt(0, 0, 0);
   scene.add(light);
 
   renderer.setClearColor(Params.bgColor);  
-  const clock = new THREE.Clock();
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   // Resize handling
   window.addEventListener('resize', () => {

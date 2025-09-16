@@ -82,15 +82,15 @@ camera.lookAt(0, 0, 0);
       entryShiftPos.set([0, [entryShiftStart], 0, 
                        0, [entryShiftStart] + 0.2 * Params.entryHoverShiftDistance, 0,
                        0, 1 * Params.entryHoverShiftDistance, 0]);
-      console.log("Hover entered object", entryShiftStart); 
-      entryShiftPos.set([0, 1 * [Vars.entryShiftStart], 0,
-                       0, 0.2 * [Vars.entryShiftStart], 0,
-                       0, 0, 0]);
+      console.log("Hover entered object", obj.userData.model.position.y); 
       obj.userData.actions.hoverOut.stop();
       obj.userData.actions.hoverIn.reset().play(); },
     onHoverOut: (obj) => { 
       const entryShiftStart = obj.userData.model.position.y;
-      console.log("Hover left object", Vars.entryShiftStart); 
+      entryShiftPos.set([0, 1 * [entryShiftStart], 0,
+                       0, 0.2 * [entryShiftStart], 0,
+                       0, 0, 0]);
+      console.log("Hover left object", obj.userData.model.position.y); 
       obj.userData.actions.hoverIn.stop();
       obj.userData.actions.hoverOut.reset().play();  }
   },

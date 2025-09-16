@@ -14,7 +14,6 @@
 
   const raycaster = new THREE.Raycaster();
   const mousePos = new THREE.Vector2();
-  let lastHoveredObject = null;
 
   window.addEventListener('pointermove', (e) => {
   mousePos.x =  (e.clientX / innerWidth) * 2 - 1;
@@ -39,12 +38,8 @@ camera.lookAt(0, 0, 0);
     sectionsCount: 2,
     titleTopMargin: 0.1,
     titleXOffsetStep: 0.17,
-    entryHoverShiftDistance: 0.5
-  }
-
-  let Vars =
-  {
-    entryShiftStart: 0
+    entryHoverShiftDistance: 0.5,
+    entryHoverShiftDuration: 0.5,
   }
 
   const Layers =
@@ -53,17 +48,13 @@ camera.lookAt(0, 0, 0);
     sections: 2
   }
 
-    const kfTimes = [0, 0.5, 1];
-    let entryShiftPos = new Float32Array(3 * kfTimes.length);
+    const entryShiftTimes = [0, 0.5 * Params.entryHoverShiftDuration, 1 * Params.entryHoverShiftDuration];
+    const entryShiftPos = [0, 0, 0, 
+                           0, 0.3 * Params.entryHoverShiftDistance, 0,
+                           0, 1 * Params.entryHoverShiftDistance, 0];
     const entryShiftUpKF = new THREE.VectorKeyframeTrack(
       ".position",
-      kfTimes,
-      entryShiftPos
-    );
-
-    const entryShiftDowntKF = new THREE.VectorKeyframeTrack(
-      ".position",
-      kfTimes,
+      entryShiftTimes,
       entryShiftPos
     );
 
@@ -71,28 +62,22 @@ camera.lookAt(0, 0, 0);
       entryShiftUpKF,
     ]);
 
-    const entryHoverOutClip = new THREE.AnimationClip("entry-hover-out", -1, [
-      entryShiftDowntKF,
-    ]);
-
   const HoverHandlers = {
   [Layers.entries]: {
     onHoverIn:  (obj) => { 
-      const entryShiftStart = obj.userData.model.position.y;
-      entryShiftPos.set([0, [entryShiftStart], 0, 
-                       0, [entryShiftStart] + 0.2 * Params.entryHoverShiftDistance, 0,
-                       0, 1 * Params.entryHoverShiftDistance, 0]);
-      console.log("Hover entered object", obj.userData.model.position.y); 
-      obj.userData.actions.hoverOut.stop();
-      obj.userData.actions.hoverIn.reset().play(); },
+      const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, Params.entryHoverShiftDuration);
+      console.log("Up from " + localTime);
+      obj.userData.actions.hoverIn.timeScale = 1;
+      obj.userData.actions.hoverIn.time = localTime;
+      obj.userData.actions.hoverIn.paused = false;
+      obj.userData.actions.hoverIn.play(); },
     onHoverOut: (obj) => { 
-      const entryShiftStart = obj.userData.model.position.y;
-      entryShiftPos.set([0, 1 * [entryShiftStart], 0,
-                       0, 0.2 * [entryShiftStart], 0,
-                       0, 0, 0]);
-      console.log("Hover left object", obj.userData.model.position.y); 
-      obj.userData.actions.hoverIn.stop();
-      obj.userData.actions.hoverOut.reset().play();  }
+      const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, Params.entryHoverShiftDuration);
+      console.log("Down from " + localTime);
+      obj.userData.actions.hoverIn.timeScale = -1;
+      obj.userData.actions.hoverIn.time = localTime;
+      obj.userData.actions.hoverIn.paused = false;
+      obj.userData.actions.hoverIn.play();  }
   },
   [Layers.sections]: {
     onHoverIn:  (obj) => { obj.userData.actions.hoverIn.reset().play(); console.log("Hovered section object", obj); },
@@ -132,14 +117,10 @@ camera.lookAt(0, 0, 0);
       entries[i].userData.actions = 
       {
         hoverIn: mixer.clipAction(entryHoverInClip),
-        hoverOut: mixer.clipAction(entryHoverOutClip)
       };
 
       entries[i].userData.actions.hoverIn.loop = THREE.LoopOnce;
       entries[i].userData.actions.hoverIn.clampWhenFinished = true;
-
-      entries[i].userData.actions.hoverOut.loop = THREE.LoopOnce;
-      entries[i].userData.actions.hoverOut.clampWhenFinished = true;
 
       entries[i].add(entryModel);
 

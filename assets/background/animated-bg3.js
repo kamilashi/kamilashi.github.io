@@ -196,7 +196,6 @@
   cabinetShellBackModel.scale.set(cabinetShellSideLeftModel.scale.x, cabinetShellSideLeftModel.scale.y, cabinetShellSideLeftModel.scale.z);
  
   cabinetShellTopModel = new THREE.Mesh(cabinetFloorGeometry, Materials.default);
-  //cabinetShellTopModel.scale.set(cabinetShellSideLeftModel.scale.x, 1.0, cabinetShellSideLeftModel.scale.z);
   cabinetShellTopModel.position.set(0, Params.sectionsCount * Params.cabinetSize + (Params.sectionsCount-1) * Params.cabinetsSpacing, 0);
 
   scene.add(cabinetShellSideLeftModel);
@@ -316,7 +315,7 @@
 
   function processHover() {
     if(hoverEnabled == false) return;
-    
+
     raycaster.setFromCamera(mousePos, camera);
 
     const processStickyHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {

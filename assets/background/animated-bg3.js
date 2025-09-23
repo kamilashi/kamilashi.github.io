@@ -68,14 +68,16 @@
   {
     bgColor: 0x000000,
     cabinetSize: 0.5,
+    cabinetDepthMultiplier: 1.4,
     cabinetsSpacing: 0.01,
     cabinetShellScaleMultiplier: 1.1,
-    entriesCount: [4,8],
-    sectionsCount: 2,
+    entriesCount: [4,8], // sync with the site data!
+    sectionsCount: 2, // sync with the site data!
     titleTopMargin: 0.1,
     titleXOffsetStep: 0.17,
     entryHoverShiftDistance: 0.2,
-    entryHoverShiftDuration: 0.1,
+    entryHoverShiftDuration: 0.2,
+    cabinetHoverShiftDuration: 1.0,
   }
 
   const Layers =
@@ -87,7 +89,6 @@
   function runSymmetricalAnimation(obj, direction)
   {
       const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, Params.entryHoverShiftDuration);
-      //console.log("Up from " + localTime);
       obj.userData.actions.hoverIn.timeScale = direction;
       obj.userData.actions.hoverIn.time = localTime;
       obj.userData.actions.hoverIn.paused = false;
@@ -131,11 +132,17 @@
   const entrySensorGeometry = new THREE.PlaneGeometry( Params.cabinetSize, Params.cabinetSize + Params.entryHoverShiftDistance );
   entrySensorGeometry.translate(0, entrySensorGeometry.parameters.height * 0.5, 0);
 
-  const cabinetFloorGeometry = new THREE.BoxGeometry( Params.cabinetSize, Params.cabinetsSpacing, Params.cabinetSize);
-  cabinetFloorGeometry.translate(0, cabinetFloorGeometry.parameters.height * 0.5, cabinetFloorGeometry.parameters.depth * 0.5);
+  const cabinetDelimeterGeometry = new THREE.BoxGeometry( Params.cabinetSize, Params.cabinetsSpacing, Params.cabinetSize);
+  cabinetDelimeterGeometry.translate(0, cabinetDelimeterGeometry.parameters.height * 0.5, cabinetDelimeterGeometry.parameters.depth * 0.5);
 
+  const cabinetTopGeometry = new THREE.BoxGeometry( Params.cabinetSize, Params.cabinetsSpacing, Params.cabinetSize);
+  cabinetTopGeometry.translate(0, cabinetDelimeterGeometry.parameters.height * 0.5, -cabinetDelimeterGeometry.parameters.depth * 0.5);
+
+  const cabinetBackGeometry = new THREE.BoxGeometry( Params.cabinetsSpacing, Params.cabinetSize, Params.cabinetSize);
+  cabinetBackGeometry.translate(0, cabinetBackGeometry.parameters.height * 0.5, cabinetBackGeometry.parameters.depth * 0.5);
+  
   const cabinetSidesGeometry = new THREE.BoxGeometry( Params.cabinetsSpacing, Params.cabinetSize, Params.cabinetSize);
-  cabinetSidesGeometry.translate(0, cabinetSidesGeometry.parameters.height * 0.5, cabinetSidesGeometry.parameters.depth * 0.5);
+  cabinetSidesGeometry.translate(0, cabinetBackGeometry.parameters.height * 0.5, - cabinetBackGeometry.parameters.depth * 0.5);
 
   const cabinetSensorGeometry = new THREE.BoxGeometry( Params.cabinetSize + 0.01, Params.cabinetSize, Params.cabinetSize * 0.8 /*  * 2.0 */); 
   cabinetSensorGeometry.translate(0, cabinetSensorGeometry.parameters.height * 0.5, cabinetSensorGeometry.parameters.depth * 0.5);
@@ -148,33 +155,34 @@
   let entries = new Array(entriesCount);
   let sections = new Array(Params.sectionsCount);
   
-  const entryShiftTimes = [0, 0.25 * Params.entryHoverShiftDuration, 0.5 * Params.entryHoverShiftDuration,  0.75 * Params.entryHoverShiftDuration, 1 * Params.entryHoverShiftDuration];
-  const entryShiftPos = [0, 0, 0, 
-                      0, 0.2 * Params.entryHoverShiftDistance, 0,
-                      0, 0.4 * Params.entryHoverShiftDistance, 0,
-                      0, 0.7 * Params.entryHoverShiftDistance, 0,
-                      0, 1 * Params.entryHoverShiftDistance, 0];
+  const { times: entryKfTimes, values: entryKfValues } = getKeyFramesWRate(Params.entryHoverShiftDuration, 120, easeOutCubic, Params.entryHoverShiftDistance);
+  const entryShiftPos = convertD([0.0, 1.0, 0.0], entryKfValues);
   const entryShiftUpKF = new THREE.VectorKeyframeTrack(
     ".position",
-    entryShiftTimes,
+    entryKfTimes,
     entryShiftPos
   );
   const entryHoverInClip = new THREE.AnimationClip("entry-hover-in", -1, [
     entryShiftUpKF
   ]);
 
-  const cabinetShiftPos = [ 0, 0, 0,
-                            0, 0,  0.2 * Params.cabinetSize, 
-                            0, 0,  0.4 * Params.cabinetSize, 
-                            0, 0,  0.7 * Params.cabinetSize, 
-                            0, 0,  1 * Params.cabinetSize];
-  const cabinetShiftForwardKF = new THREE.VectorKeyframeTrack(
+
+const { times: cabinetKfTimes, values: cabinetKfValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
+const cabinetShiftPos =  convertD([0.0, 0.0, Params.cabinetSize], cabinetKfValues);
+const {  values: cabinetScaleValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
+const cabinetGrowScale =  convertD([0.0, 0.0, 0.1], cabinetScaleValues, 1.0);
+const cabinetShiftForwardKF = new THREE.VectorKeyframeTrack(
     ".position",
-    entryShiftTimes,
+    cabinetKfTimes,
     cabinetShiftPos
   );
-    const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
-    cabinetShiftForwardKF
+const cabinetGrowZKF = new THREE.VectorKeyframeTrack(
+    ".scale",
+    cabinetKfTimes,
+    cabinetGrowScale
+  );
+const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
+    cabinetShiftForwardKF, cabinetGrowZKF
   ]);
 
   const loader = new THREE.FontLoader();
@@ -182,7 +190,6 @@
   cabinetShellSideLeftModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
   cabinetShellSideLeftModel.position.set(-cabinetHalfSize - Params.cabinetsSpacing * 0.5, -Params.cabinetsSpacing, 0.0);
   cabinetShellSideLeftModel.scale.x *= Params.cabinetShellScaleMultiplier;
-  cabinetShellSideLeftModel.scale.z += 0.01;
   cabinetShellSideLeftModel.scale.y *= Params.sectionsCount;
   cabinetShellSideLeftModel.scale.y += (Params.sectionsCount+4) * Params.cabinetsSpacing;
 
@@ -190,13 +197,21 @@
   cabinetShellSideRightModel.position.set(cabinetHalfSize + Params.cabinetsSpacing * 0.5, -Params.cabinetsSpacing, 0.0);
   cabinetShellSideRightModel.scale.set(cabinetShellSideLeftModel.scale.x, cabinetShellSideLeftModel.scale.y, cabinetShellSideLeftModel.scale.z);
   
-  cabinetShellBackModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
+  cabinetShellBackModel = new THREE.Mesh(cabinetBackGeometry, Materials.default);
   cabinetShellBackModel.position.set(-cabinetHalfSize, -Params.cabinetsSpacing, 0);
   cabinetShellBackModel.rotateY(Math.PI / 2);
   cabinetShellBackModel.scale.set(cabinetShellSideLeftModel.scale.x, cabinetShellSideLeftModel.scale.y, cabinetShellSideLeftModel.scale.z);
+
+  cabinetShellSideLeftModel.scale.z *= Params.cabinetDepthMultiplier;
+  cabinetShellSideRightModel.scale.z = cabinetShellSideLeftModel.scale.z;
+
+  cabinetShellSideLeftModel.position.z += Params.cabinetSize + 0.005;
+  cabinetShellSideRightModel.position.z = cabinetShellSideLeftModel.position.z;
  
-  cabinetShellTopModel = new THREE.Mesh(cabinetFloorGeometry, Materials.default);
+  cabinetShellTopModel = new THREE.Mesh(cabinetTopGeometry, Materials.default);
   cabinetShellTopModel.position.set(0, Params.sectionsCount * Params.cabinetSize + (Params.sectionsCount-1) * Params.cabinetsSpacing, 0);
+  cabinetShellTopModel.scale.z *= Params.cabinetDepthMultiplier;
+  cabinetShellTopModel.position.z = cabinetShellSideLeftModel.position.z;
 
   scene.add(cabinetShellSideLeftModel);
   scene.add(cabinetShellSideRightModel);
@@ -213,21 +228,25 @@
       sections[sIdx].name = "section" + sIdx;
       sections[sIdx].position.set(cabinetPosition.x, cabinetPosition.y, cabinetPosition.z);
 
-      cabinetFloorModel = new THREE.Mesh(cabinetFloorGeometry, Materials.default);
+      cabinetFloorModel = new THREE.Mesh(cabinetDelimeterGeometry, Materials.default);
       cabinetFloorModel.position.set(0, 0.0, 0.0);
 
-      cabinetShellDelimeter = new THREE.Mesh(cabinetFloorGeometry, Materials.default);
+      cabinetShellDelimeter = new THREE.Mesh(cabinetDelimeterGeometry, Materials.default);
       cabinetShellDelimeter.position.set(0, 0.0, 0.0);
       cabinetShellDelimeter.position.z += 0.005;
       cabinetShellDelimeter.position.y = sIdx * Params.cabinetSize;
 
       scene.add(cabinetShellDelimeter);
 
+      const cabinetDepth = Params.cabinetDepthMultiplier * Params.cabinetSize;
       cabinetSideLeftModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
-      cabinetSideLeftModel.position.set(-cabinetHalfSize, 0.0, 0.0);
+      cabinetSideLeftModel.scale.z *= Params.cabinetDepthMultiplier;
+      cabinetSideLeftModel.position.set(-cabinetHalfSize, 0.0, Params.cabinetSize);
       cabinetSideRightModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
-      cabinetSideRightModel.position.set(cabinetHalfSize, 0.0, 0.0);
-      cabinetFrontModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
+      cabinetSideRightModel.position.set(cabinetHalfSize, 0.0, Params.cabinetSize);
+      cabinetSideRightModel.scale.z *= Params.cabinetDepthMultiplier;
+
+      cabinetFrontModel = new THREE.Mesh(cabinetBackGeometry, Materials.default);
       cabinetFrontModel.position.set(-cabinetHalfSize, 0.0, Params.cabinetSize - Params.cabinetsSpacing * 0.5);
       cabinetFrontModel.rotateY(Math.PI / 2);
 

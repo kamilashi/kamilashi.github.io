@@ -44,6 +44,7 @@
     alpha: true 
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;      
 
   const raycaster = new THREE.Raycaster();
   const mousePos = new THREE.Vector2();
@@ -56,17 +57,21 @@
     100
   );
 
+  // composer
+  const composer = new THREE.EffectComposer(renderer);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  composer.addPass(OutlinePass);
   
   const clock = new THREE.Clock();
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enabled = false;
+  controls.enabled = true;
 
   camera.position.set(-1, 1.5, 2);
   controls.target.set(0, 0.5, 0.5);
 
   const Params =
   {
-    bgColor: 0x000000,
+    bgColor: 'gray',
     cabinetSize: 0.5,
     cabinetDepthMultiplier: 1.4,
     cabinetsSpacing: 0.01,
@@ -121,9 +126,9 @@
   };
 
   const Materials = {
-    default: new THREE.MeshStandardMaterial({ color: 0x6699ff, wireframe: false, transparent: false }),
+    default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-    sensor: new THREE.MeshStandardMaterial({ color: 0x6699ff, wireframe: false, transparent: true, opacity: 0 }),
+    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: true, opacity: 0 }),
   }
 
   const entryGeometry = new THREE.PlaneGeometry( Params.cabinetSize * 0.95, Params.cabinetSize );
@@ -166,7 +171,6 @@
     entryShiftUpKF
   ]);
 
-
 const { times: cabinetKfTimes, values: cabinetKfValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
 const cabinetShiftPos =  convertD([0.0, 0.0, Params.cabinetSize], cabinetKfValues);
 const {  values: cabinetScaleValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
@@ -184,8 +188,6 @@ const cabinetGrowZKF = new THREE.VectorKeyframeTrack(
 const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
     cabinetShiftForwardKF, cabinetGrowZKF
   ]);
-
-  const loader = new THREE.FontLoader();
 
   cabinetShellSideLeftModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
   cabinetShellSideLeftModel.position.set(-cabinetHalfSize - Params.cabinetsSpacing * 0.5, -Params.cabinetsSpacing, 0.0);
@@ -219,107 +221,94 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
   scene.add(cabinetShellTopModel);
 
   let i = 0;
-  loader.load( 'https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
-  
-    for(let sIdx = 0; sIdx < Params.sectionsCount; sIdx++){
-      const maxIndex =  Params.sectionsCount - 1;
-      const cabinetPosition = new THREE.Vector3(0, (maxIndex - sIdx) * (Params.cabinetSize + Params.cabinetsSpacing), 0);
-      sections[sIdx] = new THREE.Mesh(cabinetSensorGeometry, Materials.sensor);
-      sections[sIdx].name = "section" + sIdx;
-      sections[sIdx].position.set(cabinetPosition.x, cabinetPosition.y, cabinetPosition.z);
 
-      cabinetFloorModel = new THREE.Mesh(cabinetDelimeterGeometry, Materials.default);
-      cabinetFloorModel.position.set(0, 0.0, 0.0);
+  for(let sIdx = 0; sIdx < Params.sectionsCount; sIdx++)
+  {
+    const maxIndex =  Params.sectionsCount - 1;
+    const cabinetPosition = new THREE.Vector3(0, (maxIndex - sIdx) * (Params.cabinetSize + Params.cabinetsSpacing), 0);
+    sections[sIdx] = new THREE.Mesh(cabinetSensorGeometry, Materials.sensor);
+    sections[sIdx].name = "section" + sIdx;
+    sections[sIdx].position.set(cabinetPosition.x, cabinetPosition.y, cabinetPosition.z);
 
-      cabinetShellDelimeter = new THREE.Mesh(cabinetDelimeterGeometry, Materials.default);
-      cabinetShellDelimeter.position.set(0, 0.0, 0.0);
-      cabinetShellDelimeter.position.z += 0.005;
-      cabinetShellDelimeter.position.y = sIdx * Params.cabinetSize;
+    cabinetFloorModel = new THREE.Mesh(cabinetDelimeterGeometry, Materials.default);
+    cabinetFloorModel.position.set(0, 0.0, 0.0);
 
-      scene.add(cabinetShellDelimeter);
+    cabinetShellDelimeter = new THREE.Mesh(cabinetDelimeterGeometry, Materials.default);
+    cabinetShellDelimeter.position.set(0, 0.0, 0.0);
+    cabinetShellDelimeter.position.z += 0.005;
+    cabinetShellDelimeter.position.y = sIdx * Params.cabinetSize;
 
-      const cabinetDepth = Params.cabinetDepthMultiplier * Params.cabinetSize;
-      cabinetSideLeftModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
-      cabinetSideLeftModel.scale.z *= Params.cabinetDepthMultiplier;
-      cabinetSideLeftModel.position.set(-cabinetHalfSize, 0.0, Params.cabinetSize);
-      cabinetSideRightModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
-      cabinetSideRightModel.position.set(cabinetHalfSize, 0.0, Params.cabinetSize);
-      cabinetSideRightModel.scale.z *= Params.cabinetDepthMultiplier;
+    scene.add(cabinetShellDelimeter);
 
-      cabinetFrontModel = new THREE.Mesh(cabinetBackGeometry, Materials.default);
-      cabinetFrontModel.position.set(-cabinetHalfSize, 0.0, Params.cabinetSize - Params.cabinetsSpacing * 0.5);
-      cabinetFrontModel.rotateY(Math.PI / 2);
+    const cabinetDepth = Params.cabinetDepthMultiplier * Params.cabinetSize;
+    cabinetSideLeftModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
+    cabinetSideLeftModel.scale.z *= Params.cabinetDepthMultiplier;
+    cabinetSideLeftModel.position.set(-cabinetHalfSize, 0.0, Params.cabinetSize);
+    cabinetSideRightModel = new THREE.Mesh(cabinetSidesGeometry, Materials.default);
+    cabinetSideRightModel.position.set(cabinetHalfSize, 0.0, Params.cabinetSize);
+    cabinetSideRightModel.scale.z *= Params.cabinetDepthMultiplier;
 
-      cabinetFloorModel.add(cabinetSideLeftModel);
-      cabinetFloorModel.add(cabinetSideRightModel);
-      cabinetFloorModel.add(cabinetFrontModel);
+    cabinetFrontModel = new THREE.Mesh(cabinetBackGeometry, Materials.default);
+    cabinetFrontModel.position.set(-cabinetHalfSize, 0.0, Params.cabinetSize - Params.cabinetsSpacing * 0.5);
+    cabinetFrontModel.rotateY(Math.PI / 2);
 
-      const mixer = new THREE.AnimationMixer(cabinetFloorModel);
+    cabinetFloorModel.add(cabinetSideLeftModel);
+    cabinetFloorModel.add(cabinetSideRightModel);
+    cabinetFloorModel.add(cabinetFrontModel);
 
-      sections[sIdx].userData.model = cabinetFloorModel;
-      sections[sIdx].userData.mixer = mixer;
-      sections[sIdx].userData.actions = 
+    const mixer = new THREE.AnimationMixer(cabinetFloorModel);
+
+    sections[sIdx].userData.model = cabinetFloorModel;
+    sections[sIdx].userData.mixer = mixer;
+    sections[sIdx].userData.actions = 
+    {
+      hoverIn: mixer.clipAction(cabinetHoverInClip),
+    };
+    
+    sections[sIdx].userData.actions.hoverIn.loop = THREE.LoopOnce;
+    sections[sIdx].userData.actions.hoverIn.clampWhenFinished = true;
+
+    sections[sIdx].add(cabinetFloorModel);
+
+    sections[sIdx].userData.entrySensors = new Array(Params.entriesCount[sIdx]);
+
+    scene.add(sections[sIdx]);
+
+    
+    const entriesSpacing = Params.cabinetSize / Params.entriesCount[sIdx];
+
+    for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) {
+
+      entries[i] = new THREE.Mesh(entrySensorGeometry, Materials.sensor);
+      entries[i].scale.y = 0; 
+      entries[i].name = "sec" + sIdx + "_entry"+eIdx;
+      entries[i].position.set(0, 0.0, Params.cabinetSize - entriesSpacing * (0.5 + eIdx));
+
+      entryModel = new THREE.Mesh(entryGeometry, Materials.default);
+      
+      entryModel.position.set(0, 0, 0);
+      const mixer = new THREE.AnimationMixer(entryModel);
+        
+      entries[i].userData.model = entryModel;
+      entries[i].userData.mixer = mixer;
+      entries[i].userData.actions = 
       {
-        hoverIn: mixer.clipAction(cabinetHoverInClip),
+        hoverIn: mixer.clipAction(entryHoverInClip),
       };
+
+      entries[i].userData.actions.hoverIn.loop = THREE.LoopOnce;
+      entries[i].userData.actions.hoverIn.clampWhenFinished = true;
+      entries[i].userData.id = `s${sIdx}e${eIdx}`
+      entries[i].add(entryModel);
+
+      sections[sIdx].userData.entrySensors[eIdx] = entries[i];
+      sections[sIdx].userData.model.add(entries[i]);
       
-      sections[sIdx].userData.actions.hoverIn.loop = THREE.LoopOnce;
-      sections[sIdx].userData.actions.hoverIn.clampWhenFinished = true;
-
-      sections[sIdx].add(cabinetFloorModel);
-
-      sections[sIdx].userData.entrySensors = new Array(Params.entriesCount[sIdx]);
-
-      scene.add(sections[sIdx]);
-
-      
-      const entriesSpacing = Params.cabinetSize / Params.entriesCount[sIdx];
-
-      for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) {
-
-        entries[i] = new THREE.Mesh(entrySensorGeometry, Materials.sensor);
-        entries[i].scale.y = 0; 
-        entries[i].name = "sec" + sIdx + "_entry"+eIdx;
-        entries[i].position.set(0, 0.0, Params.cabinetSize - entriesSpacing * (0.5 + eIdx));
-
-        entryModel = new THREE.Mesh(entryGeometry, Materials.default);
-        
-        entryModel.position.set(0, 0, 0);
-        const mixer = new THREE.AnimationMixer(entryModel);
-          
-        entries[i].userData.model = entryModel;
-        entries[i].userData.mixer = mixer;
-        entries[i].userData.actions = 
-        {
-          hoverIn: mixer.clipAction(entryHoverInClip),
-        };
-
-        entries[i].userData.actions.hoverIn.loop = THREE.LoopOnce;
-        entries[i].userData.actions.hoverIn.clampWhenFinished = true;
-
-        const textGeometry = new THREE.TextGeometry('Title', {
-        font: font,                  
-        size: 0.04,
-        height: 0,
-        curveSegments: 12,
-        bevelEnabled: false
-        });
-
-        const textMesh = new THREE.Mesh(textGeometry, Materials.text);
-        textMesh.position.set(+cabinetHalfSize - eIdx * Params.titleXOffsetStep, Params.cabinetSize - Params.titleTopMargin, 0.01); 
-        entries[i].userData.model.add(textMesh);
-        entries[i].userData.id = `s${sIdx}e${eIdx}`
-        entries[i].add(entryModel);
-
-        sections[sIdx].userData.entrySensors[eIdx] = entries[i];
-        sections[sIdx].userData.model.add(entries[i]);
-        
-        i += 1;
-      }
+      i += 1;
     }
+  }
 
 	renderer.setAnimationLoop( animate );
-  });
   
   scene.add(new THREE.AmbientLight('#606060'));
   const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -327,6 +316,10 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
   scene.add(light);
 
   renderer.setClearColor(Params.bgColor);  
+
+  // const pmremGenerator = new THREE.PMREMGenerator( renderer );
+	//scene.environment = pmremGenerator.fromScene( environment ).texture;
+	//pmremGenerator.dispose();
 
   let lastHoveredItem = { item: null, handlerId: null};
   let lastHoveredStickyItem = { item: null, handlerId: null};
@@ -398,22 +391,42 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
   hoverEnabled = true;
   });
 
-  window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
+  function onResize()
+  {
+    const w = Math.max(1, window.innerWidth);
+    const h = Math.max(1, window.innerHeight);
+
+    // camera
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(w, h, true); // 'false' = don't change canvas CSS size
+
+    // composer
+    composer.setSize(w, h);
+
+    OutlinePass.uniforms.resolution.value.set( Math.floor(w * dpr), Math.floor(h * dpr) );
+  }
+
+  window.addEventListener('resize', () => {
+    onResize();
   });
 
   renderer.domElement.addEventListener('click', (e) => {
     tryOpenCard();
   });
 
+  onResize();
+
   // Animation loop
   function animate(){
     const delta = clock.getDelta();
     controls.update();
     processHover();
-    renderer.render(scene, camera);
+
+    composer.render();
 
     entries.forEach(entry => {
       entry.userData.mixer.update(delta);

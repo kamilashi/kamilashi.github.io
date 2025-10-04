@@ -8,6 +8,7 @@
   const cardEl = document.getElementById('project-card');
 
   function showCard(entryId) {
+    return;
     const tpl = document.getElementById(entryId);
     if (!tpl) return;
 
@@ -85,22 +86,37 @@
   //
 
   camera.position.set(-1, 1.5, 2);
+  const axesHelper = new THREE.AxesHelper( 1 );
   //controls.target.set(0, 0.5, 0.5);
 
   const Params =
   {
     bgColor: '#B3AF92',
     cabinetSize: 0.5,
-    cabinetDepthMultiplier: 1.4,
-    cabinetsSpacing: 0.01,
+    //cabinetDepthMultiplier: 1.4,
+    //cabinetsSpacing: 0.01,
     cabinetShellScaleMultiplier: 1.1,
-    entriesCount: [4,8], // sync with the site data!
+    entriesCount: [4, 8], // sync with the site data!
     sectionsCount: 2, // sync with the site data!
     titleTopMargin: 0.1,
     titleXOffsetStep: 0.17,
-    entryHoverShiftDistance: 0.2,
+
+    entryHoverShiftDistance: 0.5,
     entryHoverShiftDuration: 0.2,
+    cabinetHoverShiftDistance: 0.5,
     cabinetHoverShiftDuration: 1.0,
+
+    drawerSpacing: 0.65625, // from the blender file. TODO: replace with some named hooks
+    drawerOuterWidth: 0.628,
+    drawerOuterDepth: 0.703,
+    drawerOuterHeight: 0.484,
+
+    drawerInnerWidth: 0.607,
+    drawerInnerDepth: 0.678,
+
+    recordSize: 0.8,
+
+    sensorBoundingVolMult: 1.1,
 
     //sceneTintColor: '#B3AF92',
     sceneTintColor: '#ada66b',
@@ -109,11 +125,17 @@
     fakeEnvironmentIntensity: 1.2,
     pointLightIntensity: 1.5,
     spotLightIntensity: 0.0,
+
+    // runtime set:
+    drawerStartPos: 0, 
   }
 
   let Interactives =
   {
     lampLight: 0,
+    lampObject: 0,
+
+    drawer: 0,
   }
 
   const Layers =
@@ -134,11 +156,11 @@
   const HoverHandlers = {
   [Layers.entries]: {
     onHoverIn:  (obj) => { 
-      runSymmetricalAnimation(obj, 1);
+      //runSymmetricalAnimation(obj, 1);
       showCard(obj.userData.id);
      },
     onHoverOut: (obj) => { 
-      runSymmetricalAnimation(obj, -1); 
+      //runSymmetricalAnimation(obj, -1); 
     }  
     },
   [Layers.sections]: {
@@ -159,22 +181,22 @@
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: true, opacity: 0 }),
+    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: false, opacity: 0 }),
   }
 
-  const entryGeometry = new THREE.PlaneGeometry( Params.cabinetSize * 0.95, Params.cabinetSize );
+  const entryGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize );
   entryGeometry.translate(0, entryGeometry.parameters.height * 0.5, 0);
 
-  const entrySensorGeometry = new THREE.PlaneGeometry( Params.cabinetSize, Params.cabinetSize + Params.entryHoverShiftDistance );
+  const entrySensorGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize + Params.entryHoverShiftDistance );
   entrySensorGeometry.translate(0, entrySensorGeometry.parameters.height * 0.5, 0);
 
-  const cabinetSensorGeometry = new THREE.BoxGeometry( Params.cabinetSize + 0.01, Params.cabinetSize, Params.cabinetSize * 0.8 ); 
-  cabinetSensorGeometry.translate(0, cabinetSensorGeometry.parameters.height * 0.5, cabinetSensorGeometry.parameters.depth * 0.5); 
+  const cabinetSensorGeometry = new THREE.BoxGeometry( Params.drawerOuterDepth * Params.sensorBoundingVolMult, 
+                                                       Params.drawerOuterHeight , 
+                                                       Params.drawerOuterWidth ); 
+  cabinetSensorGeometry.translate(cabinetSensorGeometry.parameters.width * 0.5, cabinetSensorGeometry.parameters.height * 0.5, 0); 
 
   let entriesCount = 0;
   Params.entriesCount.forEach(count => entriesCount += count);
-  
-  const cabinetHalfSize = Params.cabinetSize * 0.5;
 
   let entries = new Array(entriesCount);
   let sections = new Array(Params.sectionsCount);
@@ -191,117 +213,151 @@
   ]);
 
 const { times: cabinetKfTimes, values: cabinetKfValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
-const cabinetShiftPos =  convertD([0.0, 0.0, Params.cabinetSize], cabinetKfValues);
-const {  values: cabinetScaleValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
-const cabinetGrowScale =  convertD([0.0, 0.0, 0.1], cabinetScaleValues, 1.0);
+const cabinetShiftPos =  convertD([Params.cabinetHoverShiftDistance, 0.0, 0.0], cabinetKfValues);
 const cabinetShiftForwardKF = new THREE.VectorKeyframeTrack(
     ".position",
     cabinetKfTimes,
     cabinetShiftPos
   );
-const cabinetGrowZKF = new THREE.VectorKeyframeTrack(
-    ".scale",
-    cabinetKfTimes,
-    cabinetGrowScale
-  );
 const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
-    cabinetShiftForwardKF, cabinetGrowZKF
+    cabinetShiftForwardKF 
   ]);
 
   let i = 0;
   let imported;
 
-  function fixMat(mat){
-  if (!mat) return;
-  /* if ('emissiveIntensity' in mat) mat.emissiveIntensity = 0.0; // or <= 0.2
-  if (mat.emissive && mat.emissive.isColor) mat.emissive.set(0x000000);
+  function initializeCabinet(){
+  for(let sIdx = 0; sIdx < Params.sectionsCount; sIdx++)
+  {
+    const maxIndex =  Params.sectionsCount - 1;
+    sections[sIdx] = new THREE.Mesh(cabinetSensorGeometry, Materials.sensor);
+    sections[sIdx].name = "section" + sIdx;
+    sections[sIdx].position.set(Params.drawerStartPos.x, 
+                                Params.drawerStartPos.y, 
+                                Params.drawerStartPos.z - (maxIndex - sIdx) * Params.drawerSpacing);
 
-  if (mat.emissiveMap)mat.emissiveMap.colorSpace= THREE.SRGBColorSpace;
+    const drawerModel = Interactives.drawer.clone(true);
+    const mixer = new THREE.AnimationMixer(drawerModel);
 
-  if (mat.isMeshBasicMaterial) {
-    mat.color.multiplyScalar(0.3);
-    // mat = new THREE.MeshStandardMaterial({ color: mat.color });
-  } */
-   //mat = new THREE.MeshStandardMaterial({ color: mat.color });
-  //mat.needsUpdate = true;
+    sections[sIdx].add(drawerModel);
+    sections[sIdx].userData.model = drawerModel;
+    sections[sIdx].userData.mixer = mixer;
+    sections[sIdx].userData.actions = 
+    {
+      hoverIn: mixer.clipAction(cabinetHoverInClip),
+    };
+    
+    sections[sIdx].userData.actions.hoverIn.loop = THREE.LoopOnce;
+    sections[sIdx].userData.actions.hoverIn.clampWhenFinished = true;
+    //sections[sIdx].add(axesHelper);
+
+    // something fishy is going on, check the keyframes!
+    sections[sIdx].userData.entrySensors = new Array(Params.entriesCount[sIdx]);
+    scene.add(sections[sIdx]);
+    const entriesSpacing = Params.drawerInnerWidth / Params.entriesCount[sIdx];
+    const entriesXOffset = Params.drawerInnerDepth - Params.recordSize * 0.5;
+
+    for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) {
+
+      entries[i] = new THREE.Mesh(entrySensorGeometry, Materials.sensor);
+      entries[i].scale.y = 0; 
+      entries[i].name = "sec" + sIdx + "_entry"+eIdx;
+      entries[i].position.set(entriesXOffset, 0.0, - Params.drawerInnerWidth * 0.5  + entriesSpacing * ( 1 + eIdx));
+
+      entryModel = new THREE.Mesh(entryGeometry, Materials.default);
+      
+      entryModel.position.set(0, 0, 0);
+      const entryMixer = new THREE.AnimationMixer(entryModel);
+        
+      entries[i].userData.model = entryModel;
+      entries[i].userData.mixer = entryMixer;
+      entries[i].userData.actions = 
+      {
+        hoverIn: entryMixer.clipAction(entryHoverInClip),
+      };
+
+      entries[i].userData.actions.hoverIn.loop = THREE.LoopOnce;
+      entries[i].userData.actions.hoverIn.clampWhenFinished = true;
+      entries[i].userData.id = `s${sIdx}e${eIdx}`
+      entries[i].add(entryModel);
+
+      sections[sIdx].userData.entrySensors[eIdx] = entries[i];
+      sections[sIdx].userData.model.add(entries[i]);
+      sections[sIdx].userData.model.add(axesHelper);
+      
+      i += 1;
+    }
+  }
 }
 
-let sun;
+modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => { 
+  imported = gltf.scene;  
 
-  modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => { 
-    imported = gltf.scene;  
+  scene.add(imported);  
 
-    scene.add(imported);  
+  // If you want to use the imported camera:
+  const camNode = gltf.cameras?.[0] || imported.getObjectByProperty('type', 'PerspectiveCamera');
+  if (camNode) {
+  camera = camNode;                         
+  camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight;
+  camera.updateProjectionMatrix();
 
-    // If you want to use the imported camera:
-    const camNode = gltf.cameras?.[0] || imported.getObjectByProperty('type', 'PerspectiveCamera');
-    if (camNode) {
-    camera = camNode;                         
-    camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight;
-    camera.updateProjectionMatrix();
-
-    if(useControls){
-        controls.object = camera;
-        const dir = new THREE.Vector3();
-        camera.getWorldDirection(dir);
-        controls.target.copy(camera.position).addScaledVector(dir, 5); 
-        controls.update();
-      }
+  if(useControls){
+      controls.object = camera;
+      const dir = new THREE.Vector3();
+      camera.getWorldDirection(dir);
+      controls.target.copy(camera.position).addScaledVector(dir, 5); 
+      controls.update();
     }
+  }
 
-    //scene.environment = null;      
+  //console.log(imported);
 
-    imported.traverse((o) => {
-    if (o.isLight) {
-      if (o.isDirectionalLight) { 
-          o.intensity = Params.directionalLightIntensity; 
-          o.castShadow = true;
+  imported.traverse((o) => {
+  if (o.isLight) {
+    // todo: lookup by name
+    if (o.isDirectionalLight) { 
+        o.intensity = Params.directionalLightIntensity; 
+        o.castShadow = true;
 
-          o.shadow.mapSize.width = 4096; 
-          o.shadow.mapSize.height = 4096; 
-          
-          o.shadow.camera.near = 0.01; 
-          o.shadow.camera.far = 20; 
-          o.shadow.normalBias = 0.02;
-          console.log(o);
-         }
-      if (o.isPointLight) {
-        o.intensity = Params.pointLightIntensity;  
-      }
-      if (o.isSpotLight) {
-        Interactives.lampLight = o;
-        o.intensity = Params.spotLightIntensity; 
-      }
-    } 
-
-    if (o.isMesh) {
-      o.receiveShadow = true;
-      o.castShadow = true;
+        o.shadow.mapSize.width = 4096; 
+        o.shadow.mapSize.height = 4096; 
+        
+        o.shadow.camera.near = 0.01; 
+        o.shadow.camera.far = 20; 
+        o.shadow.normalBias = 0.02;
+        }
+    if (o.isPointLight) {
+      o.intensity = Params.pointLightIntensity;  
     }
+    if (o.isSpotLight) {
+      Interactives.lampLight = o;
+      o.intensity = Params.spotLightIntensity; 
+    }
+  } 
 
-      //Array.isArray(o.material) ? o.material.forEach(fixMat) : fixMat(o.material);
+  if (o.isMesh) {
+    o.receiveShadow = true;
+    o.castShadow = true;
 
-      /*
-      o.castShadow = o.receiveShadow = true;
-
-      if (o.material && 'envMapIntensity' in o.material) {
-        o.material.envMapIntensity = 0.0; 
-      }
-      
-      const m = o.material;
-      const list = Array.isArray(m) ? m : [m];
-      list.forEach(mm=>{
-        console.log(mm.name, {
-          type: mm.type,
-          emissive: mm.emissive?.getHexString?.(),
-          emissiveIntensity: mm.emissiveIntensity,
-          unlit: mm.isMeshBasicMaterial === true
-        });
-      }); 
-    */
-   // }
-     });
+    // todo: lookup by name
+    if(o.name == "LightBulb")
+    {
+      Interactives.lampObject = o;
+      o.castShadow = false;
+      o.receiveShadow = false;
+    }
+  }
   });
+  
+  //TODO: redo by instancing at hooks 
+  Interactives.drawer = imported.getObjectByName("Drawer");
+  Params.drawerStartPos = new THREE.Vector3(Interactives.drawer.position.x, Interactives.drawer.position.y, Interactives.drawer.position.z);
+  Interactives.drawer.position.set(0, 0, 0);
+  Interactives.drawer.parent.remove(Interactives.drawer);
+
+  initializeCabinet();
+});
 
 	renderer.setAnimationLoop( animate );
   
@@ -428,7 +484,8 @@ let sun;
     {
       controls.update();
     }
-    //processHover();
+    
+    processHover();
 
     //composer.render();
     renderer.render(scene, camera);

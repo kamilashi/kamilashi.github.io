@@ -1,4 +1,4 @@
-const OutlinePass = new THREE.ShaderPass({
+const outlinePass = new THREE.ShaderPass({
   uniforms: {
     tDiffuse:   { value: null },
     resolution: { value: new THREE.Vector2() }, // px

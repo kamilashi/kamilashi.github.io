@@ -58,9 +58,11 @@
   );
 
   // composer
+  const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
   const composer = new THREE.EffectComposer(renderer);
   composer.addPass(new THREE.RenderPass(scene, camera));
-  composer.addPass(OutlinePass);
+  composer.addPass(outlinePass);
+  composer.addPass(fxaaPass);
   
   const clock = new THREE.Clock();
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -274,7 +276,6 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
 
     scene.add(sections[sIdx]);
 
-    
     const entriesSpacing = Params.cabinetSize / Params.entriesCount[sIdx];
 
     for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) {
@@ -316,10 +317,6 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
   scene.add(light);
 
   renderer.setClearColor(Params.bgColor);  
-
-  // const pmremGenerator = new THREE.PMREMGenerator( renderer );
-	//scene.environment = pmremGenerator.fromScene( environment ).texture;
-	//pmremGenerator.dispose();
 
   let lastHoveredItem = { item: null, handlerId: null};
   let lastHoveredStickyItem = { item: null, handlerId: null};
@@ -407,7 +404,10 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
     // composer
     composer.setSize(w, h);
 
-    OutlinePass.uniforms.resolution.value.set( Math.floor(w * dpr), Math.floor(h * dpr) );
+    const wScaled = w * dpr;
+    const hScaled = h * dpr;
+    outlinePass.uniforms.resolution.value.set( Math.floor(wScaled), Math.floor(hScaled) );
+    fxaaPass.material.uniforms['resolution'].value.set(1.0 / (wScaled), 1.0 / (hScaled));
   }
 
   window.addEventListener('resize', () => {

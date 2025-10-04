@@ -58,11 +58,11 @@
   );
 
   // composer
-  const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+  //const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
   const composer = new THREE.EffectComposer(renderer);
   composer.addPass(new THREE.RenderPass(scene, camera));
-  composer.addPass(outlinePass);
-  composer.addPass(fxaaPass);
+  //composer.addPass(outlinePass);
+  //composer.addPass(fxaaPass);
   
   const clock = new THREE.Clock();
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -404,10 +404,10 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
     // composer
     composer.setSize(w, h);
 
-    const wScaled = w * dpr;
-    const hScaled = h * dpr;
-    outlinePass.uniforms.resolution.value.set( Math.floor(wScaled), Math.floor(hScaled) );
-    fxaaPass.material.uniforms['resolution'].value.set(1.0 / (wScaled), 1.0 / (hScaled));
+    //const wScaled = w * dpr;
+    //const hScaled = h * dpr;
+    //outlinePass.uniforms.resolution.value.set( Math.floor(wScaled), Math.floor(hScaled) );
+    //fxaaPass.material.uniforms['resolution'].value.set(1.0 / (wScaled), 1.0 / (hScaled));
   }
 
   window.addEventListener('resize', () => {
@@ -427,6 +427,7 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
     processHover();
 
     composer.render();
+    //renderer.render();
 
     entries.forEach(entry => {
       entry.userData.mixer.update(delta);

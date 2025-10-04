@@ -5,7 +5,7 @@ const outlinePass = new THREE.ShaderPass({
     threshold:  { value: 0.005 },                // edge sensitivity
     edgeColor:  { value: new THREE.Color(0x000000) },
     bgColor:    { value: new THREE.Color(0xffffff) },
-    edgeOnly:   { value: 1 },                   // 1 = just edges
+    edgeOnly:   { value: 0 },                   // 1 = just edges
     strength:   { value: 1.0 },                 // mix strength of outlines over scene
     thickness:  { value: 0.1 },                 // px
   },

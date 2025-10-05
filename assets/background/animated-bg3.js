@@ -8,7 +8,6 @@
   const cardEl = document.getElementById('project-card');
 
   function showCard(entryId) {
-    return;
     const tpl = document.getElementById(entryId);
     if (!tpl) return;
 
@@ -92,10 +91,6 @@
   const Params =
   {
     bgColor: '#B3AF92',
-    cabinetSize: 0.5,
-    //cabinetDepthMultiplier: 1.4,
-    //cabinetsSpacing: 0.01,
-    cabinetShellScaleMultiplier: 1.1,
     entriesCount: [4, 8], // sync with the site data!
     sectionsCount: 2, // sync with the site data!
     titleTopMargin: 0.1,
@@ -114,9 +109,12 @@
     drawerInnerWidth: 0.607,
     drawerInnerDepth: 0.678,
 
-    recordSize: 0.8,
+    recordSize: 0.4,
+    recordOffsetY: 0.1,
 
-    sensorBoundingVolMult: 1.1,
+    drawerSensorDepth: 0.5,
+    drawerSensorSizeMultX: 1.7,
+    drawerSensorSizeMultY: 1.2,
 
     //sceneTintColor: '#B3AF92',
     sceneTintColor: '#ada66b',
@@ -156,24 +154,24 @@
   const HoverHandlers = {
   [Layers.entries]: {
     onHoverIn:  (obj) => { 
-      //runSymmetricalAnimation(obj, 1);
+      runSymmetricalAnimation(obj, 1);
       showCard(obj.userData.id);
      },
     onHoverOut: (obj) => { 
-      //runSymmetricalAnimation(obj, -1); 
+      runSymmetricalAnimation(obj, -1); 
     }  
     },
   [Layers.sections]: {
     onHoverIn:  (obj) => { 
       runSymmetricalAnimation(obj, 1); 
       obj.userData.entrySensors.forEach(sensor => {
-        sensor.scale.y = 1;
+      sensor.scale.y = 1;
       });
     },
     onHoverOut: (obj) => { 
       runSymmetricalAnimation(obj, -1); 
       obj.userData.entrySensors.forEach(sensor => {
-        sensor.scale.y = 0;
+      sensor.scale.y = 0;
       });}  
     },
   };
@@ -181,7 +179,7 @@
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
-    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: false, opacity: 0 }),
+    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
   }
 
   const entryGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize );
@@ -190,10 +188,10 @@
   const entrySensorGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize + Params.entryHoverShiftDistance );
   entrySensorGeometry.translate(0, entrySensorGeometry.parameters.height * 0.5, 0);
 
-  const cabinetSensorGeometry = new THREE.BoxGeometry( Params.drawerOuterDepth * Params.sensorBoundingVolMult, 
-                                                       Params.drawerOuterHeight , 
+  const cabinetSensorGeometry = new THREE.BoxGeometry( Params.drawerSensorDepth, 
+                                                       Params.drawerOuterHeight * Params.drawerSensorSizeMultY, 
                                                        Params.drawerOuterWidth ); 
-  cabinetSensorGeometry.translate(cabinetSensorGeometry.parameters.width * 0.5, cabinetSensorGeometry.parameters.height * 0.5, 0); 
+  cabinetSensorGeometry.translate(Params.drawerOuterDepth + cabinetSensorGeometry.parameters.width * 0.5, cabinetSensorGeometry.parameters.height * 0.5, 0); 
 
   let entriesCount = 0;
   Params.entriesCount.forEach(count => entriesCount += count);
@@ -229,12 +227,11 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
   function initializeCabinet(){
   for(let sIdx = 0; sIdx < Params.sectionsCount; sIdx++)
   {
-    const maxIndex =  Params.sectionsCount - 1;
     sections[sIdx] = new THREE.Mesh(cabinetSensorGeometry, Materials.sensor);
     sections[sIdx].name = "section" + sIdx;
     sections[sIdx].position.set(Params.drawerStartPos.x, 
                                 Params.drawerStartPos.y, 
-                                Params.drawerStartPos.z - (maxIndex - sIdx) * Params.drawerSpacing);
+                                Params.drawerStartPos.z - (sIdx) * Params.drawerSpacing);
 
     const drawerModel = Interactives.drawer.clone(true);
     const mixer = new THREE.AnimationMixer(drawerModel);
@@ -249,20 +246,19 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
     
     sections[sIdx].userData.actions.hoverIn.loop = THREE.LoopOnce;
     sections[sIdx].userData.actions.hoverIn.clampWhenFinished = true;
-    //sections[sIdx].add(axesHelper);
 
-    // something fishy is going on, check the keyframes!
     sections[sIdx].userData.entrySensors = new Array(Params.entriesCount[sIdx]);
     scene.add(sections[sIdx]);
     const entriesSpacing = Params.drawerInnerWidth / Params.entriesCount[sIdx];
-    const entriesXOffset = Params.drawerInnerDepth - Params.recordSize * 0.5;
+
+    const entriesXOffset = Params.drawerInnerDepth + (Params.drawerOuterDepth - Params.drawerInnerDepth)*0.5 - Params.recordSize*0.5;
 
     for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) {
 
       entries[i] = new THREE.Mesh(entrySensorGeometry, Materials.sensor);
       entries[i].scale.y = 0; 
-      entries[i].name = "sec" + sIdx + "_entry"+eIdx;
-      entries[i].position.set(entriesXOffset, 0.0, - Params.drawerInnerWidth * 0.5  + entriesSpacing * ( 1 + eIdx));
+      entries[i].name = "sec" + sIdx + "_entry" + eIdx;
+      entries[i].position.set(entriesXOffset, Params.recordOffsetY, + Params.drawerInnerWidth * 0.5  - entriesSpacing * ( 0.5 + eIdx));
 
       entryModel = new THREE.Mesh(entryGeometry, Materials.default);
       
@@ -283,7 +279,6 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
 
       sections[sIdx].userData.entrySensors[eIdx] = entries[i];
       sections[sIdx].userData.model.add(entries[i]);
-      sections[sIdx].userData.model.add(axesHelper);
       
       i += 1;
     }
@@ -295,7 +290,6 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
 
   scene.add(imported);  
 
-  // If you want to use the imported camera:
   const camNode = gltf.cameras?.[0] || imported.getObjectByProperty('type', 'PerspectiveCamera');
   if (camNode) {
   camera = camNode;                         
@@ -353,6 +347,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   //TODO: redo by instancing at hooks 
   Interactives.drawer = imported.getObjectByName("Drawer");
   Params.drawerStartPos = new THREE.Vector3(Interactives.drawer.position.x, Interactives.drawer.position.y, Interactives.drawer.position.z);
+  //console.log(Interactives.drawer);
   Interactives.drawer.position.set(0, 0, 0);
   Interactives.drawer.parent.remove(Interactives.drawer);
 
@@ -384,7 +379,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     raycaster.setFromCamera(mousePos, camera);
 
     const processStickyHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {
-      if(newH != null && newH !== oldH ){
+      if(newH != null  && newH !== oldH  ){ // newH !== oldH is taken care of by searching for sticky hits prior to this
         if(oldH != null) {
           HoverHandlers[oldHHandlerId].onHoverOut(oldH);
         }
@@ -417,7 +412,9 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     
     let newHoveredItem = { item: null, handlerId: null };
     let hits = raycaster.intersectObjects(sections , false);
-    if(hits.length > 0 && hits[0].object)
+    
+    const hitsPrevious = lastHoveredStickyItem.item != null && hits.some(h => h?.object === lastHoveredStickyItem.item);
+    if(!hitsPrevious && hits.length > 0 && hits[0].object)
     {
       newHoveredItem.item = hits[0].object;
       newHoveredItem.handlerId = Layers.sections;

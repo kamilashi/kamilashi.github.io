@@ -131,6 +131,8 @@
   let Interactives =
   {
     lampLight: 0,
+    sunLight: 0,
+    
     lampObject: 0,
 
     drawer: 0,
@@ -320,41 +322,39 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
         o.shadow.camera.near = 0.01; 
         o.shadow.camera.far = 20; 
         o.shadow.normalBias = 0.02;
+
+        Interactives.sunLight = o;
         }
     if (o.isPointLight) {
       o.intensity = Params.pointLightIntensity;  
+      o.castShadow = false;
     }
     if (o.isSpotLight) {
-      Interactives.lampLight = o;
       o.intensity = Params.spotLightIntensity; 
+      o.castShadow = true;
+      Interactives.lampLight = o;
     }
   } 
-
-  if (o.isMesh) {
+  else if (o.isMesh) {
     o.receiveShadow = true;
     o.castShadow = true;
-
-    // todo: lookup by name
-    if(o.name == "LightBulb")
-    {
-      Interactives.lampObject = o;
-      o.castShadow = false;
-      o.receiveShadow = false;
-    }
   }
   });
+  
+  Interactives.lampObject = imported.getObjectByName("LightBulb");
+  Interactives.lampObject.receiveShadow  = false;
+  Interactives.lampObject.castShadow  = false;
   
   //TODO: redo by instancing at hooks 
   Interactives.drawer = imported.getObjectByName("Drawer");
   Params.drawerStartPos = new THREE.Vector3(Interactives.drawer.position.x, Interactives.drawer.position.y, Interactives.drawer.position.z);
-  //console.log(Interactives.drawer);
   Interactives.drawer.position.set(0, 0, 0);
   Interactives.drawer.parent.remove(Interactives.drawer);
 
   initializeCabinet();
-});
 
 	renderer.setAnimationLoop( animate );
+});
   
   ambientLight = new THREE.AmbientLight(Params.sceneTintColor);
   ambientLight.intensity = Params.ambientIntensity;
@@ -367,7 +367,6 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   scene.background  = new THREE.Color(Params.bgColor);
 
   renderer.setClearColor(Params.bgColor);  
-  
 
   let lastHoveredItem = { item: null, handlerId: null};
   let lastHoveredStickyItem = { item: null, handlerId: null};

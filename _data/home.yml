@@ -11,12 +11,29 @@ project_entries:
     desc: Gameplay code 
     tools: (C++, proprietary software)
     image: /assets/images/cover/kaikog.jpg
+    logo: /assets/images/logos/kaiko.png
+    desc_new: "|-**Gameplay code** within the ECS architecture.
+      C++, proprietary software.
+
+      01 Wall traversal
+      02 Enemy steering
+      03 Interactables
+      04 Carriables
+      05 Quick time events
+      06 Enemy logic"
 
   - title: Kaiko Project 5
     url: kaiko-project-5-particle-effects
     desc: Particle behavior & shaders 
     tools: (HLSL, C++, proprietary software)
     image: /assets/images/cover/kaikop.jpg
+    logo: /assets/images/logos/kaiko.png
+    desc_new: "|- Particle behavior & shaders.
+      HLSL, C++, proprietary software.
+      
+      01 Fire
+      02 Dust and Leaves
+      03 Fog"
 
   - title: Bachelor Thesis
     url: snowpack-simulation
@@ -31,6 +48,7 @@ project_entries:
     tools: (Shaderlab, Unity)
     highlight: DEMO
     image: /assets/images/cover/torpor.png
+    logo: /assets/images/logos/torpor.png
 
 old_project_entries:
   - title: Jet Loop

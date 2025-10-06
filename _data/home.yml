@@ -12,14 +12,14 @@ project_entries:
     tools: (C++, proprietary software)
     image: /assets/images/cover/kaikog.jpg
     logo: /assets/images/logos/kaiko.png
-    desc_long: "<strong>Gameplay code</strong> within the ECS architecture.\n
-      C++, proprietary software.\n\n
-      01 Wall traversal\n
-      02 Enemy steering\n
+    desc_long: "<strong>Gameplay code</strong> within the ECS architecture.\n\n
+      01 Wall Traversal\n
+      02 Enemy Steering\n
       03 Interactables\n
       04 Carriables\n
-      05 Quick time events\n
-      06 Enemy logic"
+      05 Quick Time Events\n
+      06 Enemy Logic\n\n
+      <em> C++, proprietary software.</em>"
 
   - title: Kaiko Project 5
     url: kaiko-project-5-particle-effects
@@ -27,11 +27,11 @@ project_entries:
     tools: (HLSL, C++, proprietary software)
     image: /assets/images/cover/kaikop.jpg
     logo: /assets/images/logos/kaiko.png
-    desc_long: "Particle behavior & shaders.\n
-      HLSL, C++, proprietary software.\n\n
+    desc_long: "<strong>Particle systems</strong> - movement & shaders. \n\n
       01 Fire\n
       02 Dust and Leaves\n
-      03 Fog"
+      03 Fog\n\n
+      <em> HLSL, C++, proprietary software.</em>"
 
   - title: Bachelor Thesis
     url: snowpack-simulation
@@ -39,6 +39,16 @@ project_entries:
     tools: (Python, Compute, C#, Unity)
     highlight: DEMO
     image: /assets/images/cover/grid.png
+    logo: /assets/images/logos/haw.png
+    desc_long: "<strong>Snowpack compression simulation</strong> on the GPU. Represented by a grid of snow cells, each storing its physical properties, 
+      the snowpack computes its densities and indendation under applied pressure and gravity over time.\n\n
+      01 Cell Pressure \n
+      02 Cell Hardness \n
+      03 Cell Stiffness \n
+      04 Cell Indent \n
+      05 Column Resampling \n
+      06 Cell Density \n\n
+      <em> Python, C#, Unity, Compute (HLSL) </em>"
 
   - title: Torpor Games Internship
     url: custom-shader-prototype-for-torpor-games
@@ -47,13 +57,20 @@ project_entries:
     highlight: DEMO
     image: /assets/images/cover/torpor.png
     logo: /assets/images/logos/torpor.png
+    desc_long: "Designing and implementing a <strong>custom stylized shader</strong> 
+      that blends visuals based on the view distance. \n\n
+      <em> ShaderLab, Unity Engine </em>"
 
 old_project_entries:
   - title: Jet Loop
     url: jet-loop
     desc: OpenGL practice project.
     tools: (C++, OpenGL, Dear ImGui, CMake)
+    highlight: DEMO
     image: /assets/images/jetloop/cappadocia1.png
+    desc_long: "Lightweight <strong>OpenGL renderer</strong> of a procedurally generated terrain patch 
+      using <strong>fractal noise.</strong> \n\n
+      <em> C++, OpenGL, Dear ImGui, CMake </em>"
 
   - title: Numerical Approximator
     url: numerical-approximator
@@ -61,6 +78,8 @@ old_project_entries:
     highlight: DEMO
     tools: (C++, Qt6, CMake)
     image: /assets/images/cover/numaprx.png
+    desc_long: "A launcher that executes several <strong>calculus operations</strong> with a <strong>console-like GUI</strong>. \n\n
+      <em> C++, Qt6, CMake. </em>"
 
   - title: Ghosts Never Talk
     url: ghosts-never-talk
@@ -68,6 +87,11 @@ old_project_entries:
     tools: (C#, Unity) 
     highlight: DEMO
     image: /assets/images/cover/ghost.png
+    desc_long: "<strong> 2.5D adventure</strong> team project with myself as the programmer. \n\n
+      03 Spline Movement \n
+      02 A* Pathfinding \n
+      03 Camera Movement \n\n
+      <em> C#, Unity Engine </em>"
 
   - title: Multiplayer Battleships
     url: battleships
@@ -75,12 +99,19 @@ old_project_entries:
     tools: (C#, Unity, Mirror, Steamworks) 
     highlight: DEMO
     image: /assets/images/cover/battleships.png
+    desc_long: "Local and remote <strong>networking</strong> practice project. \n\n
+     <em> C#, Unity Engine, Steamworks </em>"
 
   - title: Cthulhu High Rising
     url: cthulhu-high-rising
     desc: Tower defence in a Lovecraftian setting 
     tools: (C#, Unity)
     image: /assets/images/cthulhu/cthulhu_high_rising_cover.png
+    desc_long: "<strong>Gameplay </strong> for a card-based tower defence game-jam project. \n\n
+     01 Card Mechanics \n
+     02 Property Modifiers \n
+     03 Tower Block Types \n\n
+     <em> C#, Unity Engine </em>"
 
   - title: Realtime 3D for Web
     url: realtime-3d-for-web
@@ -88,18 +119,29 @@ old_project_entries:
     highlight: DEMO
     tools: (JavaScript, Three.js, HTML)
     image: /assets/images/cover/threejs.png
+    desc_long: "<strong>Web 3D </strong> practice with the THREE.js library. \n\n
+     01 Landscape Gen With Marching Squares \n
+     02 Snake Game \n
+     03 Double-Sided Clock \n\n
+     <em> JavaScript, Three.js, HTML </em>"
 
   - title: Custom Outlines in Unity
     url: outline-shader
     desc: Outline compute shader using a discontinuity map 
     tools: (Compute, HLSL, Unity)
     image: /assets/images/outlines/outlines_full.png
+    desc_long: "<strong>Stylized outline detection</strong> using substitute shaders that  
+      render into a discontinuity map.\n\n
+      <em> Unity, Compute (HLSL) </em>"
 
   - title: Networked Robot with RMI
     url: networked-robot-simulation
     desc: Network syncing via message queue  
     tools: (Java, Apache ActiveMQ, Figma)
     image: /assets/images/cover/javarobot.png
+    desc_long: "Mock-up of a distributed robot system with a client app, synced
+      over the network via a <strong>message queue.</strong> \n\n
+     <em>  Java, Apache ActiveMQ, Figma </em>"
 
 footer_entries:
   - title: linkedin

@@ -11,16 +11,16 @@
        .filter(el => el.classList.contains('project-card') && el.id)
        .map(el => [el.id, el])            
   );
-  let lastOpenedCard = null;
+  let currentCard = null;
 
   function showCard(entryId) {
-    lastOpenedCard = cards.get(entryId);
-    if (!lastOpenedCard) return;
+    currentCard = cards.get(entryId);
+    if (!currentCard) return;
 
-    lastOpenedCard.dataset.open = "true";
+    currentCard.dataset.open = "true";
 
-    lastOpenedCard.hidden = false;
-    lastOpenedCard.setAttribute('aria-hidden', 'false');
+    currentCard.hidden = false;
+    currentCard.setAttribute('aria-hidden', 'false');
   }
 
   function hideCard(entryId) {
@@ -29,7 +29,7 @@
 
     cardToHide.dataset.open = "false";
 /*     setTimeout(() => {
-      if(cardToHide !== lastOpenedCard)
+      if(cardToHide !== currentCard)
       {
         cardToHide.hidden = true;
         cardToHide.setAttribute('aria-hidden', 'true');
@@ -39,10 +39,9 @@
 
   function tryOpenCard()
   {
-    return;
-    if(lastOpenedCard == null) return;
+    if(currentCard == null) return;
 
-    const link = lastOpenedCard.querySelector('a[href]');
+    const link = currentCard.querySelector('a[href]');
     if (link) {
       console.log("Card link:", link.href);
       // open in new tab
@@ -425,6 +424,9 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
         if(newH != null){
           console.log("hover In " + newH.name);
           HoverHandlers[newHHandlerId].onHoverIn(newH);
+        }
+        else{
+          currentCard = null;
         }
     }
 

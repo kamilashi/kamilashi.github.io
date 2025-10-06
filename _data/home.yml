@@ -19,7 +19,7 @@ project_entries:
       04 Carriables\n
       05 Quick Time Events\n
       06 Enemy Logic\n\n
-      <em> C++, proprietary software.</em>"
+      <em> C++, proprietary software </em>"
 
   - title: Kaiko Project 5
     url: kaiko-project-5-particle-effects
@@ -31,7 +31,7 @@ project_entries:
       01 Fire\n
       02 Dust and Leaves\n
       03 Fog\n\n
-      <em> HLSL, C++, proprietary software.</em>"
+      <em> HLSL, C++, proprietary software </em>"
 
   - title: Bachelor Thesis
     url: snowpack-simulation
@@ -40,14 +40,10 @@ project_entries:
     highlight: DEMO
     image: /assets/images/cover/grid.png
     logo: /assets/images/logos/haw.png
-    desc_long: "<strong>Snowpack compression simulation</strong> on the GPU. Represented by a grid of snow cells, each storing its physical properties, 
-      the snowpack computes its densities and indendation under applied pressure and gravity over time.\n\n
-      01 Cell Pressure \n
-      02 Cell Hardness \n
-      03 Cell Stiffness \n
-      04 Cell Indent \n
-      05 Column Resampling \n
-      06 Cell Density \n\n
+    desc_long: "<strong>Snowpack compression simulation</strong> on the GPU. \n
+      Represented by a grid of snow cells, each storing its own physical properties, the snowpack simulates density and indentation changes over time under applied pressure and gravity. \n
+      The derivations are done in a compute shader in the following order:\n\n
+      Pressure => Hardness => Stiffness => Indent => Column Resampling\n => Density.\n\n
       <em> Python, C#, Unity, Compute (HLSL) </em>"
 
   - title: Torpor Games Internship

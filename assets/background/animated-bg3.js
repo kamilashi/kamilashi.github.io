@@ -44,8 +44,7 @@
     const link = currentCard.querySelector('a[href]');
     if (link) {
       console.log("Card link:", link.href);
-      // open in new tab
-      window.open(link.href);
+      window.open(link.href, '_self');
     }
   }
 

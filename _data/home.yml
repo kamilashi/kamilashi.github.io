@@ -12,7 +12,7 @@ project_entries:
     tools: (C++, proprietary software)
     image: /assets/images/cover/kaikog.jpg
     logo: /assets/images/logos/kaiko.png
-    desc_new: "|-**Gameplay code** within the ECS architecture.
+    desc_long: "|-**Gameplay code** within the ECS architecture.
       C++, proprietary software.
 
       01 Wall traversal
@@ -28,7 +28,7 @@ project_entries:
     tools: (HLSL, C++, proprietary software)
     image: /assets/images/cover/kaikop.jpg
     logo: /assets/images/logos/kaiko.png
-    desc_new: "|- Particle behavior & shaders.
+    desc_long: "|- Particle behavior & shaders.
       HLSL, C++, proprietary software.
       
       01 Fire

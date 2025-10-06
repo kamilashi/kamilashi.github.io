@@ -5,13 +5,13 @@
     return;
   }
 
-  const cardEl = document.getElementById('new-bg-card');
+  const cardEl = document.getElementById('project-card');
 
   function showCard(entryId) {
     const tpl = document.getElementById(entryId);
     if (!tpl) return;
 
-    //cardEl.replaceChildren(tpl.content.cloneNode(true)); // swap contents
+    cardEl.replaceChildren(tpl.content.cloneNode(true)); // swap contents
 
     cardEl.hidden = false;
     cardEl.dataset.open = "true";
@@ -28,7 +28,6 @@
 
   function tryOpenCard()
   {
-    return;
     if(cardEl.hidden == true) return;
 
     const link = cardEl.querySelector('a[href]');

@@ -1,0 +1,34 @@
+ 
+<a href="{{ include.cardItem.url }}">
+ <div class="new-bg-card">
+    <section class="new-bg-row new-bg-row-top">
+      <ul class="new-bg-top-list">
+        {% if include.cardItem.highlight %}
+        <li class="new-bg-top-list-item">{{ include.cardItem.highlight }}</li>
+        {% endif %}
+      </ul>
+    </section>
+
+    <section class="new-bg-row new-bg-row-second">
+      <div class="new-bg-text-second">{{ include.cardItem.title }}</div>
+    </section>
+
+    <section class="new-bg-row new-bg-row-middle">
+      {% if include.cardItem.image %}
+      <img src="{{ include.cardItem.image }}" alt="Cover">
+      {% else %}
+      <hr/>
+      {% endif %}
+    </section>
+
+    <section class="new-bg-row new-bg-row-bottom">
+      {% if include.cardItem.desc_long %} 
+      <div class="new-bg-text-bottom">{{ include.cardItem.desc_long }} </div>
+      {% endif %}
+
+      {% if include.cardItem.logo %}
+      <img src="{{ include.cardItem.logo }}">
+      {% endif %}
+    </section>
+</div>
+</a>

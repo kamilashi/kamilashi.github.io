@@ -2,6 +2,20 @@
 
   {% for item in site.data.home.project_entries %}
     <template id="s0e{{ forloop.index0 }}">
+      {% include new-bg-card.html cardItem = item %}
+    </template>
+  {% endfor %}
+
+  {% for item in site.data.home.old_project_entries %}
+    <template id="s1e{{ forloop.index0 }}">
+      {% include new-bg-card.html cardItem = item %}
+    </template>
+  {% endfor %}
+
+  <div id="project-card" class="new-bg-card" hidden aria-hidden="true"> </div>
+ <!-- 
+  {% for item in site.data.home.project_entries %}
+    <template id="s0e{{ forloop.index0 }}">
       {% include card.html cardItem = item %}
     </template>
   {% endfor %}
@@ -12,7 +26,7 @@
     </template>
   {% endfor %}
 
- <div id="new-bg-card" class="new-bg-card" >
+<div id="new-bg-card" class="new-bg-card" >
   <section class="new-bg-row new-bg-row-top">
     <ul class="new-bg-top-list">
       <li class="new-bg-top-list-item">Item A</li>
@@ -43,6 +57,7 @@
     <img src="/assets/images/logos/kaiko.png" alt="Logo">
   </section>
 </div>
+-->
 
   <style>
   #bg-canvas{

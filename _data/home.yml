@@ -12,14 +12,13 @@ project_entries:
     tools: (C++, proprietary software)
     image: /assets/images/cover/kaikog.jpg
     logo: /assets/images/logos/kaiko.png
-    desc_long: "|-**Gameplay code** within the ECS architecture.
-      C++, proprietary software.
-
-      01 Wall traversal
-      02 Enemy steering
-      03 Interactables
-      04 Carriables
-      05 Quick time events
+    desc_long: "<strong>Gameplay code</strong> within the ECS architecture.\n
+      C++, proprietary software.\n\n
+      01 Wall traversal\n
+      02 Enemy steering\n
+      03 Interactables\n
+      04 Carriables\n
+      05 Quick time events\n
       06 Enemy logic"
 
   - title: Kaiko Project 5
@@ -28,11 +27,10 @@ project_entries:
     tools: (HLSL, C++, proprietary software)
     image: /assets/images/cover/kaikop.jpg
     logo: /assets/images/logos/kaiko.png
-    desc_long: "|- Particle behavior & shaders.
-      HLSL, C++, proprietary software.
-      
-      01 Fire
-      02 Dust and Leaves
+    desc_long: "Particle behavior & shaders.\n
+      HLSL, C++, proprietary software.\n\n
+      01 Fire\n
+      02 Dust and Leaves\n
       03 Fog"
 
   - title: Bachelor Thesis

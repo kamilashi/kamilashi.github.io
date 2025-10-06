@@ -12,67 +12,36 @@
     </template>
   {% endfor %}
 
-  <div id="project-card" class="new-bg-card" hidden aria-hidden="true"> </div>
- <!-- 
-  {% for item in site.data.home.project_entries %}
-    <template id="s0e{{ forloop.index0 }}">
-      {% include card.html cardItem = item %}
-    </template>
-  {% endfor %}
-
-  {% for item in site.data.home.old_project_entries %}
-    <template id="s1e{{ forloop.index0 }}">
-      {% include card.html cardItem = item %}
-    </template>
-  {% endfor %}
-
-<div id="new-bg-card" class="new-bg-card" >
-  <section class="new-bg-row new-bg-row-top">
-    <ul class="new-bg-top-list">
-      <li class="new-bg-top-list-item">Item A</li>
-      <li class="new-bg-top-list-item">Item B</li>
-      <li class="new-bg-top-list-item">Item C</li>
-    </ul>
-  </section>
-
-  <section class="new-bg-row new-bg-row-second">
-    <div class="new-bg-text-second">Project Title</div>
-  </section>
-
-  <section class="new-bg-row new-bg-row-middle">
-    <img src="/assets/images/cover/kaikog.jpg" alt="Preview">
-  </section>
-
-  <section class="new-bg-row new-bg-row-bottom">
-    <div class="new-bg-text-bottom"><strong>Gameplay code</strong> within the ECS architecture.
-      C++, proprietary software.
-
-      01 Wall traversal
-      02 Enemy steering
-      03 Interactibles
-      04 Carriables
-      05 Quick time events
-      06 Enemy logic
-    </div>
-    <img src="/assets/images/logos/kaiko.png" alt="Logo">
-  </section>
-</div>
--->
+  <div id="project-card" hidden aria-hidden="true"></div>
 
   <style>
-  #bg-canvas{
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;            
-  }
+    #project-card {  
+        position: fixed;
+        top: 5rem;          
+        right: 6rem;        
+        z-index: 20;        
+        width: 35rem;       
+        aspect-ratio: 1 / 1;
 
-  /* Respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    #bg-canvas { display: none; }
-  }
-</style>
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .12s ease;
+    }
+    #project-card[data-open="true"] { opacity: 1; }
+
+    #bg-canvas{
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;            
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      #bg-canvas { display: none; }
+    }
+  </style>
 
 <script src="https://unpkg.com/three@0.147.0/build/three.js"></script>
 

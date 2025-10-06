@@ -2,11 +2,11 @@
 <a href="{{ include.cardItem.url }}">
  <div class="new-bg-card">
     <section class="new-bg-row new-bg-row-top">
-      <ul class="new-bg-top-list">
-        {% if include.cardItem.highlight %}
-        <li class="new-bg-top-list-item">{{ include.cardItem.highlight }}</li>
-        {% endif %}
-      </ul>
+    {% if include.cardItem.highlight %}
+          <ul class="new-bg-top-list">
+            <li class="new-bg-top-list-item">{{ include.cardItem.highlight }}</li>
+          </ul>
+    {% endif %}
     </section>
 
     <section class="new-bg-row new-bg-row-second">

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap');
 
 :root{
-  --new-bg-top-row-h: 4rem; //14%;
+  --new-bg-top-row-h: auto; //4rem; //14%;
   --new-bg-second-row-h: auto;
 
   --new-bg-card-pad: 0;
@@ -27,17 +27,13 @@
   display: grid;
   grid-template-rows: var(--new-bg-top-row-h) var(--new-bg-second-row-h) 1fr auto;
   gap: 0;
+  overflow: hidden;
   
   position: fixed;   
   right: 6rem;
   top: 5rem;
-  z-index: 10;
   pointer-events: none; 
-  opacity: 0;
-  transition: opacity .12s ease;
 }
-
-.new-bg-card[data-open="true"] { opacity: 1; }
 
 .new-bg-card .new-bg-row{
   margin: 0;

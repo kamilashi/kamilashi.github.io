@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap');
+
+:root{
+  --new-bg-top-row-h: 4rem; //14%;
+  --new-bg-second-row-h: auto;
+
+  --new-bg-card-pad: 0;
+  --new-bg-card-row-pad: 1.2rem;
+  --new-bg-shadow: 0 8px 24px rgba(0,0,0,.15);
+  --new-bg-border-radius: 12px;
+
+  //--new-bg-label-color: rgb(0, 89, 255);
+
+  --font-impact: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  --font-oswald: "Oswald", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.new-bg-card{
+  width: 35rem;
+  aspect-ratio: 1 / 1;
+  box-shadow: var(--new-bg-shadow);
+  border-radius: var(--new-bg-border-radius);
+  padding: var(--new-bg-card-pad);
+  box-sizing: border-box;
+  background: var(--bg-secondary);
+
+  display: grid;
+  grid-template-rows: var(--new-bg-top-row-h) var(--new-bg-second-row-h) 1fr auto;
+  gap: 0;
+  
+  position: fixed;   
+  right: 6rem;
+  top: 5rem;
+  z-index: 10;
+  pointer-events: none; 
+  //opacity: 0;
+  transition: opacity .12s ease;
+}
+
+.new-bg-card[data-open="true"] { opacity: 1; }
+
+.new-bg-card .new-bg-row{
+  margin: 0;
+}
+
+.new-bg-row-top{
+  display: flex;
+  align-items: center;
+  padding: var(--new-bg-card-row-pad);
+}
+.new-bg-top-list{
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.new-bg-top-list-item{
+  border: 1px var(--text) solid;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 0.0em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  color: var(--text);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.new-bg-row-second{
+  display: flex;
+  padding: var(--new-bg-card-row-pad);
+}
+.new-bg-text-second
+{
+  display: flex;
+  align-items: center;
+  font-family: var(--font-impact);
+  font-weight: 400; 
+  font-size: 3.3rem;
+  //letter-spacing: .02em;
+  text-transform: uppercase;
+  line-height: 1.0;
+
+  color: var(--text);
+  
+  padding: 0;
+  margin: 0;
+}
+
+.new-bg-row-middle{
+  position: relative;
+  overflow: hidden;
+}
+
+.new-bg-row-middle > img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.new-bg-row-bottom{
+  display: block;
+  padding: var(--new-bg-card-row-pad);
+}
+
+.new-bg-row-bottom > img{
+  width: 3.5rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  position: absolute;
+  bottom: var(--new-bg-card-row-pad);
+  right: var(--new-bg-card-row-pad);
+  z-index: 10000; 
+}
+
+.new-bg-text-bottom{
+  font-size: 1.3rem;
+  white-space: pre-line;
+  font-family: var(--font-oswald);
+  line-height: 1.1;
+  position: relative;
+  bottom: 0rem;
+  right: 0rem;
+  
+  color: var(--text);
+}
+
+/* 
+@media (max-width: 70em){
+  .new-bg-card{ width: 90vw; }
+} */

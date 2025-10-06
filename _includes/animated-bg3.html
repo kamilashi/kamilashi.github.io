@@ -1,6 +1,5 @@
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-
   {% for item in site.data.home.project_entries %}
     <template id="s0e{{ forloop.index0 }}">
       {% include card.html cardItem = item %}
@@ -13,14 +12,45 @@
     </template>
   {% endfor %}
 
-  <div id="project-card" class="project-card" hidden aria-hidden="true"></div>
+ <div id="new-bg-card" class="new-bg-card" >
+  <section class="new-bg-row new-bg-row-top">
+    <ul class="new-bg-top-list">
+      <li class="new-bg-top-list-item">Item A</li>
+      <li class="new-bg-top-list-item">Item B</li>
+      <li class="new-bg-top-list-item">Item C</li>
+    </ul>
+  </section>
+
+  <section class="new-bg-row new-bg-row-second">
+    <div class="new-bg-text-second">Project Title</div>
+  </section>
+
+  <section class="new-bg-row new-bg-row-middle">
+    <img src="/assets/images/cover/kaikog.jpg" alt="Preview">
+  </section>
+
+  <section class="new-bg-row new-bg-row-bottom">
+    <div class="new-bg-text-bottom"><strong>Gameplay code</strong> within the ECS architecture.
+      C++, proprietary software.
+
+      01 Wall traversal
+      02 Enemy steering
+      03 Interactibles
+      04 Carriables
+      05 Quick time events
+      06 Enemy logic
+    </div>
+    <img src="/assets/images/logos/kaiko.png" alt="Logo">
+  </section>
+</div>
+  <!-- <div id="project-card" class="project-card" hidden aria-hidden="true"></div> -->
 
   <style>
-    .project-card {
+    /* .project-card {
       position: fixed;     
       z-index: 10;
       top: 2rem;    
-      right: -5rem; 
+      right: 0rem; 
       width: 50em;
       max-width: calc(100vw - 2rem);
       pointer-events: none; 
@@ -32,11 +62,11 @@
     #project-card > li.card {
     list-style: none;
     display: block;
-    background: var(--bg);
+    background: var(--bg-secondary);
     border-radius: 12px;
     box-shadow: 0 6px 24px rgba(0,0,0,.35);
     overflow: hidden;
-    }
+    } */
 
   #bg-canvas{
     position: fixed;

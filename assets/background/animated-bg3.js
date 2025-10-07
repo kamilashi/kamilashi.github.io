@@ -235,27 +235,26 @@
   let entries = new Array(entriesCount);
   let sections = new Array(Params.sectionsCount);
   
-  const { times: entryKfTimes, values: entryKfValues } = getKeyFramesWRate(Params.entryHoverShiftDuration, 120, easeOutCubic, Params.entryHoverShiftDistance);
-  const entryShiftPos = convertD([0.0, 1.0, 0.0], entryKfValues);
-  const entryShiftUpKF = new THREE.VectorKeyframeTrack(
-    ".position",
+  const { times: entryKfTimes, values: entryKfValues } = getKeyFramesWRate(Params.entryHoverShiftDuration, 120, easeOutCubic, 1.0);
+  const entryShiftPos = convertD([Params.entryHoverShiftDistance], entryKfValues);
+  const entryShiftUpKF = new THREE.NumberKeyframeTrack(
+    ".position[y]",
     entryKfTimes,
     entryShiftPos
-  );
-  const entryHoverInClip = new THREE.AnimationClip("entry-hover-in", -1, [
-    entryShiftUpKF
-  ]);
+  ); 
 
-const { times: cabinetKfTimes, values: cabinetKfValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
-const cabinetShiftPos =  convertD([Params.cabinetHoverShiftDistance, 0.0, 0.0], cabinetKfValues);
-const cabinetShiftForwardKF = new THREE.VectorKeyframeTrack(
-    ".position",
-    cabinetKfTimes,
-    cabinetShiftPos
-  );
-const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
-    cabinetShiftForwardKF 
-  ]);
+  //console.log(entryHoverInClip);
+
+  const { times: cabinetKfTimes, values: cabinetKfValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
+  const cabinetShiftPos =  convertD([Params.cabinetHoverShiftDistance], cabinetKfValues);
+  const cabinetShiftForwardKF = new THREE.NumberKeyframeTrack(
+      ".position[x]",
+      cabinetKfTimes,
+      cabinetShiftPos
+    );
+  const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
+      cabinetShiftForwardKF 
+    ]);
 
   let i = 0;
   let imported;
@@ -294,6 +293,16 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
 
     const entriesXOffset = Params.drawerInnerDepth + (Params.drawerOuterDepth - Params.drawerInnerDepth)*0.5 - Params.recordSize*0.5;
     let angleRad = Math.asin((entriesSpacing * 0.5 - Params.recordDepth) / Params.recordSize); 
+    
+    const entryRotate = convertD([angleRad], entryKfValues, -angleRad);
+    const entryRotateKF = new THREE.NumberKeyframeTrack(
+      ".rotation[x]",
+      entryKfTimes,
+      entryRotate
+    );
+    const entryHoverInClip = new THREE.AnimationClip("entry-hover-in", -1, [
+      entryShiftUpKF, entryRotateKF,
+    ]);
 
     for (let eIdx = Params.entriesCount[sIdx]-1; eIdx >=0 ; eIdx--) 
     {

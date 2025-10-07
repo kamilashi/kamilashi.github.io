@@ -48,11 +48,89 @@
     }
   }
 
+  const Params =
+  {
+    bgColor: '#B3AF92',
+    entriesCount: [4, 8], // sync with the site data!
+    sectionsCount: 2, // sync with the site data!
+    titleTopMargin: 0.1,
+    titleXOffsetStep: 0.17,
+
+    entryHoverShiftDistance: 0.5,
+    entryHoverShiftDuration: 0.2,
+    cabinetHoverShiftDistance: 0.5,
+    cabinetHoverShiftDuration: 1.0,
+
+    drawerSpacing: 0.65625, // from the blender file. TODO: replace with some named hooks
+    drawerOuterWidth: 0.628,
+    drawerOuterDepth: 0.703,
+    drawerOuterHeight: 0.484,
+
+    drawerInnerWidth: 0.607,
+    drawerInnerDepth: 0.678,
+
+    recordSize: 0.4,
+    recordDepth: 0.005,
+    recordOffsetY: 0.1,
+    recordSensorSizeMultX: 1.2,
+
+    drawerSensorDepth: 0.5,
+    drawerSensorSizeMultX: 1.7,
+    drawerSensorSizeMultY: 1.2,
+
+    //ambientIntensity: 0.0,
+    //sceneTintColorDay: '#B3AF92',
+    //sceneTintColorGroundNight: '#000000',
+    sceneTintColorDay: '#ada66b',
+    sceneTintColorNight: '#101fa3',
+    directionalLightIntensity: 1.0,
+    fakeEnvironmentIntensityDay: 1.2,
+    fakeEnvironmentIntensityNight: 1.2,
+    pointLightIntensity: 1.5,
+    spotLightIntensity: 0.7,
+
+    toneMappingExposureDay: 1.7,
+    toneMappingExposureNight: 1.0,
+
+    windScrollSpeed: 0.7,
+    windSampleScale: 5.0,
+    plantMaxAngle: 0.001,
+
+    // runtime set
+    drawerStartPos: 0, 
+  }
+
+  const Interactives =
+  {
+    lampLight: 0,
+    sunLight: 0,
+    
+    lampObject: 0,
+
+    drawer: 0,
+    plant: 0,
+  }
+
+  const Layers =
+  {
+    entries: 1,
+    sections: 2
+  }
+
+  const RuntimeData =
+  {
+    hoverEnabled: false,
+    isDay: true,
+    isWindEnabled: true,
+    windSampleOffset: 0,
+  }
+
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
     alpha: true 
   });
+
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -97,63 +175,33 @@
   const axesHelper = new THREE.AxesHelper( 1 );
   //controls.target.set(0, 0.5, 0.5);
 
-  const Params =
+  function setAmbient()
   {
-    bgColor: '#B3AF92',
-    entriesCount: [4, 8], // sync with the site data!
-    sectionsCount: 2, // sync with the site data!
-    titleTopMargin: 0.1,
-    titleXOffsetStep: 0.17,
-
-    entryHoverShiftDistance: 0.5,
-    entryHoverShiftDuration: 0.2,
-    cabinetHoverShiftDistance: 0.5,
-    cabinetHoverShiftDuration: 1.0,
-
-    drawerSpacing: 0.65625, // from the blender file. TODO: replace with some named hooks
-    drawerOuterWidth: 0.628,
-    drawerOuterDepth: 0.703,
-    drawerOuterHeight: 0.484,
-
-    drawerInnerWidth: 0.607,
-    drawerInnerDepth: 0.678,
-
-    recordSize: 0.4,
-    recordDepth: 0.005,
-    recordOffsetY: 0.1,
-    recordSensorSizeMultX: 1.2,
-
-    drawerSensorDepth: 0.5,
-    drawerSensorSizeMultX: 1.7,
-    drawerSensorSizeMultY: 1.2,
-
-    //sceneTintColor: '#B3AF92',
-    sceneTintColor: '#ada66b',
-    directionalLightIntensity: 1.0,
-    ambientIntensity: 0.0,
-    fakeEnvironmentIntensity: 1.2,
-    pointLightIntensity: 1.5,
-    spotLightIntensity: 0.0,
-
-    // runtime set
-    drawerStartPos: 0, 
+    if(RuntimeData.isDay){
+      RuntimeData.isWindEnabled = true;
+      Interactives.lampLight.intensity = 0.0;
+      Interactives.sunLight.intensity = Params.directionalLightIntensity;
+      fakeEnvironmentLight.color.set(Params.sceneTintColorDay);      
+      fakeEnvironmentLight.groundColor.set(Params.sceneTintColorDay); 
+      fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityDay;
+      renderer.toneMappingExposure = Params.toneMappingExposureDay;      
+      console.log(Interactives.plant);       
+    }
+    else{
+      RuntimeData.isWindEnabled = false;
+      Interactives.lampLight.intensity = Params.spotLightIntensity;
+      Interactives.sunLight.intensity = 0.0;
+      fakeEnvironmentLight.color.set(Params.sceneTintColorNight);      
+      fakeEnvironmentLight.groundColor.set(Params.sceneTintColorNight);
+      fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityNight;
+      renderer.toneMappingExposure = Params.toneMappingExposureNight;    
+    }
   }
 
-  let Interactives =
+  function toggleDayNight()
   {
-    lampLight: 0,
-    sunLight: 0,
-    
-    lampObject: 0,
-
-    drawer: 0,
-    plant: 0,
-  }
-
-  const Layers =
-  {
-    entries: 1,
-    sections: 2
+    RuntimeData.isDay = !RuntimeData.isDay;
+    setAmbient();
   }
 
   function runSymmetricalAnimation(obj, direction)
@@ -223,6 +271,10 @@
   const textQuad = new THREE.Mesh(testGeometry, Materials.test);
   textQuad.position.set(5, 2, 0);
   //scene.add(textQuad);
+
+  fakeEnvironmentLight = new THREE.HemisphereLight(Params.sceneTintColorDay, Params.sceneTintColorDay);
+  fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityDay;
+  scene.add(fakeEnvironmentLight);
 
   const entryGeometry = new THREE.BoxGeometry( Params.recordSize, Params.recordSize, Params.recordDepth );
   entryGeometry.translate(0, entryGeometry.parameters.height * 0.5, 0);
@@ -422,16 +474,10 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
 
   initializeCabinet();
 
+  setAmbient();
+
 	renderer.setAnimationLoop( animate );
 });
-  
-  ambientLight = new THREE.AmbientLight(Params.sceneTintColor);
-  ambientLight.intensity = Params.ambientIntensity;
-  scene.add(ambientLight);
-
-  fakeEnvironmentLight = new THREE.HemisphereLight(Params.sceneTintColor, Params.sceneTintColor);
-  fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensity;
-  scene.add(fakeEnvironmentLight);
 
   scene.background  = new THREE.Color(Params.bgColor);
 
@@ -439,10 +485,9 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
 
   let lastHoveredItem = { item: null, handlerId: null};
   let lastHoveredStickyItem = { item: null, handlerId: null};
-  let hoverEnabled = false;
 
   function processHover() {
-    if(hoverEnabled == false) return;
+    if(RuntimeData.hoverEnabled == false) return;
 
     raycaster.setFromCamera(mousePos, camera);
 
@@ -507,7 +552,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   window.addEventListener('pointermove', (e) => {
   mousePos.x =  (e.clientX / innerWidth) * 2 - 1;
   mousePos.y = -(e.clientY / innerHeight) * 2 + 1;
-  hoverEnabled = true;
+  RuntimeData.hoverEnabled = true;
   });
 
   function onResize()
@@ -541,9 +586,16 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   });
 
   onResize();
-  let time = 0;
 
-  const frac = n => n - Math.floor(n);
+  const GuiData = {
+    ToggleDayNight: toggleDayNight,
+  }
+
+  const gui = new lil.GUI();
+  gui.add(GuiData, 'ToggleDayNight');
+  gui.add(Params, 'windScrollSpeed');
+  gui.add(Params, 'windSampleScale');
+  gui.add(Params, 'plantMaxAngle');
 
   // Animation loop
   function animate(){
@@ -567,10 +619,11 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
       entry.userData.mixer.update(delta);
     });
 
-    const speed = 0.7;
-    time += delta * speed;
-    const offset = perlin.noise(5, time);
-    const maxAngle = 0.001;
-    Interactives.plant.rotateZ(offset * maxAngle);
+    if (RuntimeData.isWindEnabled)
+    {
+      RuntimeData.windSampleOffset += delta * Params.windScrollSpeed;
+      const offset = perlin.noise(Params.windSampleScale, RuntimeData.windSampleOffset);
+      Interactives.plant.rotateZ(offset * Params.plantMaxAngle);
+    }
   };
 })();

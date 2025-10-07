@@ -119,6 +119,7 @@
     drawerInnerDepth: 0.678,
 
     recordSize: 0.4,
+    recordDepth: 0.005,
     recordOffsetY: 0.1,
     recordSensorSizeMultX: 1.2,
 
@@ -206,21 +207,21 @@
     tex.magFilter = THREE.NearestFilter;
   }
 
-  Textures.test = textureLoader.load('./assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
-  console.log( Textures.test);
+  //Textures.test = textureLoader.load('./assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
+  //console.log( Textures.test);
 
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
     sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
-    test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false, map: Textures.test }),
+    //test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false, map: Textures.test }),
   }
 
   //const entryGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize );
-  const entryGeometry = new THREE.BoxGeometry( Params.recordSize, Params.recordSize, 0.005 );
+  const entryGeometry = new THREE.BoxGeometry( Params.recordSize, Params.recordSize, Params.recordDepth );
   entryGeometry.translate(0, entryGeometry.parameters.height * 0.5, 0);
 
-  const entrySensorGeometry = new THREE.PlaneGeometry( Params.recordSize * Params.recordSensorSizeMultX, Params.recordSize + Params.entryHoverShiftDistance );
+  const entrySensorGeometry = new THREE.BoxGeometry( Params.recordSize * Params.recordSensorSizeMultX, Params.recordSize + Params.entryHoverShiftDistance, 0.05 );
   entrySensorGeometry.translate(0, entrySensorGeometry.parameters.height * 0.5, 0);
 
   const cabinetSensorGeometry = new THREE.BoxGeometry( Params.drawerSensorDepth, 

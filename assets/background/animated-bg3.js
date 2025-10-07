@@ -43,7 +43,7 @@
 
     const link = currentCard.querySelector('a[href]');
     if (link) {
-      console.log("Card link:", link.href);
+      //console.log("Card link:", link.href);
       window.open(link.href, '_self');
     }
   }
@@ -83,6 +83,7 @@
   //composer.addPass(fxaaPass);
 
   const modelLoader = new THREE.GLTFLoader();
+  const textureLoader = new THREE.TextureLoader();
   
   const clock = new THREE.Clock();
   let controls;
@@ -91,8 +92,6 @@
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enabled = true;
   }
-  //
-  //
 
   camera.position.set(-1, 1.5, 2);
   const axesHelper = new THREE.AxesHelper( 1 );
@@ -190,13 +189,35 @@
    },
   };
 
+  const Textures = 
+  {
+    test: 0,
+  } 
+
+  function initializeTexture(tex)
+  {
+    const data = tex.source?.data || tex.image;
+    const w = data?.width, h = data?.height;
+    const aspect = (w && h) ? w / h : 1;
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.x = 1 / aspect;
+    tex.center.x = 0.5;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.magFilter = THREE.NearestFilter;
+  }
+
+  Textures.test = textureLoader.load('./assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
+  console.log( Textures.test);
+
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
     sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
+    test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false, map: Textures.test }),
   }
 
-  const entryGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize );
+  //const entryGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize );
+  const entryGeometry = new THREE.BoxGeometry( Params.recordSize, Params.recordSize, 0.005 );
   entryGeometry.translate(0, entryGeometry.parameters.height * 0.5, 0);
 
   const entrySensorGeometry = new THREE.PlaneGeometry( Params.recordSize * Params.recordSensorSizeMultX, Params.recordSize + Params.entryHoverShiftDistance );
@@ -274,6 +295,7 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
 
     for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) 
     {
+      const entryId = `s${sIdx}e${eIdx}`;
       const etntryContainer = new THREE.Object3D();
       etntryContainer.position.set(entriesXOffset, Params.recordOffsetY, + Params.drawerInnerWidth * 0.5  - entriesSpacing * ( 0.5 + eIdx));
 
@@ -283,7 +305,10 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
       entries[i].name = "sec" + sIdx + "_entry" + eIdx;
       etntryContainer.add(entries[i]);
 
-      entryModel = new THREE.Mesh(entryGeometry, Materials.default);
+      const enryCard = cards.get(entryId);
+      const entryTex = textureLoader.load(enryCard.dataset.image, (tex) =>{ initializeTexture(tex); });
+      const entryMaterial = new THREE.MeshStandardMaterial({ wireframe: false, transparent: false, map: entryTex });
+      entryModel = new THREE.Mesh(entryGeometry, entryMaterial);
       entryModel.position.set(0, 0, 0);
       etntryContainer.add(entryModel);
 
@@ -299,8 +324,7 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
 
       entries[i].userData.actions.hoverIn.loop = THREE.LoopOnce;
       entries[i].userData.actions.hoverIn.clampWhenFinished = true;
-      entries[i].userData.id = `s${sIdx}e${eIdx}`
-
+      entries[i].userData.id = entryId;
 
       sections[sIdx].userData.entrySensors[eIdx] = entries[i];
       sections[sIdx].userData.model.add(etntryContainer);
@@ -416,12 +440,12 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     const processHit = (newH, oldH, newHHandlerId, oldHHandlerId) => {
       if(newH !== oldH){
         if(oldH != null) {
-          console.log("hover Out " + oldH.name);
+          //console.log("hover Out " + oldH.name);
           HoverHandlers[oldHHandlerId].onHoverOut(oldH);
         }
 
         if(newH != null){
-          console.log("hover In " + newH.name);
+          //console.log("hover In " + newH.name);
           HoverHandlers[newHHandlerId].onHoverIn(newH);
         }
         else{

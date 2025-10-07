@@ -2,12 +2,12 @@
 
   <div id="project-card-layer">
   {% for item in site.data.home.project_entries %}
-    <div id="s0e{{ forloop.index0 }}" class="project-card" aria-hidden="true">
+    <div id="s0e{{ forloop.index0 }}" class="project-card" aria-hidden="true" data-image=".{{ item.image}}">
       {% include new-bg-card.html cardItem = item %}
     </div>
   {% endfor %}
   {% for item in site.data.home.old_project_entries %}
-    <div id="s1e{{ forloop.index0 }}" class="project-card" aria-hidden="true">
+    <div id="s1e{{ forloop.index0 }}" class="project-card" aria-hidden="true" data-image=".{{ item.image}}">
       {% include new-bg-card.html cardItem = item %}
     </div>
   {% endfor %}

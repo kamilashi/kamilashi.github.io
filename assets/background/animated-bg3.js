@@ -293,8 +293,9 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
     const entriesSpacing = Params.drawerInnerWidth / Params.entriesCount[sIdx];
 
     const entriesXOffset = Params.drawerInnerDepth + (Params.drawerOuterDepth - Params.drawerInnerDepth)*0.5 - Params.recordSize*0.5;
+    let angleRad = Math.asin((entriesSpacing * 0.5 - Params.recordDepth) / Params.recordSize); 
 
-    for (let eIdx = 0; eIdx < Params.entriesCount[sIdx]; eIdx++) 
+    for (let eIdx = Params.entriesCount[sIdx]-1; eIdx >=0 ; eIdx--) 
     {
       const entryId = `s${sIdx}e${eIdx}`;
       const etntryContainer = new THREE.Object3D();
@@ -311,7 +312,10 @@ const cabinetHoverInClip = new THREE.AnimationClip("section-hover-in", -1, [
       const entryMaterial = new THREE.MeshStandardMaterial({ wireframe: false, transparent: false, map: entryTex });
       entryModel = new THREE.Mesh(entryGeometry, entryMaterial);
       entryModel.position.set(0, 0, 0);
+      entryModel.rotateX(-angleRad);  
       etntryContainer.add(entryModel);
+
+      //angleRad = angleRad + Math.asin((entriesSpacing * Math.cos(angleRad) - Params.recordDepth) / Params.recordSize);
 
       const entryMixer = new THREE.AnimationMixer(entryModel);
         

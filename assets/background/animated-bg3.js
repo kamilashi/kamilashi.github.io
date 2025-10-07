@@ -147,6 +147,7 @@
     lampObject: 0,
 
     drawer: 0,
+    plant: 0,
   }
 
   const Layers =
@@ -207,17 +208,22 @@
     tex.magFilter = THREE.NearestFilter;
   }
 
-  //Textures.test = textureLoader.load('./assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
+  const perlin = new Perlin2D(42);
+  //Textures.test = createNoiseTexture(perlin, 5.0); //textureLoader.load('./assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
   //console.log( Textures.test);
 
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
     sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
-    //test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false, map: Textures.test }),
+    test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false /* , map: Textures.test  */ }),
   }
 
-  //const entryGeometry = new THREE.PlaneGeometry( Params.recordSize, Params.recordSize );
+  const testGeometry = new THREE.PlaneGeometry( 5, 5 );
+  const textQuad = new THREE.Mesh(testGeometry, Materials.test);
+  textQuad.position.set(5, 2, 0);
+  //scene.add(textQuad);
+
   const entryGeometry = new THREE.BoxGeometry( Params.recordSize, Params.recordSize, Params.recordDepth );
   entryGeometry.translate(0, entryGeometry.parameters.height * 0.5, 0);
 
@@ -412,6 +418,8 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   Interactives.drawer.position.set(0, 0, 0);
   Interactives.drawer.parent.remove(Interactives.drawer);
 
+  Interactives.plant = imported.getObjectByName("Plant");
+
   initializeCabinet();
 
 	renderer.setAnimationLoop( animate );
@@ -533,6 +541,9 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   });
 
   onResize();
+  let time = 0;
+
+  const frac = n => n - Math.floor(n);
 
   // Animation loop
   function animate(){
@@ -555,5 +566,11 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     sections.forEach(entry => {
       entry.userData.mixer.update(delta);
     });
+
+    const speed = 0.7;
+    time += delta * speed;
+    const offset = perlin.noise(5, time);
+    const maxAngle = 0.001;
+    Interactives.plant.rotateZ(offset * maxAngle);
   };
 })();

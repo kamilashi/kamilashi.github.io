@@ -1,4 +1,4 @@
-  function syncDecay(input, amplitudeCoef, decayRate, period, phaseCoef)
+ function syncDecay(input, amplitudeCoef, decayRate, period, phaseCoef)
 {
     const freq = (2.0 * Math.PI) / period;
     const sync = Math.pow(2.0, -1.0 * decayRate * input) 
@@ -75,4 +75,42 @@ function convertD(dimensionVector, values, addValue = 0)
         }
     }
     return output;
+}
+
+function createNoiseTexture(perlin, scale)
+{
+    const textureSideSize = 128;
+    const textureWidth = textureSideSize;
+    const textureHeight = textureSideSize;
+
+    const textureSize = textureWidth * textureHeight;
+    const colorTextureData = new Uint8Array(4 * textureSize);
+
+    //const perlin = new Perlin2D(42);
+    const channelCount = 4;
+
+    for (let i = 0; i < textureSize; i++) {
+
+		const vi = Math.floor(i / textureHeight) //y
+		const ui = i % textureHeight //x
+	
+		const texcoord = new THREE.Vector2(0, 0);
+		texcoord.x = ui / textureWidth
+		texcoord.y = vi / textureHeight
+	
+		const stride = i * channelCount;
+
+        const noise = perlin.octaveNoise01(texcoord.x * scale, texcoord.y * scale); // perlin.noise01(texcoord.x * scale, texcoord.y * scale);
+		const value = noise * 255;
+	
+		colorTextureData[stride] = value; //r
+		colorTextureData[stride + 1] = value; //g
+		colorTextureData[stride + 2] = value; //b
+		colorTextureData[stride + 3] = 255;
+	}
+
+    // used the buffer to create a DataTexture
+    const colorTexture = new THREE.DataTexture(colorTextureData, textureWidth, textureHeight);
+    colorTexture.needsUpdate = true;
+    return colorTexture;
 }

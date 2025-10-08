@@ -94,7 +94,7 @@
 
     windScrollSpeed: 0.7,
     windSampleScale: 5.0,
-    plantMaxAngle: 0.001,
+    plantMaxAngle: 0.0007,
 
     // runtime set
     drawerStartPos: 0, 
@@ -110,6 +110,7 @@
 
     drawer: 0,
     plant: 0,
+    plants: 0,
   }
 
   const Layers =
@@ -122,6 +123,7 @@
   {
     hoverEnabled: false,
     isDay: true,
+    isDragging: false,
     isWindEnabled: true,
     windSampleOffset: 0,
   }
@@ -169,6 +171,8 @@
   if(useControls)
   {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.addEventListener('start', () => RuntimeData.isDragging = true);
+    controls.addEventListener('end',   () => RuntimeData.isDragging = false);
     controls.enabled = true;
   }
 
@@ -186,7 +190,6 @@
       fakeEnvironmentLight.groundColor.set(Params.sceneTintColorDay); 
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityDay;
       renderer.toneMappingExposure = Params.toneMappingExposureDay;      
-      console.log(Interactives.plant);       
     }
     else{
       RuntimeData.isWindEnabled = false;
@@ -483,7 +486,27 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   Interactives.drawer.parent.remove(Interactives.drawer);
 
   Interactives.plant = imported.getObjectByName("Plant");
+  const stemLeafPairCount = Interactives.plant.children.length / 2; // first stemLeafPairCount meshes are stems, last ones are leaves
+  Interactives.plants = new Array(stemLeafPairCount);
+  const plantsTemp = Interactives.plant.children.slice();  
+  for(let sIdx = 0; sIdx < stemLeafPairCount; sIdx ++) 
+  {
+    Interactives.plants[sIdx] = plantsTemp[sIdx];
+    const leafIdx = sIdx + stemLeafPairCount;
 
+    plantsTemp[leafIdx].updateMatrixWorld(true);
+    Interactives.plants[sIdx].updateMatrixWorld(true);
+    
+    const invParent = new THREE.Matrix4().copy(Interactives.plants[sIdx].matrixWorld).invert();
+    const local = new THREE.Matrix4().multiplyMatrices(invParent, plantsTemp[leafIdx].matrixWorld);
+    
+    Interactives.plants[sIdx].add(plantsTemp[leafIdx]);
+    local.decompose(Interactives.plants[sIdx].children[0].position, Interactives.plants[sIdx].children[0].quaternion, Interactives.plants[sIdx].children[0].scale);
+  }
+
+  gui.add(GuiData, 'PlantMeshIndex', 0, stemLeafPairCount - 1, 1);
+
+  console.log(Interactives.plant);
   initializeCabinet();
 
   setAmbient();
@@ -594,13 +617,18 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   });
 
   renderer.domElement.addEventListener('click', (e) => {
-    tryOpenCard();
+    if(!RuntimeData.isDragging)
+    {
+      tryOpenCard();
+    }
   });
 
   onResize();
 
   const GuiData = {
     ToggleDayNight: toggleDayNight,
+    PlantMeshIndex: 0,
+    TogglePlantMesh: () => {Interactives.plants[GuiData.PlantMeshIndex].visible = !Interactives.plants[GuiData.PlantMeshIndex].visible }
   }
 
   const gui = new lil.GUI();
@@ -608,6 +636,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   gui.add(Params, 'windScrollSpeed');
   gui.add(Params, 'windSampleScale');
   gui.add(Params, 'plantMaxAngle');
+  gui.add(GuiData, 'TogglePlantMesh');
 
   // Animation loop
   function animate(){
@@ -634,8 +663,13 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     if (RuntimeData.isWindEnabled)
     {
       RuntimeData.windSampleOffset += delta * Params.windScrollSpeed;
-      const offset = perlin.noise(Params.windSampleScale, RuntimeData.windSampleOffset);
-      Interactives.plant.rotateZ(offset * Params.plantMaxAngle);
+
+      for(let sIdx = 0; sIdx < Interactives.plants.length; sIdx ++) 
+      {
+        const baseNoise = perlin.noise(Params.windSampleScale, RuntimeData.windSampleOffset + sIdx*21);
+        const offset = (baseNoise + perlin.noise(Params.windSampleScale * 2, RuntimeData.windSampleOffset + sIdx*10)) * 0.5;
+        Interactives.plants[sIdx].rotateZ(offset * Params.plantMaxAngle);
+      }
     }
   };
 })();

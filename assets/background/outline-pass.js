@@ -1,4 +1,7 @@
-const outlinePass = new THREE.ShaderPass({
+import * as THREE from 'three';
+import { ShaderPass } from 'three/postprocessing/ShaderPass';
+
+export const outlinePass = new ShaderPass({
   uniforms: {
     tDiffuse:   { value: null },
     resolution: { value: new THREE.Vector2() }, // px

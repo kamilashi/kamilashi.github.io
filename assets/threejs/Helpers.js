@@ -1,4 +1,6 @@
- function syncDecay(input, amplitudeCoef, decayRate, period, phaseCoef)
+import * as THREE from 'three';
+
+export function syncDecay(input, amplitudeCoef, decayRate, period, phaseCoef)
 {
     const freq = (2.0 * Math.PI) / period;
     const sync = Math.pow(2.0, -1.0 * decayRate * input) 
@@ -8,15 +10,15 @@
     return sync;
 }
 
- function linearRampInOut(input) {
+export function linearRampInOut(input) {
     return 1.0 - 2.0 * Math.abs(input - 0.5);
 }
 
- function easeOutCubic(input) {
+export function easeOutCubic(input) {
     return 1 - Math.pow(1 - input, 3);
 }
 
- function easeOutElastic(input) {
+export function easeOutElastic(input) {
     const c4 = (2.0 * Math.PI) / 3.0;
 
     if (input === 0.0) return 0.0;
@@ -26,15 +28,15 @@
            Math.sin((input * 10.0 - 0.75) * c4) + 1.0;
 }
 
- function clamp(number, min, max) {
+export function clamp(number, min, max) {
   return Math.max(min, Math.min(number, max));
 }
 
- function clamp01(number) {
+export function clamp01(number) {
   return clamp(number, 0.0, 1.0);
 }
 
- function getKeyFrames(duration, sampleCount, sampledFunction, scale = 1)
+export function getKeyFrames(duration, sampleCount, sampledFunction, scale = 1)
 {
     const sampleStep = duration / sampleCount;
 
@@ -56,14 +58,14 @@
     return {times, values}
 }
 
- function getKeyFramesWRate(duration, sampleRate, sampledFunction, scale = 1)
+export function getKeyFramesWRate(duration, sampleRate, sampledFunction, scale = 1)
 {
     const sampleCount = Math.floor(duration * sampleRate);
     
     return getKeyFrames(duration, sampleCount, sampledFunction, scale);
 }
 
-function convertD(dimensionVector, values, addValue = 0)
+export function convertD(dimensionVector, values, addValue = 0)
 {
     const width = dimensionVector.length;
     const output = new Float32Array(values.length * width);
@@ -77,7 +79,7 @@ function convertD(dimensionVector, values, addValue = 0)
     return output;
 }
 
-function createNoiseTexture(perlin, scale)
+export function createNoiseTexture(perlin, scale)
 {
     const textureSideSize = 128;
     const textureWidth = textureSideSize;
@@ -115,7 +117,7 @@ function createNoiseTexture(perlin, scale)
     return colorTexture;
 }
 
-function bakeLocalScaleOnly(mesh, { cloneGeometry = true } = {}) {
+export function bakeLocalScaleOnly(mesh, { cloneGeometry = true } = {}) {
   if (!mesh?.isMesh || !mesh.geometry) return;
 
   if (cloneGeometry) mesh.geometry = mesh.geometry.clone();

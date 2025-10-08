@@ -55,19 +55,35 @@
     }
   </style>
 
-<script src="https://unpkg.com/three@0.147.0/build/three.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.147.0/build/three.module.js",
 
-<script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://unpkg.com/three@0.147.0/examples/js/shaders/CopyShader.js"></script>  <!-- remove later --> 
-<script src="https://unpkg.com/three@0.147.0/examples/js/shaders/FXAAShader.js"></script>
-<script src="https://unpkg.com/three@0.147.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://unpkg.com/three@0.147.0/examples/js/postprocessing/Pass.js"></script>
-<script src="https://unpkg.com/three@0.147.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://unpkg.com/three@0.147.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lil-gui@0.20"></script>
-<script src="../assets/threejs/GLTFLoader.js"> </script>
-<script src="../assets/threejs/Noises.js"></script>
-<script src="../assets/threejs/Helpers.js"></script>
-<script src="../assets/background/outline-pass.js"></script>
-<script defer src="../assets/background/animated-bg3.js"></script>
+    "three/postprocessing/EffectComposer": "https://unpkg.com/three@0.147.0/examples/jsm/postprocessing/EffectComposer.js",
+    "three/postprocessing/Pass":           "https://unpkg.com/three@0.147.0/examples/jsm/postprocessing/Pass.js",
+    "three/postprocessing/RenderPass":     "https://unpkg.com/three@0.147.0/examples/jsm/postprocessing/RenderPass.js",
+    "three/postprocessing/ShaderPass":     "https://unpkg.com/three@0.147.0/examples/jsm/postprocessing/ShaderPass.js",
+
+    "three/shaders/CopyShader": "https://unpkg.com/three@0.147.0/examples/jsm/shaders/CopyShader.js",
+    "three/shaders/FXAAShader": "https://unpkg.com/three@0.147.0/examples/jsm/shaders/FXAAShader.js",
+
+    "three/controls/OrbitControls": "https://unpkg.com/three@0.147.0/examples/jsm/controls/OrbitControls.js",
+    "three/loaders/GLTFLoader":     "https://unpkg.com/three@0.147.0/examples/jsm/loaders/GLTFLoader.js",
+
+    "lil-gui": "https://cdn.jsdelivr.net/npm/lil-gui@0.20/dist/lil-gui.esm.js",
+
+    "app/Noises":       "../assets/threejs/Noises.js",
+    "app/Helpers":      "../assets/threejs/Helpers.js",
+    "app/OutlinePass":  "../assets/background/outline-pass.js",
+
+    "app/main":         "../assets/background/animated-bg3.js"
+  }
+}
+</script>
+
+<!-- App entry: load your ESM file that uses the aliases above -->
+<script type="module">
+  import "app/main";
+</script>
 

@@ -1,6 +1,19 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/controls/OrbitControls';
+import { EffectComposer } from 'three/postprocessing/EffectComposer';
+import { RenderPass } from 'three/postprocessing/RenderPass';
+import { CopyShader } from 'three/shaders/CopyShader';
+import { FXAAShader } from 'three/shaders/FXAAShader';
+import { GLTFLoader } from 'three/loaders/GLTFLoader';
+import GUI from 'lil-gui';
+
+import {Perlin2D} from 'app/Noises';
+import * as Helpers from 'app/Helpers';
+import {outlinePass} from 'app/OutlinePass';
+
 (() => {
   const canvas = document.getElementById('bg-canvas');
-  if (!canvas || !window.THREE) {
+  if (!canvas || !THREE) {
     console.log("No THREE.js!");
     return;
   }
@@ -158,19 +171,19 @@
 
   // composer
   //const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
-  const composer = new THREE.EffectComposer(renderer);
-  composer.addPass(new THREE.RenderPass(scene, camera));
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
   //composer.addPass(outlinePass);
   //composer.addPass(fxaaPass);
 
-  const modelLoader = new THREE.GLTFLoader();
+  const modelLoader = new GLTFLoader();
   const textureLoader = new THREE.TextureLoader();
   
   const clock = new THREE.Clock();
   let controls;
   if(useControls)
   {
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
     controls.addEventListener('start', () => RuntimeData.isDragging = true);
     controls.addEventListener('end',   () => RuntimeData.isDragging = false);
     controls.enabled = true;
@@ -277,7 +290,7 @@
   textQuad.position.set(5, 2, 0);
   //scene.add(textQuad);
 
-  fakeEnvironmentLight = new THREE.HemisphereLight(Params.sceneTintColorDay, Params.sceneTintColorDay);
+  const fakeEnvironmentLight = new THREE.HemisphereLight(Params.sceneTintColorDay, Params.sceneTintColorDay);
   fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityDay;
   scene.add(fakeEnvironmentLight);
 
@@ -298,8 +311,8 @@
   let entries = new Array(entriesCount);
   let sections = new Array(Params.sectionsCount);
   
-  const { times: entryKfTimes, values: entryKfValues } = getKeyFramesWRate(Params.entryHoverShiftDuration, 120, easeOutCubic, 1.0);
-  const entryShiftPos = convertD([Params.entryHoverShiftDistance], entryKfValues);
+  const { times: entryKfTimes, values: entryKfValues } = Helpers.getKeyFramesWRate(Params.entryHoverShiftDuration, 120, Helpers.easeOutCubic, 1.0);
+  const entryShiftPos = Helpers.convertD([Params.entryHoverShiftDistance], entryKfValues);
   const entryShiftUpKF = new THREE.NumberKeyframeTrack(
     ".position[y]",
     entryKfTimes,
@@ -308,8 +321,8 @@
 
   //console.log(entryHoverInClip);
 
-  const { times: cabinetKfTimes, values: cabinetKfValues } = getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, easeOutElastic, 1.0);
-  const cabinetShiftPos =  convertD([Params.cabinetHoverShiftDistance], cabinetKfValues);
+  const { times: cabinetKfTimes, values: cabinetKfValues } = Helpers.getKeyFramesWRate(Params.cabinetHoverShiftDuration, 120, Helpers.easeOutElastic, 1.0);
+  const cabinetShiftPos =  Helpers.convertD([Params.cabinetHoverShiftDistance], cabinetKfValues);
   const cabinetShiftForwardKF = new THREE.NumberKeyframeTrack(
       ".position[x]",
       cabinetKfTimes,
@@ -357,7 +370,7 @@
     const entriesXOffset = Params.drawerInnerDepth + (Params.drawerOuterDepth - Params.drawerInnerDepth)*0.5 - Params.recordSize*0.5;
     let angleRad = Math.asin((entriesSpacing * 0.5 - Params.recordDepth) / Params.recordSize); 
     
-    const entryRotate = convertD([angleRad], entryKfValues, -angleRad);
+    const entryRotate = Helpers.convertD([angleRad], entryKfValues, -angleRad);
     const entryRotateKF = new THREE.NumberKeyframeTrack(
       ".rotation[x]",
       entryKfTimes,
@@ -382,7 +395,7 @@
       const enryCard = cards.get(entryId);
       const entryTex = textureLoader.load(enryCard.dataset.image, (tex) =>{ initializeTexture(tex); });
       const entryMaterial = new THREE.MeshStandardMaterial({ wireframe: false, transparent: false, map: entryTex });
-      entryModel = new THREE.Mesh(entryGeometry, entryMaterial);
+      const entryModel = new THREE.Mesh(entryGeometry, entryMaterial);
       entryModel.position.set(0, 0, 0);
       entryModel.rotateX(-angleRad);   
       etntryContainer.add(entryModel); 
@@ -497,8 +510,8 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     const stem = Interactives.plants[sIdx];
     const leaf = plantsTemp[leafIdx];
 
-    bakeLocalScaleOnly(stem);
-    bakeLocalScaleOnly(leaf);
+    Helpers.bakeLocalScaleOnly(stem);
+    Helpers.bakeLocalScaleOnly(leaf);
     
     stem.attach(leaf);
     leaf.updateMatrixWorld(true);
@@ -632,7 +645,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     TogglePlantMesh: () => {Interactives.plants[GuiData.PlantMeshIndex].visible = !Interactives.plants[GuiData.PlantMeshIndex].visible }
   }
 
-  const gui = new lil.GUI();
+  const gui = new GUI();
   gui.add(GuiData, 'ToggleDayNight');
   gui.add(Params, 'windScrollSpeed');
   gui.add(Params, 'windSampleScale');

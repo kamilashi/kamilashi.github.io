@@ -1,4 +1,4 @@
-class Perlin2D {
+export class Perlin2D {
   constructor(seed = 123456789) {
     this._rand = (() => {
       let s = seed >>> 0 || 1;

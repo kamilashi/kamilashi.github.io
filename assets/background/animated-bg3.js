@@ -258,6 +258,7 @@
   }
 
   const perlin = new Perlin2D(42);
+  perlin.setPeriod(255, 255);  
   //Textures.test = createNoiseTexture(perlin, 5.0); //textureLoader.load('./assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
   //console.log( Textures.test);
 

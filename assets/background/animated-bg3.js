@@ -102,6 +102,7 @@
 
   const Interactives =
   {
+    lightBulb: 0,
     lampLight: 0,
     sunLight: 0,
     
@@ -194,7 +195,7 @@
       fakeEnvironmentLight.color.set(Params.sceneTintColorNight);      
       fakeEnvironmentLight.groundColor.set(Params.sceneTintColorNight);
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityNight;
-      renderer.toneMappingExposure = Params.toneMappingExposureNight;    
+      renderer.toneMappingExposure = Params.toneMappingExposureNight;  
     }
   }
 
@@ -438,9 +439,10 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
         o.shadow.mapSize.width = 4096; 
         o.shadow.mapSize.height = 4096; 
         
-        o.shadow.camera.near = 0.01; 
-        o.shadow.camera.far = 20; 
-        o.shadow.normalBias = 0.02;
+        o.shadow.camera.near = 0.02; 
+        o.shadow.camera.far = 15; 
+        o.shadow.camera.updateProjectionMatrix();
+        o.shadow.normalBias = 0.02;  
 
         Interactives.sunLight = o;
         }
@@ -451,6 +453,11 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     if (o.isSpotLight) {
       o.intensity = Params.spotLightIntensity; 
       o.castShadow = true;
+      o.receiveShadow = false;
+      o.shadow.camera.near = 0.2; 
+      o.shadow.camera.far = 4.0; 
+      o.shadow.camera.updateProjectionMatrix();
+      o.shadow.normalBias = -0.31;
       Interactives.lampLight = o;
     }
   } 
@@ -460,7 +467,11 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   }
   });
   
-  Interactives.lampObject = imported.getObjectByName("LightBulb");
+  Interactives.lightBulb = imported.getObjectByName("LightBulb");
+  Interactives.lightBulb.receiveShadow  = false;
+  Interactives.lightBulb.castShadow  = false;
+
+  Interactives.lampObject = imported.getObjectByName("LampShell");
   Interactives.lampObject.receiveShadow  = false;
   Interactives.lampObject.castShadow  = false;
   

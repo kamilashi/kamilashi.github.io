@@ -180,8 +180,8 @@
   {
     if(RuntimeData.isDay){
       RuntimeData.isWindEnabled = true;
-      Interactives.lampLight.intensity = 0.0;
-      Interactives.sunLight.intensity = Params.directionalLightIntensity;
+      Interactives.lampLight.visible = false;
+      Interactives.sunLight.visible = true;
       fakeEnvironmentLight.color.set(Params.sceneTintColorDay);      
       fakeEnvironmentLight.groundColor.set(Params.sceneTintColorDay); 
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityDay;
@@ -190,8 +190,8 @@
     }
     else{
       RuntimeData.isWindEnabled = false;
-      Interactives.lampLight.intensity = Params.spotLightIntensity;
-      Interactives.sunLight.intensity = 0.0;
+      Interactives.lampLight.visible = true;
+      Interactives.sunLight.visible = false;
       fakeEnvironmentLight.color.set(Params.sceneTintColorNight);      
       fakeEnvironmentLight.groundColor.set(Params.sceneTintColorNight);
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityNight;

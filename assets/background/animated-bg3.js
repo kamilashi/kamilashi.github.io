@@ -384,8 +384,8 @@
       const entryMaterial = new THREE.MeshStandardMaterial({ wireframe: false, transparent: false, map: entryTex });
       entryModel = new THREE.Mesh(entryGeometry, entryMaterial);
       entryModel.position.set(0, 0, 0);
-      entryModel.rotateX(-angleRad);  
-      etntryContainer.add(entryModel);
+      entryModel.rotateX(-angleRad);   
+      etntryContainer.add(entryModel); 
 
       //angleRad = angleRad + Math.asin((entriesSpacing * Math.cos(angleRad) - Params.recordDepth) / Params.recordSize);
 
@@ -494,14 +494,15 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     Interactives.plants[sIdx] = plantsTemp[sIdx];
     const leafIdx = sIdx + stemLeafPairCount;
 
-    plantsTemp[leafIdx].updateMatrixWorld(true);
-    Interactives.plants[sIdx].updateMatrixWorld(true);
+    const stem = Interactives.plants[sIdx];
+    const leaf = plantsTemp[leafIdx];
+
+    bakeLocalScaleOnly(stem);
+    bakeLocalScaleOnly(leaf);
     
-    const invParent = new THREE.Matrix4().copy(Interactives.plants[sIdx].matrixWorld).invert();
-    const local = new THREE.Matrix4().multiplyMatrices(invParent, plantsTemp[leafIdx].matrixWorld);
-    
-    Interactives.plants[sIdx].add(plantsTemp[leafIdx]);
-    local.decompose(Interactives.plants[sIdx].children[0].position, Interactives.plants[sIdx].children[0].quaternion, Interactives.plants[sIdx].children[0].scale);
+    stem.attach(leaf);
+    leaf.updateMatrixWorld(true);
+    //local.decompose(Interactives.plants[sIdx].children[0].position, Interactives.plants[sIdx].children[0].quaternion, Interactives.plants[sIdx].children[0].scale);
   }
 
   gui.add(GuiData, 'PlantMeshIndex', 0, stemLeafPairCount - 1, 1);

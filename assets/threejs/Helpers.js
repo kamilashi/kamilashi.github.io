@@ -114,3 +114,28 @@ function createNoiseTexture(perlin, scale)
     colorTexture.needsUpdate = true;
     return colorTexture;
 }
+
+function bakeLocalScaleOnly(mesh, { cloneGeometry = true } = {}) {
+  if (!mesh?.isMesh || !mesh.geometry) return;
+
+  if (cloneGeometry) mesh.geometry = mesh.geometry.clone();
+
+  mesh.updateMatrix(); 
+
+  const _p = new THREE.Vector3();
+  const _q = new THREE.Quaternion();
+  const _s = new THREE.Vector3();
+  mesh.matrix.decompose(_p, _q, _s);
+
+  const scaleMat = new THREE.Matrix4().makeScale(_s.x, _s.y, _s.z);
+  mesh.geometry.applyMatrix4(scaleMat);
+
+  mesh.scale.set(1, 1, 1);
+  mesh.updateMatrix();
+
+  if (mesh.geometry.attributes.normal) {
+    mesh.geometry.normalizeNormals?.();
+  }
+  mesh.geometry.computeBoundingBox();
+  mesh.geometry.computeBoundingSphere();
+}

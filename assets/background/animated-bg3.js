@@ -90,7 +90,7 @@
     spotLightIntensity: 0.7,
 
     toneMappingExposureDay: 1.7,
-    toneMappingExposureNight: 1.0,
+    toneMappingExposureNight: 1.5,
 
     windScrollSpeed: 0.7,
     windSampleScale: 5.0,

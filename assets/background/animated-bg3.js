@@ -283,7 +283,7 @@ import {outlinePass} from 'app/OutlinePass';
 
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
-    text: new THREE.MeshBasicMaterial({ color: 0x000000 }),
+    text: new THREE.MeshStandardMaterial({ color: 0xACACAC }),
     sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
     test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false /* , map: Textures.test  */ }),
   }
@@ -511,19 +511,19 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   // todo: automate somehow
   const workProjlabel = imported.getObjectByName("SectionLabel0");
   sectionLabels[0] = new Text();
-  sectionLabels[0].text = 'Affiliated Proejcts';
+  sectionLabels[0].text = 'AFFILIATED PROJECTS';
   workProjlabel.add(sectionLabels[0]);
   
   const personalProjlabel = imported.getObjectByName("SectionLabel1");
   sectionLabels[1] = new Text();
-  sectionLabels[1].text = 'Personal Proejcts';
+  sectionLabels[1].text = 'PERSONAL PROJECTS';
   personalProjlabel.add(sectionLabels[1]);
 
   sectionLabels.forEach(label => {
     //label.color = 0x000000;
     label.material = Materials.text;
     label.rotation.y += Math.PI/2;
-    label.fontSize = 0.05;
+    label.fontSize = 0.04;
     label.anchorX = 'center';
     label.anchorY = 'middle';
     label.sync();

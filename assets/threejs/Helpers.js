@@ -79,6 +79,20 @@ export function convertD(dimensionVector, values, addValue = 0)
     return output;
 }
 
+export function convertDD(dimensionVector, values, addValue)
+{
+    const width = dimensionVector.length;
+    const output = new Float32Array(values.length * width);
+    for(let i = 0; i < values.length; i++)
+    {
+        for(let j = 0; j < width; j++)
+        {
+            output[i*width + j] = values[i] * dimensionVector[j] + addValue[j];
+        }
+    }
+    return output;
+}
+
 export function createNoiseTexture(perlin, scale)
 {
     const textureSideSize = 128;

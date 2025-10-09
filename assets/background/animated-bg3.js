@@ -112,8 +112,12 @@ import {outlinePass} from 'app/OutlinePass';
     windSampleScale: 5.0,
     plantMaxAngle: 0.0007,
 
+    cameraTruckDistance: 0.5,
+    cameraTruckDuration: 1.0,
+
     // runtime set
     drawerStartPos: 0, 
+    cameraDir: 0.
   }
 
   const Interactives =
@@ -159,7 +163,7 @@ import {outlinePass} from 'app/OutlinePass';
   //renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
   renderer.shadowMap.enabled = true;
 
-  let useControls = true;
+  let useControls = false;
 
   const raycaster = new THREE.Raycaster();
   const mousePos = new THREE.Vector2();
@@ -224,9 +228,18 @@ import {outlinePass} from 'app/OutlinePass';
     setAmbient();
   }
 
-  function runSymmetricalAnimation(obj, direction)
+  function runSymmetricalAnimationGeneric(action, direction, duration)
   {
-      const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, Params.entryHoverShiftDuration);
+      const localTime = THREE.MathUtils.clamp(action.time, 0, duration);
+      action.timeScale = direction;
+      action.time = localTime;
+      action.paused = false;
+      action.play();
+  }
+
+  function runSymmetricalAnimation(obj, direction, duration)
+  {
+      const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, duration);
       obj.userData.actions.hoverIn.timeScale = direction;
       obj.userData.actions.hoverIn.time = localTime;
       obj.userData.actions.hoverIn.paused = false;
@@ -236,27 +249,36 @@ import {outlinePass} from 'app/OutlinePass';
   const HoverHandlers = {
   [Layers.entries]: {
     onHoverIn:  (obj) => { 
-      runSymmetricalAnimation(obj, 1);
+      runSymmetricalAnimation(obj, 1, Params.entryHoverShiftDuration);
       showCard(obj.userData.id);
      },
     onHoverOut: (obj) => { 
-      runSymmetricalAnimation(obj, -1); 
+      runSymmetricalAnimation(obj, -1, Params.entryHoverShiftDuration); 
       hideCard(obj.userData.id);
     }  
     },
   [Layers.sections]: {
+      // ! Something fishy. Params.entryHoverShiftDuration used with both secitons and entries
     onHoverIn:  (obj) => { 
-      runSymmetricalAnimation(obj, 1); 
+      runSymmetricalAnimation(obj, 1, Params.entryHoverShiftDuration); 
 
       setTimeout(() => { 
       obj.userData.entrySensors.forEach(sensor => { sensor.scale.y = 1; });
       }, Params.cabinetHoverShiftDuration * 550);
     },
     onHoverOut: (obj) => { 
-      runSymmetricalAnimation(obj, -1); 
+      runSymmetricalAnimation(obj, -1, Params.entryHoverShiftDuration); 
       obj.userData.entrySensors.forEach(sensor => { sensor.scale.y = 0; }); 
     } 
    },
+   Camera: {
+    onOpenPost: (obj) => { 
+      runSymmetricalAnimationGeneric(obj.userData.actions.truckRight, 1, Params.cameraTruckDuration);
+     },
+    onClosePost: (obj) => { 
+      runSymmetricalAnimationGeneric(obj.userData.actions.truckRight, -1, Params.cameraTruckDuration);
+     },
+   }
   };
 
   const Textures = 
@@ -439,12 +461,36 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   camera = camNode;                         
   camera.aspect = renderer.domElement.clientWidth / renderer.domElement.clientHeight;
   camera.updateProjectionMatrix();
+  
+  Params.cameraDir = new THREE.Vector3();
+  camera.getWorldDirection(Params.cameraDir);
+
+  const { times: cameraKfTimes, values: cameraKfValues } = Helpers.getKeyFramesWRate(Params.cameraTruckDuration, 120, Helpers.easeOutCubic, Params.cameraTruckDistance);
+  const cameraRight = Params.cameraDir.clone();
+  cameraRight.cross(camera.up);
+  const cameraShiftPos = Helpers.convertDD([cameraRight.x, cameraRight.y, cameraRight.z], cameraKfValues, [camera.position.x, camera.position.y, camera.position.z]);
+  const cameraTruckKF = new THREE.VectorKeyframeTrack (
+      ".position",
+      cameraKfTimes,
+      cameraShiftPos
+    );
+    const cameraTruckRightClip = new THREE.AnimationClip("truck-right", -1, [
+      cameraTruckKF,
+    ]);
+    
+  const cameraMixer = new THREE.AnimationMixer(camera);
+  camera.userData.mixer = cameraMixer;
+  camera.userData.actions = 
+    {
+      truckRight: cameraMixer.clipAction(cameraTruckRightClip),
+    };
+
+  camera.userData.actions.truckRight.loop = THREE.LoopOnce;
+  camera.userData.actions.truckRight.clampWhenFinished = true;
 
   if(useControls){
       controls.object = camera;
-      const dir = new THREE.Vector3();
-      camera.getWorldDirection(dir);
-      controls.target.copy(camera.position).addScaledVector(dir, 5); 
+      controls.target.copy(camera.position).addScaledVector(Params.cameraDir, 5); 
       controls.update();
     }
   }
@@ -667,7 +713,9 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   const GuiData = {
     ToggleDayNight: toggleDayNight,
     PlantMeshIndex: 0,
-    TogglePlantMesh: () => {Interactives.plants[GuiData.PlantMeshIndex].visible = !Interactives.plants[GuiData.PlantMeshIndex].visible }
+    TogglePlantMesh: () => {Interactives.plants[GuiData.PlantMeshIndex].visible = !Interactives.plants[GuiData.PlantMeshIndex].visible },
+    OpenCard: () => {HoverHandlers.Camera.onOpenPost(camera);},
+    CloseCard: () => {HoverHandlers.Camera.onClosePost(camera);},
   }
 
   const gui = new GUI();
@@ -676,6 +724,8 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   gui.add(Params, 'windSampleScale');
   gui.add(Params, 'plantMaxAngle');
   gui.add(GuiData, 'TogglePlantMesh');
+  gui.add(GuiData, 'OpenCard');
+  gui.add(GuiData, 'CloseCard');
 
   // Animation loop
   function animate(){
@@ -698,6 +748,8 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     sections.forEach(entry => {
       entry.userData.mixer.update(delta);
     });
+
+    camera.userData.mixer.update(delta);
 
     if (RuntimeData.isWindEnabled)
     {

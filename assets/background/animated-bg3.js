@@ -5,6 +5,8 @@ import { RenderPass } from 'three/postprocessing/RenderPass';
 import { CopyShader } from 'three/shaders/CopyShader';
 import { FXAAShader } from 'three/shaders/FXAAShader';
 import { GLTFLoader } from 'three/loaders/GLTFLoader';
+import {Text} from 'troika-three-text';
+import { createDerivedMaterial} from 'troika-three-utils'
 import GUI from 'lil-gui';
 
 import {Perlin2D} from 'app/Noises';
@@ -92,18 +94,19 @@ import {outlinePass} from 'app/OutlinePass';
     drawerSensorSizeMultY: 1.2,
 
     //ambientIntensity: 0.0,
-    //sceneTintColorDay: '#B3AF92',
     //sceneTintColorGroundNight: '#000000',
-    sceneTintColorDay: '#ada66b',
-    sceneTintColorNight: '#101fa3',
-    directionalLightIntensity: 1.0,
+    //sceneTintColorDay: '#ada66b',
+    //sceneTintColorNight: '#101fa3',
+    sceneTintColorDay: '#B3AF92',
+    sceneTintColorNight: '#4353ff',
+    directionalLightIntensity: 0.5,
     fakeEnvironmentIntensityDay: 1.2,
     fakeEnvironmentIntensityNight: 1.2,
     pointLightIntensity: 1.5,
     spotLightIntensity: 0.7,
 
-    toneMappingExposureDay: 1.7,
-    toneMappingExposureNight: 1.5,
+    toneMappingExposureDay: 2.0,
+    toneMappingExposureNight: 2.0,
 
     windScrollSpeed: 0.7,
     windSampleScale: 5.0,
@@ -308,8 +311,9 @@ import {outlinePass} from 'app/OutlinePass';
   let entriesCount = 0;
   Params.entriesCount.forEach(count => entriesCount += count);
 
-  let entries = new Array(entriesCount);
-  let sections = new Array(Params.sectionsCount);
+  const entries = new Array(entriesCount);
+  const sections = new Array(Params.sectionsCount);
+  const sectionLabels = new Array(Params.sectionsCount);
   
   const { times: entryKfTimes, values: entryKfValues } = Helpers.getKeyFramesWRate(Params.entryHoverShiftDuration, 120, Helpers.easeOutCubic, 1.0);
   const entryShiftPos = Helpers.convertD([Params.entryHoverShiftDistance], entryKfValues);
@@ -502,6 +506,28 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   const stemLeafPairCount = Interactives.plant.children.length / 2; // first stemLeafPairCount meshes are stems, last ones are leaves
   Interactives.plants = new Array(stemLeafPairCount);
   const plantsTemp = Interactives.plant.children.slice();  
+
+  // todo: automate somehow
+  const workProjlabel = imported.getObjectByName("SectionLabel0");
+  sectionLabels[0] = new Text();
+  sectionLabels[0].text = 'Affiliated Proejcts';
+  workProjlabel.add(sectionLabels[0]);
+  
+  const personalProjlabel = imported.getObjectByName("SectionLabel1");
+  sectionLabels[1] = new Text();
+  sectionLabels[1].text = 'Personal Proejcts';
+  personalProjlabel.add(sectionLabels[1]);
+
+  sectionLabels.forEach(label => {
+    //label.color = 0x000000;
+    label.material = Materials.text;
+    label.rotation.y += Math.PI/2;
+    label.fontSize = 0.05;
+    label.anchorX = 'center';
+    label.anchorY = 'middle';
+    label.sync();
+  });
+
   for(let sIdx = 0; sIdx < stemLeafPairCount; sIdx ++) 
   {
     Interactives.plants[sIdx] = plantsTemp[sIdx];
@@ -510,17 +536,15 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     const stem = Interactives.plants[sIdx];
     const leaf = plantsTemp[leafIdx];
 
-    Helpers.bakeLocalScaleOnly(stem);
-    Helpers.bakeLocalScaleOnly(leaf);
+    Helpers.bakeLocalScale(stem);
+    Helpers.bakeLocalScale(leaf);
     
     stem.attach(leaf);
     leaf.updateMatrixWorld(true);
-    //local.decompose(Interactives.plants[sIdx].children[0].position, Interactives.plants[sIdx].children[0].quaternion, Interactives.plants[sIdx].children[0].scale);
   }
 
   gui.add(GuiData, 'PlantMeshIndex', 0, stemLeafPairCount - 1, 1);
 
-  console.log(Interactives.plant);
   initializeCabinet();
 
   setAmbient();

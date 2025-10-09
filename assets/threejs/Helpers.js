@@ -117,7 +117,7 @@ export function createNoiseTexture(perlin, scale)
     return colorTexture;
 }
 
-export function bakeLocalScaleOnly(mesh, { cloneGeometry = true } = {}) {
+export function bakeLocalScale(mesh, { cloneGeometry = true } = {}) {
   if (!mesh?.isMesh || !mesh.geometry) return;
 
   if (cloneGeometry) mesh.geometry = mesh.geometry.clone();

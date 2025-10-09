@@ -398,6 +398,7 @@ import {outlinePass} from 'app/OutlinePass';
 
       const enryCard = cards.get(entryId);
       const entryTex = textureLoader.load(enryCard.dataset.image, (tex) =>{ initializeTexture(tex); });
+      entryTex.colorSpace = THREE.SRGBColorSpace;
       const entryMaterial = new THREE.MeshStandardMaterial({ wireframe: false, transparent: false, map: entryTex });
       const entryModel = new THREE.Mesh(entryGeometry, entryMaterial);
       entryModel.position.set(0, 0, 0);

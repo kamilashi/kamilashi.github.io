@@ -93,6 +93,26 @@ export function convertDD(dimensionVector, values, addValue)
     return output;
 }
 
+export function getReversed3DArray(array3D){
+    const reversed = structuredClone(array3D);
+    let stopIdx = array3D.length / 3;
+    stopIdx = array3D.length - Math.floor(stopIdx / 2) * 3;
+
+    for(let i = array3D.length-1; i > stopIdx; i-=3)
+    {
+        reversed[array3D.length - i - 1] =  array3D[i-2];
+        reversed[i-2] = array3D[array3D.length - i - 1];
+
+        reversed[array3D.length - i] =  array3D[i-1];
+        reversed[i-1] = array3D[array3D.length - i];
+
+        reversed[array3D.length - i + 1] =  array3D[i];
+        reversed[i] = array3D[array3D.length - i + 1];
+    }
+
+    return reversed;
+}
+
 export function createNoiseTexture(perlin, scale)
 {
     const textureSideSize = 128;

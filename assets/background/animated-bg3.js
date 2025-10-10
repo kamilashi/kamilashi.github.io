@@ -112,7 +112,7 @@ import {outlinePass} from 'app/OutlinePass';
     windSampleScale: 5.0,
     plantMaxAngle: 0.0007,
 
-    cameraTruckDistance: 0.5,
+    cameraTruckDistance: 0.8,
     cameraTruckDuration: 1.0,
 
     // runtime set
@@ -273,10 +273,12 @@ import {outlinePass} from 'app/OutlinePass';
    },
    Camera: {
     onOpenPost: (obj) => { 
-      runSymmetricalAnimationGeneric(obj.userData.actions.truckRight, 1, Params.cameraTruckDuration);
+      obj.userData.actions.truckRight.play();
+      obj.userData.actions.truckLeft.stop();
      },
     onClosePost: (obj) => { 
-      runSymmetricalAnimationGeneric(obj.userData.actions.truckRight, -1, Params.cameraTruckDuration);
+      obj.userData.actions.truckLeft.play();
+      obj.userData.actions.truckRight.stop();
      },
    }
   };
@@ -296,6 +298,12 @@ import {outlinePass} from 'app/OutlinePass';
     tex.center.x = 0.5;
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.magFilter = THREE.NearestFilter;
+  }
+
+  function initializeAnimation(action)
+  {
+    action.loop = THREE.LoopOnce;
+    action.clampWhenFinished = true;
   }
 
   const perlin = new Perlin2D(42);
@@ -386,8 +394,7 @@ import {outlinePass} from 'app/OutlinePass';
       hoverIn: mixer.clipAction(cabinetHoverInClip),
     };
     
-    sections[sIdx].userData.actions.hoverIn.loop = THREE.LoopOnce;
-    sections[sIdx].userData.actions.hoverIn.clampWhenFinished = true;
+    initializeAnimation( sections[sIdx].userData.actions.hoverIn);
 
     sections[sIdx].userData.entrySensors = new Array(Params.entriesCount[sIdx]);
     scene.add(sectionContainer);
@@ -439,8 +446,7 @@ import {outlinePass} from 'app/OutlinePass';
         hoverIn: entryMixer.clipAction(entryHoverInClip),
       };
 
-      entries[i].userData.actions.hoverIn.loop = THREE.LoopOnce;
-      entries[i].userData.actions.hoverIn.clampWhenFinished = true;
+      initializeAnimation(entries[i].userData.actions.hoverIn);
       entries[i].userData.id = entryId;
 
       sections[sIdx].userData.entrySensors[eIdx] = entries[i];
@@ -468,14 +474,21 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   const { times: cameraKfTimes, values: cameraKfValues } = Helpers.getKeyFramesWRate(Params.cameraTruckDuration, 120, Helpers.easeOutCubic, Params.cameraTruckDistance);
   const cameraRight = Params.cameraDir.clone();
   cameraRight.cross(camera.up);
-  const cameraShiftPos = Helpers.convertDD([cameraRight.x, cameraRight.y, cameraRight.z], cameraKfValues, [camera.position.x, camera.position.y, camera.position.z]);
-  const cameraTruckKF = new THREE.VectorKeyframeTrack (
-      ".position",
-      cameraKfTimes,
-      cameraShiftPos
-    );
-    const cameraTruckRightClip = new THREE.AnimationClip("truck-right", -1, [
-      cameraTruckKF,
+  const cameraShiftRightPos = Helpers.convertDD([cameraRight.x, cameraRight.y, cameraRight.z], cameraKfValues, [camera.position.x, camera.position.y, camera.position.z]);
+  const cameraRightEndPos = new THREE.Vector3();
+  cameraRightEndPos.z = cameraShiftRightPos[cameraShiftRightPos.length-1];
+  cameraRightEndPos.y = cameraShiftRightPos[cameraShiftRightPos.length-2];
+  cameraRightEndPos.x = cameraShiftRightPos[cameraShiftRightPos.length-3];
+  const cameraShiftLeftPos = Helpers.convertDD([-cameraRight.x, -cameraRight.y, -cameraRight.z], cameraKfValues, [cameraRightEndPos.x, cameraRightEndPos.y, cameraRightEndPos.z]);
+
+  const cameraTruckRightKF = new THREE.VectorKeyframeTrack ( ".position", cameraKfTimes, cameraShiftRightPos );
+  const cameraTruckLeftKF = new THREE.VectorKeyframeTrack ( ".position", cameraKfTimes, cameraShiftLeftPos );
+
+    const cameraTruckRightClip = new THREE.AnimationClip("truck-right", Params.cameraTruckDuration, [
+      cameraTruckRightKF,
+    ]);
+    const cameraTruckLeftClip = new THREE.AnimationClip("truck-left",  Params.cameraTruckDuration, [
+      cameraTruckLeftKF,
     ]);
     
   const cameraMixer = new THREE.AnimationMixer(camera);
@@ -483,10 +496,11 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   camera.userData.actions = 
     {
       truckRight: cameraMixer.clipAction(cameraTruckRightClip),
+      truckLeft: cameraMixer.clipAction(cameraTruckLeftClip),
     };
 
-  camera.userData.actions.truckRight.loop = THREE.LoopOnce;
-  camera.userData.actions.truckRight.clampWhenFinished = true;
+  initializeAnimation(camera.userData.actions.truckRight);
+  initializeAnimation(camera.userData.actions.truckLeft);
 
   if(useControls){
       controls.object = camera;

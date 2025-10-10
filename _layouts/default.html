@@ -12,13 +12,16 @@
     {%- endif -%} 
 
     <main class="page-content" aria-label="Content">
-      <div id="back-button" class="back-home-link" role="button" tabindex="0" hidden aria-hidden="true">
+      
+    {%- if site.background_config.landing_page_3d -%}
+      <div id="back-button" class="back-home-link" role="button" tabindex="0" hidden aria-hidden="true" >
         <!-- <div class="new-bg-top-list-item"> -->
             {{ site.theme_config.back_home_text }}
         <!-- </div> -->
       </div> 
+    {%- endif -%} 
 
-      <div class="w" allowfullscreen>
+      <div class="w" >
 
         {{ content }}
         

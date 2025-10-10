@@ -20,8 +20,8 @@ import {outlinePass} from 'app/OutlinePass';
   }
 
   const thisW = document.querySelector('.w');
-  thisW.hidden = true;
   const backFromPostButton = document.getElementById('back-button');
+  thisW.hidden = true;
 
   const cardLayer = document.getElementById('project-card-layer');
   const cards = new Map(
@@ -42,7 +42,6 @@ import {outlinePass} from 'app/OutlinePass';
     HoverHandlers.Camera.onOpenPost(camera);
     backFromPostButton.hidden = false;
     backFromPostButton.setAttribute('aria-hidden', 'false');
-    thisW.style.height = 'auto';
     thisW.hidden = false;
   }
 
@@ -54,7 +53,6 @@ import {outlinePass} from 'app/OutlinePass';
     backFromPostButton.hidden = true;
     backFromPostButton.setAttribute('aria-hidden', 'true');
     thisW.hidden = true;
-    thisW.style.height = '0';
   }
 
   backFromPostButton.addEventListener('click', (e) => {
@@ -742,7 +740,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   });
 
   renderer.domElement.addEventListener('click', (e) => {
-    if(!RuntimeData.isDragging)
+    if(!RuntimeData.pauseInteractions)
     {
       tryOpenCard();
     }

@@ -6,7 +6,6 @@ import { CopyShader } from 'three/shaders/CopyShader';
 import { FXAAShader } from 'three/shaders/FXAAShader';
 import { GLTFLoader } from 'three/loaders/GLTFLoader';
 import {Text} from 'troika-three-text';
-import { createDerivedMaterial} from 'troika-three-utils'
 import GUI from 'lil-gui';
 
 import {Perlin2D} from 'app/Noises';
@@ -20,6 +19,22 @@ import {outlinePass} from 'app/OutlinePass';
     return;
   }
 
+  const dlg = document.getElementById('pageDlg');
+  const dlgFrame = document.getElementById('dlgFrame');
+
+  function openDialog(url){
+    dlgFrame.src = url;
+    dlg.showModal();
+    history.pushState({overlay:true}, '', location.href);
+    RuntimeData.pauseInteractions = true;
+  }
+
+  dlg.addEventListener('close', () => {
+    dlgFrame.src = 'about:blank';
+    if (history.state && history.state.overlay) history.back();
+    RuntimeData.pauseInteractions = false;
+  });
+
   const cardLayer = document.getElementById('project-card-layer');
   const cards = new Map(
   Array.from(cardLayer.children)              
@@ -27,6 +42,15 @@ import {outlinePass} from 'app/OutlinePass';
        .map(el => [el.id, el])            
   );
   let currentCard = null;
+
+  function tryOpenCard()
+  {
+    if(currentCard == null) return;
+
+    const link = currentCard.querySelector('a[href]');
+    if (link) openDialog(link.href);
+    //if (link) { window.open(link.href, '_self');} 
+  }
 
   function showCard(entryId) {
     currentCard = cards.get(entryId);
@@ -43,25 +67,8 @@ import {outlinePass} from 'app/OutlinePass';
     if (!cardToHide) return;
 
     cardToHide.dataset.open = "false";
-/*     setTimeout(() => {
-      if(cardToHide !== currentCard)
-      {
-        cardToHide.hidden = true;
-        cardToHide.setAttribute('aria-hidden', 'true');
-      }
-    }, 130);*/
   } 
 
-  function tryOpenCard()
-  {
-    if(currentCard == null) return;
-
-    const link = currentCard.querySelector('a[href]');
-    if (link) {
-      //console.log("Card link:", link.href);
-      window.open(link.href, '_self');
-    }
-  }
 
   const Params =
   {
@@ -148,6 +155,7 @@ import {outlinePass} from 'app/OutlinePass';
     isDragging: false,
     isWindEnabled: true,
     windSampleOffset: 0,
+    pauseInteractions: false,
   }
 
   const renderer = new THREE.WebGLRenderer({
@@ -745,12 +753,14 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   function animate(){
     const delta = clock.getDelta();
 
-    if(Params.useControls)
-    {
-      controls.update();
+    if(!RuntimeData.pauseInteractions){
+      if(Params.useControls)
+      {
+        controls.update();
+      }
+      
+      processHover();
     }
-    
-    processHover();
 
     //composer.render();
     renderer.render(scene, camera);

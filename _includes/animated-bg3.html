@@ -1,3 +1,14 @@
+<style>
+  .w {
+    position: fixed;
+    top: 0rem;
+    right: 6rem;    
+    width: 50rem;    
+    height: 100%;  
+    z-index: 30;   
+  }
+</style>
+
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
   <div id="project-card-layer">
@@ -13,11 +24,17 @@
   {% endfor %}
   </div>
 
-  <template id="project-page-layer">
-    
-  </template>
-
   <style>
+
+    .button {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;      
+      height: 4rem; 
+      width: auto;     
+      z-index: 31;          
+    }
+
     #project-card-layer{
       position: fixed;
       top: 5rem;

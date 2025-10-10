@@ -628,8 +628,6 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     leaf.updateMatrixWorld(true);
   }
 
-  gui.add(GuiData, 'PlantMeshIndex', 0, stemLeafPairCount - 1, 1);
-
   initializeCabinet();
 
   setAmbient();
@@ -739,10 +737,12 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     onResize();
   });
 
-  renderer.domElement.addEventListener('click', (e) => {
-    if(!RuntimeData.pauseInteractions)
-    {
+  canvas.addEventListener('click', (e) => {
+    if(!RuntimeData.pauseInteractions) {
       tryOpenCard();
+    }
+    else{
+      closePost();
     }
   });
 
@@ -756,14 +756,8 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
     CloseCard: () => {HoverHandlers.Camera.onClosePost(camera);},
   }
 
-  const gui = new GUI();
-  gui.add(GuiData, 'ToggleDayNight');
-  gui.add(Params, 'windScrollSpeed');
-  gui.add(Params, 'windSampleScale');
-  gui.add(Params, 'plantMaxAngle');
-  gui.add(GuiData, 'TogglePlantMesh');
-  gui.add(GuiData, 'OpenCard');
-  gui.add(GuiData, 'CloseCard');
+  //const gui = new GUI();
+  //gui.add(GuiData, 'ToggleDayNight');
 
   // Animation loop
   function animate(){

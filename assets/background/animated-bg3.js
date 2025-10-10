@@ -115,6 +115,8 @@ import {outlinePass} from 'app/OutlinePass';
     cameraTruckDistance: 0.8,
     cameraTruckDuration: 1.0,
 
+    useControls: false,
+
     // runtime set
     drawerStartPos: 0, 
     cameraDir: 0.
@@ -163,8 +165,6 @@ import {outlinePass} from 'app/OutlinePass';
   //renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
   renderer.shadowMap.enabled = true;
 
-  let useControls = false;
-
   const raycaster = new THREE.Raycaster();
   const mousePos = new THREE.Vector2();
 
@@ -188,7 +188,7 @@ import {outlinePass} from 'app/OutlinePass';
   
   const clock = new THREE.Clock();
   let controls;
-  if(useControls)
+  if(Params.useControls)
   {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.addEventListener('start', () => RuntimeData.isDragging = true);
@@ -502,7 +502,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   initializeAnimation(camera.userData.actions.truckRight);
   initializeAnimation(camera.userData.actions.truckLeft);
 
-  if(useControls){
+  if(Params.useControls){
       controls.object = camera;
       controls.target.copy(camera.position).addScaledVector(Params.cameraDir, 5); 
       controls.update();
@@ -745,7 +745,7 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   function animate(){
     const delta = clock.getDelta();
 
-    if(useControls)
+    if(Params.useControls)
     {
       controls.update();
     }

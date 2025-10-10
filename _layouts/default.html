@@ -2,44 +2,32 @@
 <html lang="en" data-theme="light">
         {%- include head.html -%}
   <body>
-    
-     {% if site.background_config.enable_everywhere %}
-        {% include animated-bg.html %}
-     {% endif %} 
+        
+    {%- if site.background_config.landing_page_3d -%}
+        {%- include animated-bg3.html -%}
+
+<!--         {%- if site.theme_config.landing_page_toggle -%}
+          {%- include toggle_landing_page_button.html -%}
+        {%- endif -%} -->
+    {%- endif -%} 
 
     <main class="page-content" aria-label="Content">
-      <div class="w">
-        {{ content }}
+      <div id="back-button" class="back-home-link" role="button" tabindex="0" hidden aria-hidden="true">
+        <!-- <div class="new-bg-top-list-item"> -->
+            {{ site.theme_config.back_home_text }}
+        <!-- </div> -->
+      </div> 
 
-        {% if site.theme_config.landing_page_toggle %}
-          {% include toggle_landing_page_button.html %}
-        {% endif %}
+      <div class="w" allowfullscreen>
+
+        {{ content }}
         
         {% if site.theme_config.appearance_toggle %}
           {% include toggle_theme_button.html %}
         {% endif %}
-
-
-        {% if site.background_config.appearance_toggle == false %}
-        <div class="credits">
-          <div style="width: 100%; text-align: center; display: inline;">
-<!--           {%- if site.theme_config.show_copyright == true -%}
-          &copy;&nbsp;{{"now"|date:"%Y"}}&nbsp;{{site.author}}
-          •
-          &nbsp;
-          {%- endif -%}
-          {%- if site.soopr -%}
-          Powered by <a href="https://www.soopr.co" target="_blank" rel="noreferrer">Soopr</a>
-          &nbsp; 
-          •-->
-          •
-          &nbsp;
-          {%- endif -%}
-          Based on <a href="https://github.com/abhinavs/moonwalk" target="_blank" rel="noreferrer">Moonwalk by abhinavs</a>
-          &nbsp;
-          •
-          </div>
-        </div>
+        
+        {% if site.background_config.landing_page_3d == false %}
+          {% include credits.html %}
         {% endif %}
       </div>
     </main>

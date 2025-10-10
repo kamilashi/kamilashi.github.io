@@ -3,16 +3,11 @@ layout: default
 ---
 
 
-    {% if site.background_config.3d_landing_page %}
-
-      {% include animated-bg3.html %}
-
-    {% else %}
+  {% if site.background_config.landing_page_3d == false %}
     
     <header>
         {% if site.theme_config.show_navbar == true %}
-        {% include horizontal_list.html collection=site.data.home.navbar_entries %}
-        <!--<div style="height: 4px; background-color: #cc0000; margin-bottom: 20px;"></div>-->
+          {% include horizontal_list.html collection=site.data.home.navbar_entries %}
         {% endif %}
 
         <div class="dashed"></div>
@@ -28,11 +23,10 @@ layout: default
         </div>
 
         {% if site.theme_config.show_description == true %}
-        <!--<p>{{ site.description }}</p>-->
-        {% endif%}
+          <p>{{ site.description }}</p>
+        {% endif %}
         
     </header>
-
 
     {{ content }}
 

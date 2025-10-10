@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+        {%- include head.html -%}
+  <body>
+    
+     {% if site.background_config.enable_everywhere %}
+        {% include animated-bg.html %}
+     {% endif %} 
+        
+    {% if site.theme_config.appearance_toggle %}
+      {% include toggle_theme_button.html %}
+    {% endif %}
+
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+      
+        {{ content }}
+
+        {% if site.background_config.appearance_toggle == false %}
+        <div class="credits">
+          <div style="width: 100%; text-align: center; display: inline;">
+          •
+          &nbsp;
+          {%- endif -%}
+          Based on <a href="https://github.com/abhinavs/moonwalk" target="_blank" rel="noreferrer">Moonwalk by abhinavs</a>
+          &nbsp;
+          •
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </main>
+
+    {%- if site.soopr -%}
+      {%- if site.soopr.publish_token and jekyll.environment == "production" -%}
+        <script async defer data-soopr-token="{{site.soopr.publish_token}}" src="https://sdk.soopr.co/soopr.js"></script>
+      {%- else -%}
+        <script async defer src="https://sdk.soopr.co/soopr.js"></script>
+      {%- endif -%}
+    {%- endif -%}
+  </body>
+</html>

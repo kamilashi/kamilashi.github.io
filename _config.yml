@@ -9,8 +9,7 @@ permalink: /:slug
 favicon: "./logo.png" # relative path to site's favicon
 
 background_config:
-  enable_everywhere: false
-  3d_landing_page: true
+  landing_page_3d: true
 
 twitter:
     username:  # update or delete this
@@ -25,7 +24,7 @@ theme_config:
   landing_page_toggle: false
   back_home_text: "back.." # customize text for homepage link in post layout
   date_format: "%Y-%m-%d" # customize how date is formatted
-  show_description: true # show blog description
+  show_description: false # show blog description
   show_navbar: true # show horizontal navbar
   show_footer: true # show footer links in home page,add in _data/home.yml
   show_copyright: false # show copyright notice in footer

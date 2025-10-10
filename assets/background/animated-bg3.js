@@ -19,21 +19,9 @@ import {outlinePass} from 'app/OutlinePass';
     return;
   }
 
-  const dlg = document.getElementById('pageDlg');
-  const dlgFrame = document.getElementById('dlgFrame');
-
-  function openDialog(url){
-    dlgFrame.src = url;
-    dlg.showModal();
-    history.pushState({overlay:true}, '', location.href);
-    RuntimeData.pauseInteractions = true;
-  }
-
-  dlg.addEventListener('close', () => {
-    dlgFrame.src = 'about:blank';
-    if (history.state && history.state.overlay) history.back();
-    RuntimeData.pauseInteractions = false;
-  });
+  const thisW = document.querySelector('.w');
+  thisW.hidden = true;
+  const backFromPostButton = document.getElementById('back-button');
 
   const cardLayer = document.getElementById('project-card-layer');
   const cards = new Map(
@@ -43,13 +31,43 @@ import {outlinePass} from 'app/OutlinePass';
   );
   let currentCard = null;
 
+  async function openPost(path) {
+    const res = await fetch(path);
+    const data = await res.text();
+    const doc  = new DOMParser().parseFromString(data, 'text/html');
+    const newW = doc.querySelector('.w');
+    thisW.innerHTML = newW.innerHTML;
+
+    RuntimeData.pauseInteractions = true;
+    HoverHandlers.Camera.onOpenPost(camera);
+    backFromPostButton.hidden = false;
+    backFromPostButton.setAttribute('aria-hidden', 'false');
+    thisW.style.height = 'auto';
+    thisW.hidden = false;
+  }
+
+  async function closePost() {
+    thisW.innerHTML = null;
+
+    RuntimeData.pauseInteractions = false;
+    HoverHandlers.Camera.onClosePost(camera);
+    backFromPostButton.hidden = true;
+    backFromPostButton.setAttribute('aria-hidden', 'true');
+    thisW.hidden = true;
+    thisW.style.height = '0';
+  }
+
+  backFromPostButton.addEventListener('click', (e) => {
+    closePost();             
+  });
+
   function tryOpenCard()
   {
     if(currentCard == null) return;
 
     const link = currentCard.querySelector('a[href]');
-    if (link) openDialog(link.href);
-    //if (link) { window.open(link.href, '_self');} 
+    if (link) openPost(link.href);
+    currentCard.dataset.open = "false";
   }
 
   function showCard(entryId) {

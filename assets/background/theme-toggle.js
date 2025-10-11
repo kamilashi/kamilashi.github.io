@@ -1,7 +1,7 @@
 export class ThemeToggle
   {
     constructor(cacheTheme = false) {
-        this._button = document.querySelector('.theme-toggle');
+        this._button = document.getElementById('theme-toggle');
 
         if(cacheTheme)
         {

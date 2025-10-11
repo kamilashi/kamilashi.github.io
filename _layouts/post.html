@@ -2,15 +2,17 @@
 layout: default
 ---
 
-{% if site.background_config.landing_page_3d == false %}
-    <a href="{{ "/" | relative_url }}" class="back-home-link" >
-        {{ site.theme_config.back_home_text }}
-    </a>
-{% endif %}
+<a href="{{ "/" | relative_url }}" class="back-home-link" >
+    {{ site.theme_config.back_home_text }}
+</a>
 
 <h1 class="post-title">
     {{ page.title }}
 </h1>
+
+<style>
+    .back-home-link[hidden] { display: none !important; }
+</style>
 
 {% include date_and_social_share.html %}
 

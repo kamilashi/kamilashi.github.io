@@ -25,8 +25,6 @@ import {outlinePass} from 'app/OutlinePass';
   const backFromPostButton = document.getElementById('back-button');
   const themeToggle = new ThemeToggle();
   const themeToggleButton = themeToggle.getButton();
-  //pageContainer.setAttribute('aria-hidden', 'true');
-  //pageContainer.setAttribute('data-open', 'false');
 
   const cardLayer = document.getElementById('project-card-layer');
   const cards = new Map(
@@ -45,6 +43,12 @@ import {outlinePass} from 'app/OutlinePass';
 
     RuntimeData.pauseInteractions = true;
     HoverHandlers.Camera.onOpenPost(camera);
+    
+    const backLink = document.querySelector('.back-home-link');
+    const credits = document.querySelector('.credits');
+    backLink.hidden = true;
+    credits.hidden = true;
+    
     pageContainer.setAttribute('aria-hidden', 'false');
     pageContainer.setAttribute('data-open', 'true');
   }
@@ -140,7 +144,7 @@ import {outlinePass} from 'app/OutlinePass';
     windSampleScale: 5.0,
     plantMaxAngle: 0.0007,
 
-    cameraTruckDistance: 0.8,
+    cameraTruckDistance: 0.85,
     cameraTruckDuration: 1.0,
 
     useControls: false,
@@ -330,7 +334,7 @@ import {outlinePass} from 'app/OutlinePass';
 
   const perlin = new Perlin2D(42);
   perlin.setPeriod(255, 255);  
-  //Textures.test = createNoiseTexture(perlin, 5.0); //textureLoader.load('./assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
+  //Textures.test = createNoiseTexture(perlin, 5.0); //textureLoader.load('../assets/images/cover/battleships.png', (tex) =>{ initializeTexture(tex); });
   //console.log( Textures.test);
 
   const Materials = {
@@ -449,7 +453,7 @@ import {outlinePass} from 'app/OutlinePass';
       etntryContainer.add(entries[i]);
 
       const enryCard = cards.get(entryId);
-      const entryTex = textureLoader.load(enryCard.dataset.image, (tex) =>{ initializeTexture(tex); });
+      const entryTex = textureLoader.load('.' + enryCard.dataset.image, (tex) =>{ initializeTexture(tex); });
       entryTex.colorSpace = THREE.SRGBColorSpace;
       const entryMaterial = new THREE.MeshStandardMaterial({ wireframe: false, transparent: false, map: entryTex });
       const entryModel = new THREE.Mesh(entryGeometry, entryMaterial);
@@ -480,7 +484,7 @@ import {outlinePass} from 'app/OutlinePass';
   }
 }
 
-modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => { 
+modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => { 
   imported = gltf.scene;  
 
   scene.add(imported);  

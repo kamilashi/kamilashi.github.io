@@ -238,6 +238,9 @@ summary {
     color: var(--links);
   }
 }
+
+.credits[hidden] { display: none !important; }
+
 .tag {
   font-family: "Roboto Mono", "Courier New", monospace;
   color: var(--text-secondary);

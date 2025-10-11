@@ -6,7 +6,7 @@
     width: calc(var(--page-width) + 6em);
     height: auto;
     z-index: 20;         
-    right: 5em;
+    right: 6em;
     overflow-x: hidden;
   }
 
@@ -26,7 +26,7 @@
     width: var(--page-width) !important;
   }
 
-  .back-home-link{
+  .back-home-button{
     position: sticky !important;
     width: 100%;
     height: auto;
@@ -35,14 +35,12 @@
     padding-inline: 3rem;
     z-index: 30;         
     background-color: var(--bg);  
-    cursor: pointer;
-    /* display: flex; */
+    cursor: pointer !important;
+    display: flex;
   }
 </style>
 
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
-
-  {% include toggle_theme_button.html %}
 
   <div id="project-card-layer">
   {% for item in site.data.home.project_entries %}

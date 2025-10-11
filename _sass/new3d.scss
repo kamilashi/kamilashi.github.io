@@ -15,28 +15,44 @@
   --font-oswald: "Oswald", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-.theme-toggle {
-  color: var(--text);
-  background-color: transparent;
-  padding: 0.5rem;
-  cursor: pointer;
-  margin: 0;
+.hud-v-list {
   position: fixed;
   right: 0;
   top: 0;
-  border: 2px transparent solid;
-  outline: none;
+  display: flex;
+  flex-direction: column;
   z-index: 21;
-  width: 5rem;
-  aspect-ratio: 1;
-  align-items: center;
+  width: auto;
 }
 
-.theme-toggle:hover {
+.hud-v-list-item {
+  width: 4rem;
+  aspect-ratio: 1;
+  align-items: center;
+  margin: 1rem;
+  margin-bottom: 0.5rem;
+  //padding: 2.5rem;
+  
+  //border: 1px transparent solid;
+ // border-radius: 12px;
+}
+
+.hud-toggle {
+  color: var(--text);
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 0;
+}
+
+.hud-toggle:hover {
   color: var(--links);
   outline: none;
 }
-.theme-toggle:focus {
+.hud-toggle:focus {
   outline: none;
 }
 

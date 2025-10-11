@@ -11,7 +11,7 @@ Each particle effect is organized into layers, where each layer represents a gro
 ## Fire Effect
 
 <div class="single-video">
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 		<source src="/assets/videos/firefx_f.mp4?v=1" type="video/mp4">
 	</video >
 </div >
@@ -25,15 +25,15 @@ The fire effect consists of the following layers:
  - Embers
 
 <div class="video-row vid-3" >
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 	  <source src="/assets/videos/base_f.mp4?v=1" type="video/mp4">
 	  Could not load the video
 	</video >
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 	  <source src="/assets/videos/glow_f.mp4?v=1" type="video/mp4">
 	  Could not load the video
 	</video >
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 	  <source src="/assets/videos/flames_f.mp4?v=1" type="video/mp4">
 	  Could not load the video
 	</video >
@@ -43,11 +43,11 @@ The fire effect consists of the following layers:
 
 
 <div class="video-row vid-2" >
-	<video autoplay muted loop  >
+	<video autoplay muted loop playsinline preload="metadata" >
 	  <source src="/assets/videos/sparks_f.mp4?v=1" type="video/mp4">
 	  Could not load the video
 	</video >
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 	  <source src="/assets/videos/embers_f.mp4?v=1" type="video/mp4">
 	  Could not load the video
 	</video >
@@ -239,21 +239,21 @@ A simple effect made up of a single Base layer. It blends sprites from an atlas 
 ## Level Examples
 
 <div class="single-video" >
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 		<source src="/assets/videos/fire_f.mp4?v=12" type="video/mp4">
 		Could not load the video
 	</video >
 </div>
 
 <div class="single-video" >
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 		<source src="/assets/videos/wind_f.mp4?v=2" type="video/mp4">
 		Could not load the video
 	</video >
 </div>
 
 <div class="single-video" >
-	<video autoplay muted loop >
+	<video autoplay muted loop playsinline preload="metadata">
 		<source src="/assets/videos/wind_fire_cloud_f.mp4?v=2" type="video/mp4">
 		Could not load the video
 	</video >

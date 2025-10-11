@@ -50,7 +50,7 @@ There are multiple transitions into a wall scrape state - for example, after a v
 </video > -->
 
 <div class="video-embed">
-	<iframe src="https://player.vimeo.com/video/1085447324?h=57a4ec6af9&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+	<iframe src="https://player.vimeo.com/video/1085447324?h=57a4ec6af9&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" preload="none"></iframe>
 </div>
 
 <div style="height: 1px;"></div>
@@ -86,7 +86,7 @@ The system uses two direction maps an interest map and a danger map. The maps ar
 Attracting forces include: **pursuit/pursuit with offset, seek, flee** and **flocking** behaviors. Repelling forces consist of **static collision avoidance** and **dynamic collision avoidance (e.g., player and NPC movement)**. <!--The seeking behavior uses the target position as a static one, while pursuit takes into account the current speed of the target entity and predicts the position by using a modified version --> In the videos below, entities and their resulting desired directions are visualized with circles and debug lines - red for the player (target) and blue for the NPCs. Each enemy reserves one attack slot around the player (attack scheduler feature that provides these slots developed by Tobias Opfermann), which becomes the offset for the pursuit target (pursuit with offset behavior). These target positions are marked by magenta crosses. Weighted danger directions are displayed as red lines around the enemies, while valid interest directions - after subtraction - are shown in green.
 
 <div class="video-embed">
-	<iframe src="https://player.vimeo.com/video/1085289445?h=25fce98fe4&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+	<iframe src="https://player.vimeo.com/video/1085289445?h=25fce98fe4&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" preload="none"></iframe>
 </div>
 *A small group of enemies, switches between pursuit, flee and seek behaviors.*
 
@@ -95,7 +95,7 @@ Attracting forces include: **pursuit/pursuit with offset, seek, flee** and **flo
 <div style="height: 30px;"></div>
 
 <div class="video-embed">
-	<iframe src="https://player.vimeo.com/video/1085290416?h=a4679863c2&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+	<iframe src="https://player.vimeo.com/video/1085290416?h=a4679863c2&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" preload="none"></iframe>
 </div>
 
 *A larger group of enemies navigating around the static collision.*
@@ -122,7 +122,7 @@ This structure allowed for an automatic context-based choise of the current avai
 <div style="height: 20px;"></div>
 
 <div class="video-embed">
-	<iframe src="https://player.vimeo.com/video/1085462219?h=10cd5d3a97&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+	<iframe src="https://player.vimeo.com/video/1085462219?h=10cd5d3a97&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="720" height="405" frameborder="0" allow=" fullscreen; picture-in-picture" preload="none"></iframe>
 </div>
 
 <div style="height: 1px;"></div>
@@ -157,7 +157,7 @@ As the result, the system was versatile enough to support a very diverse set of 
 This system manages entering and exiting the carrying state, as well as handles specific edge cases. When the player issues a place command, the system performs a number of radial ground checks around the player,  to automatically turn them and place the object on a collision-free ground. Picking up objects and socketing them in or out are treated as interactions and are handled by the **Interactable System**.
 
 <div class="video-embed">
-	<iframe src="https://player.vimeo.com/video/1085470271?h=2e21ed7e15&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+	<iframe src="https://player.vimeo.com/video/1085470271?h=2e21ed7e15&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow=" fullscreen; picture-in-picture" preload="none"></iframe>
 </div>
 
 *Sphere VFX by [Adrian Vögtle](https://exaii.artstation.com/).*
@@ -171,7 +171,7 @@ The carried object is parented to the player via the **Attachment System**, to w
 This system registers button presses and handles both win and fail conditions. The basic QTE type increases the linear progress value with each player input and decreases it when the player is inactive. The blended progress value interpolates toward the linear one using [lerp-damping](https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/). A QTE fails if no input is received within a specified time window. The system supports triggering visual and sound effects at defined progress or regression points. These effects are configured per the concrete QTE and are automatically triggered when their conditions are met. The example shown in the video is an **interaction** that ends in a special QTE action, and has the QTE outcome as the requirements for the transitions "pull the lever to the end" (QTE passed) or "let go" (QTE failed).
 
 <div class="video-embed">
-<iframe src="https://player.vimeo.com/video/1085459902?h=16a97251ed&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1085459902?h=16a97251ed&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow=" fullscreen; picture-in-picture" preload="none"></iframe>
 </div>
 
 
@@ -186,7 +186,7 @@ During development, I took ownership of several enemy units. Adding a new enemy 
 Apart from the 2 health-stages and their attacks, the design incorporated the surroundings of the boss arena. Part of the boss battle logic that I implemented resided inside the level scripts; the level scripting environment provided by [Markus Wall](https://portfolio.rpg-hacker.de/). This battle required a temporary spawn of damaging areas, which I implemented as a standalone re-usable feature. The VFX were created by [Adrian Vögtle](https://exaii.artstation.com/) and [Alexandra Anokhina](https://pyrrhulla.xyz/), boss animations outsourced from Metricminds. Player combat system created by [Pascal Scheuber](https://pascalscheuber.wixsite.com/portfolio), whip traversal by [Manuela Schildknecht](https://schildka.github.io/).
 
 <div class="video-embed">
-<iframe src="https://player.vimeo.com/video/1086475744?h=f73bd7eed8&amp"  frameborder="0" allow=" fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/1086475744?h=f73bd7eed8&amp"  frameborder="0" allow=" fullscreen; picture-in-picture" preload="none"></iframe>
 </div>
 
 *The battle includes a special arena-wide attack in which the boss becomes invincible and "summons" trees that must be destroyed before the attack ends. If the player manages to do so, the boss becomess stunned, otherwise the player gets damaged by the explosion. The video shows both outcomes (failure and success), as well as a special ground surface - lava-like terrain around the arena - that applies a status effect to the player.*

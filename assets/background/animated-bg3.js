@@ -96,7 +96,7 @@ import {outlinePass} from 'app/OutlinePass';
 
   const Params =
   {
-    bgColor: '#B3AF92',
+    bgColor: '#827F6D',
     entriesCount: [4, 8], // sync with the site data!
     sectionsCount: 2, // sync with the site data!
     titleTopMargin: 0.1,
@@ -339,7 +339,8 @@ import {outlinePass} from 'app/OutlinePass';
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshStandardMaterial({ color: 0xACACAC }),
-    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: false, opacity: 0 }),
+    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
+    transparentShadowCaster: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: true, opacity: 0 }),
     test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: true /* , map: Textures.test  */ }),
   }
 
@@ -543,11 +544,11 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
         o.intensity = Params.directionalLightIntensity; 
         o.castShadow = true;
 
-        o.shadow.mapSize.width = 4096; 
-        o.shadow.mapSize.height = 4096; 
+        o.shadow.mapSize.width = 8192; 
+        o.shadow.mapSize.height = 8192; 
         
-        o.shadow.camera.near = 0.02; 
-        o.shadow.camera.far = 15; 
+        //o.shadow.camera.near = 0.01; 
+        o.shadow.camera.far = 20; 
         o.shadow.camera.updateProjectionMatrix();
         o.shadow.normalBias = 0.02;  
 
@@ -603,6 +604,9 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   sectionLabels[1] = new Text();
   sectionLabels[1].text = 'PERSONAL PROJECTS';
   personalProjlabel.add(sectionLabels[1]);
+
+  //const window = imported.getObjectByName("Window");
+  //window.material = Materials.transparentShadowCaster;
 
   sectionLabels.forEach(label => {
     //label.color = 0x000000;

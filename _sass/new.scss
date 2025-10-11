@@ -15,6 +15,31 @@
   --font-oswald: "Oswald", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
+.theme-toggle {
+  color: var(--text);
+  background-color: transparent;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  border: 2px transparent solid;
+  outline: none;
+  z-index: 21;
+  width: 5rem;
+  aspect-ratio: 1;
+  align-items: center;
+}
+
+.theme-toggle:hover {
+  color: var(--links);
+  outline: none;
+}
+.theme-toggle:focus {
+  outline: none;
+}
+
 .new-bg-card{
   width: 35rem;
   aspect-ratio: 1 / 1;

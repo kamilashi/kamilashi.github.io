@@ -21,10 +21,13 @@ import {outlinePass} from 'app/OutlinePass';
   }
 
   const thisW = document.querySelector('.w');
+  const pageContainer = document.querySelector('.page-content');
   const backFromPostButton = document.getElementById('back-button');
   const themeToggle = new ThemeToggle();
   const themeToggleButton = themeToggle.getButton();
-  thisW.hidden = true;
+  //thisW.hidden = true;
+  pageContainer.setAttribute('aria-hidden', 'true');
+  pageContainer.setAttribute('data-open', 'false');
 
   const cardLayer = document.getElementById('project-card-layer');
   const cards = new Map(
@@ -42,20 +45,24 @@ import {outlinePass} from 'app/OutlinePass';
     thisW.innerHTML = newW.innerHTML;
 
     RuntimeData.pauseInteractions = true;
-    HoverHandlers.Camera.onOpenPost(camera);
-    backFromPostButton.hidden = false;
-    backFromPostButton.setAttribute('aria-hidden', 'false');
+    HoverHandlers.Camera.onOpenPost(camera);/* 
     thisW.hidden = false;
+    backFromPostButton.hidden = false;
+    backFromPostButton.setAttribute('aria-hidden', 'false'); */
+    pageContainer.setAttribute('aria-hidden', 'false');
+    pageContainer.setAttribute('data-open', 'true');
   }
 
   async function closePost() {
-    thisW.innerHTML = null;
+    //thisW.innerHTML = null;
 
     RuntimeData.pauseInteractions = false;
     HoverHandlers.Camera.onClosePost(camera);
+    /* thisW.hidden = true;
     backFromPostButton.hidden = true;
-    backFromPostButton.setAttribute('aria-hidden', 'true');
-    thisW.hidden = true;
+    backFromPostButton.setAttribute('aria-hidden', 'true');*/
+    pageContainer.setAttribute('aria-hidden', 'true');
+    pageContainer.setAttribute('data-open', 'false');
   }
 
   backFromPostButton.addEventListener('click', (e) => {

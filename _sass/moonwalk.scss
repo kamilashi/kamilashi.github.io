@@ -134,28 +134,6 @@ html.transition *:after {
     transition-delay: 0 !important;
 }
 
-.theme-toggle {
-  color: var(--text);
-  background-color: transparent;
-  padding: 4px;
-  cursor: pointer;
-  margin: 1em;
-  position: fixed;
-  right: 0;
-  top: 0;
-  border: 2px transparent solid;
-  outline: none;
-  z-index: 21;
-  aspect-ratio: 1;
-}
-
-.theme-toggle:hover {
-  color: var(--links);
-  outline: none;
-}
-.theme-toggle:focus {
-  outline: none;
-}
 .dashed {
   border-top: 1px var(--text) dashed;
   margin: 0.5em 0;

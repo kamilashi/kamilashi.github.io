@@ -5,16 +5,12 @@
         
     {%- if site.background_config.landing_page_3d -%}
         {%- include animated-bg3.html -%}
-
-<!--         {%- if site.theme_config.landing_page_toggle -%}
-          {%- include toggle_landing_page_button.html -%}
-        {%- endif -%} -->
     {%- endif -%} 
 
-    <main class="page-content" aria-label="Content">
+    <main class="page-content" aria-label="Content" data-open="false" aria-hidden="true">
       
     {%- if site.background_config.landing_page_3d -%}
-      <div id="back-button" class="back-home-link" role="button" tabindex="0" hidden aria-hidden="true" >
+      <div id="back-button" class="back-home-link" role="button" tabindex="0" >
         <!-- <div class="new-bg-top-list-item"> -->
             {{ site.theme_config.back_home_text }}
         <!-- </div> -->

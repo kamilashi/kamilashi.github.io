@@ -9,6 +9,7 @@ import {Text} from 'troika-three-text';
 import GUI from 'lil-gui';
 
 import {Perlin2D} from 'app/Noises';
+import {ThemeToggle} from 'app/ThemeToggle';
 import * as Helpers from 'app/Helpers';
 import {outlinePass} from 'app/OutlinePass';
 
@@ -21,6 +22,8 @@ import {outlinePass} from 'app/OutlinePass';
 
   const thisW = document.querySelector('.w');
   const backFromPostButton = document.getElementById('back-button');
+  const themeToggle = new ThemeToggle();
+  const themeToggleButton = themeToggle.getButton();
   thisW.hidden = true;
 
   const cardLayer = document.getElementById('project-card-layer');
@@ -57,6 +60,10 @@ import {outlinePass} from 'app/OutlinePass';
 
   backFromPostButton.addEventListener('click', (e) => {
     closePost();             
+  });
+
+  themeToggleButton.addEventListener('click', (e) => {
+    toggleDayNight();             
   });
 
   function tryOpenCard()
@@ -631,6 +638,13 @@ modelLoader.load('./assets/threejs/models/portfolio_room.glb', gltf => {
   initializeCabinet();
 
   setAmbient();
+  if(RuntimeData.isDay) //UNIFY THE DEFAULT THEME SETTING!
+  {
+    themeToggle.setDayCssTheme();
+  }
+  else{
+    themeToggle.setNightCssTheme();
+  }
 
 	renderer.setAnimationLoop( animate );
 });

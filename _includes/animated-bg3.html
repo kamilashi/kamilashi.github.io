@@ -31,6 +31,8 @@
 
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
+  {% include toggle_theme_button.html %}
+
   <div id="project-card-layer">
   {% for item in site.data.home.project_entries %}
     <div id="s0e{{ forloop.index0 }}" class="project-card" aria-hidden="true" data-image=".{{ item.image}}">
@@ -113,6 +115,7 @@
     "app/Noises":       "../assets/threejs/Noises.js",
     "app/Helpers":      "../assets/threejs/Helpers.js",
     "app/OutlinePass":  "../assets/background/outline-pass.js",
+    "app/ThemeToggle":  "../assets/background/theme-toggle.js",
 
     "app/main":         "../assets/background/animated-bg3.js"
   }

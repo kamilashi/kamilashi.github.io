@@ -72,6 +72,12 @@ img {
       --highlight: #FFECB2; // light yellow
       --code-text: #9D174D;
       --share-text: #999;
+      --code-bg: #dff0ea;
+      --code-summary-color: #6366f1;
+
+      //--stx-string: ;
+      //--stx-operator: #d73a49;
+      --stx-type: #005cc5;
   }
 }
 // -------------- THEME SWITCHER -------------- //
@@ -86,6 +92,10 @@ img {
       --text-secondary: #9CA3AF;
       --code-text: #91A7FF;
       --share-text: #C4C4C4;
+      --code-bg: #162a50;
+      --code-summary-color: #6366f1;
+
+      --sty-type: #4a98f1;
   };
 }
 
@@ -135,6 +145,8 @@ html.transition *:after {
   top: 0;
   border: 2px transparent solid;
   outline: none;
+  z-index: 21;
+  aspect-ratio: 1;
 }
 
 .theme-toggle:hover {
@@ -175,44 +187,16 @@ mark {
   letter-spacing: 1px;
 }
 
-/*p code, li code {
-  background-color: var(--bg-secondary);
-  padding: 0.2rem;
-  color: var(--code-text);
-  font-weight: bold;
-}
-  
-pre, code {
-  font-family: "Roboto Mono", "Courier New", monospace;
-  font-size: 0.9rem;
-}
-
-div.highlighter-rouge pre code, pre code.highlighter-rouge {
-    display: block;
-    overflow-x: auto;
-    padding: 1em;
-}
-*/
-
-/* .highlight, pre code, */ blockquote {
-  border-radius: 0.5em;
-}
-
 blockquote {
+  border-radius: 0.5em;
   background-color: var(--bg-secondary);
   border: 1px var(--border) solid;
 }
 
-/* details {
-  display: block;
-  width: 100%;
-  margin: 0%;
-} */
-
 div.highlight pre, div.highlighter-rouge pre, details pre , details .highlight pre {
   padding: 1em;
   border-radius: 6px;
-  background-color: #dff0ea;
+  background-color: var(--code-bg);
   font-family: "Roboto Mono", "Courier New", monospace;
   font-size: 0.9rem;
   //color: #2d2d2d;
@@ -228,6 +212,7 @@ div.highlight pre, div.highlighter-rouge pre, details pre , details .highlight p
   padding: 0em;
   padding-top: 5px;
   width: 100%;
+  scrollbar-color: var(--text-secondary) var(--bg);
 }
 
 pre code, div.highlighter-rouge code {
@@ -242,8 +227,17 @@ pre code, div.highlighter-rouge code {
 p code, li code {
   background-color: var(--bg-secondary);
   padding: 0.2rem;
-  color: #6366f1;
+  color: var(--code-summary-color);
   font-weight: bold;
+}
+
+summary {
+  //font-weight: bold;
+  color: var(--code-summary-color);      
+  background-color: var(--code-bg);
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .post-title {
@@ -343,15 +337,6 @@ p code, li code {
     width: 100%;
     height: auto;
     display: block;
-}
-
-summary {
-  //font-weight: bold;
-  color: #6366f1;      
-  background-color: #dff0ea;
-  padding: 0.3em 0.6em;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .LI-profile-badge-container {

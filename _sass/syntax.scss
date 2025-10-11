@@ -7,9 +7,9 @@
 .highlight .err   { color: #b00020; }  /* error */
 .highlight .k     { color: #d73a49; font-weight: bold; }   /* keyword */
 .highlight .l     { color: #005cc5; }                      /* literal */
-.highlight .n     { color: #2e3440; }                      /* name */
+.highlight .n     { color: var(--text); }                      /* name */
 .highlight .o     { color: #d73a49; }                      /* operator */
-.highlight .p     { color: #2e3440; }                      /* punctuation */
+.highlight .p     { color: var(--text); }                      /* punctuation */
 
 .highlight .cm, 
 .highlight .cp, 
@@ -19,11 +19,11 @@
 .highlight .gd    { color: #d73a49; } /* deleted */
 .highlight .gi    { color: #28a745; } /* inserted */
 
-.highlight .kt    { color: #005cc5; }                      /* type */
+.highlight .kt    { color: var(--stx-type); }                      /* type */
 .highlight .m     { color: #005cc5; }                      /* number */
 .highlight .s     { color: #032f62; }                      /* string */
 .highlight .na    { color: #6f42c1; }                      /* attribute */
-.highlight .nb    { color: #24292e; }                      /* built-in */
+.highlight .nb    { color: var(--text); }                      /* built-in */
 .highlight .nc    { color: #e36209; font-weight: bold; }   /* class */
 .highlight .no    { color: #e36209; }                      /* constant */
 .highlight .nf    { color: #6f42c1; }                      /* function */

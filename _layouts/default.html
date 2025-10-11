@@ -25,10 +25,6 @@
 
         {{ content }}
         
-        {% if site.theme_config.appearance_toggle %}
-          {% include toggle_theme_button.html %}
-        {% endif %}
-        
         {% if site.background_config.landing_page_3d == false %}
           {% include credits.html %}
         {% endif %}

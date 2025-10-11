@@ -25,9 +25,8 @@ import {outlinePass} from 'app/OutlinePass';
   const backFromPostButton = document.getElementById('back-button');
   const themeToggle = new ThemeToggle();
   const themeToggleButton = themeToggle.getButton();
-  //thisW.hidden = true;
-  pageContainer.setAttribute('aria-hidden', 'true');
-  pageContainer.setAttribute('data-open', 'false');
+  //pageContainer.setAttribute('aria-hidden', 'true');
+  //pageContainer.setAttribute('data-open', 'false');
 
   const cardLayer = document.getElementById('project-card-layer');
   const cards = new Map(
@@ -45,22 +44,17 @@ import {outlinePass} from 'app/OutlinePass';
     thisW.innerHTML = newW.innerHTML;
 
     RuntimeData.pauseInteractions = true;
-    HoverHandlers.Camera.onOpenPost(camera);/* 
-    thisW.hidden = false;
-    backFromPostButton.hidden = false;
-    backFromPostButton.setAttribute('aria-hidden', 'false'); */
+    HoverHandlers.Camera.onOpenPost(camera);
     pageContainer.setAttribute('aria-hidden', 'false');
     pageContainer.setAttribute('data-open', 'true');
+    
+    currentCard = null;
+    entries.forEach(sensor => { sensor.scale.y = 0; }); 
   }
 
   async function closePost() {
-    //thisW.innerHTML = null;
-
     RuntimeData.pauseInteractions = false;
     HoverHandlers.Camera.onClosePost(camera);
-    /* thisW.hidden = true;
-    backFromPostButton.hidden = true;
-    backFromPostButton.setAttribute('aria-hidden', 'true');*/
     pageContainer.setAttribute('aria-hidden', 'true');
     pageContainer.setAttribute('data-open', 'false');
   }
@@ -266,7 +260,7 @@ import {outlinePass} from 'app/OutlinePass';
     setAmbient();
   }
 
-  function runSymmetricalAnimationGeneric(action, direction, duration)
+  function runSymmetricalAnimation(action, direction, duration)
   {
       const localTime = THREE.MathUtils.clamp(action.time, 0, duration);
       action.timeScale = direction;
@@ -275,37 +269,30 @@ import {outlinePass} from 'app/OutlinePass';
       action.play();
   }
 
-  function runSymmetricalAnimation(obj, direction, duration)
-  {
-      const localTime = THREE.MathUtils.clamp(obj.userData.actions.hoverIn.time, 0, duration);
-      obj.userData.actions.hoverIn.timeScale = direction;
-      obj.userData.actions.hoverIn.time = localTime;
-      obj.userData.actions.hoverIn.paused = false;
-      obj.userData.actions.hoverIn.play();
-  }
-
   const HoverHandlers = {
   [Layers.entries]: {
     onHoverIn:  (obj) => { 
-      runSymmetricalAnimation(obj, 1, Params.entryHoverShiftDuration);
+      runSymmetricalAnimation(obj.userData.actions.hoverIn, 1, Params.entryHoverShiftDuration);
       showCard(obj.userData.id);
      },
     onHoverOut: (obj) => { 
-      runSymmetricalAnimation(obj, -1, Params.entryHoverShiftDuration); 
+      runSymmetricalAnimation(obj.userData.actions.hoverIn, -1, Params.entryHoverShiftDuration); 
       hideCard(obj.userData.id);
     }  
     },
   [Layers.sections]: {
       // ! Something fishy. Params.entryHoverShiftDuration used with both secitons and entries
     onHoverIn:  (obj) => { 
-      runSymmetricalAnimation(obj, 1, Params.entryHoverShiftDuration); 
+      runSymmetricalAnimation(obj.userData.actions.hoverIn, 1, Params.entryHoverShiftDuration); 
+      obj.userData.open = true;
 
       setTimeout(() => { 
-      obj.userData.entrySensors.forEach(sensor => { sensor.scale.y = 1; });
+      if(obj.userData.open) {obj.userData.entrySensors.forEach(sensor => { sensor.scale.y = 1; })};
       }, Params.cabinetHoverShiftDuration * 550);
     },
     onHoverOut: (obj) => { 
-      runSymmetricalAnimation(obj, -1, Params.entryHoverShiftDuration); 
+      obj.userData.open = false;
+      runSymmetricalAnimation(obj.userData.actions.hoverIn, -1, Params.entryHoverShiftDuration); 
       obj.userData.entrySensors.forEach(sensor => { sensor.scale.y = 0; }); 
     } 
    },
@@ -352,8 +339,8 @@ import {outlinePass} from 'app/OutlinePass';
   const Materials = {
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshStandardMaterial({ color: 0xACACAC }),
-    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
-    test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false /* , map: Textures.test  */ }),
+    sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: false, opacity: 0 }),
+    test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: true /* , map: Textures.test  */ }),
   }
 
   const testGeometry = new THREE.PlaneGeometry( 5, 5 );

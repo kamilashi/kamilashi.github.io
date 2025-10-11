@@ -285,6 +285,7 @@ import {outlinePass} from 'app/OutlinePass';
       // ! Something fishy. Params.entryHoverShiftDuration used with both secitons and entries
     onHoverIn:  (obj) => { 
       runSymmetricalAnimation(obj.userData.actions.hoverIn, 1, Params.entryHoverShiftDuration); 
+      obj.scale.y += Params.entryHoverShiftDistance;
       obj.userData.open = true;
 
       setTimeout(() => { 
@@ -292,6 +293,7 @@ import {outlinePass} from 'app/OutlinePass';
       }, Params.cabinetHoverShiftDuration * 550);
     },
     onHoverOut: (obj) => { 
+      obj.scale.y = 1;
       obj.userData.open = false;
       runSymmetricalAnimation(obj.userData.actions.hoverIn, -1, Params.entryHoverShiftDuration); 
       obj.userData.entrySensors.forEach(sensor => { sensor.scale.y = 0; }); 
@@ -341,7 +343,6 @@ import {outlinePass} from 'app/OutlinePass';
     default: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: false }),
     text: new THREE.MeshStandardMaterial({ color: 0xACACAC }),
     sensor: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0 }),
-    transparentShadowCaster: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: true, opacity: 0 }),
     test: new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false, transparent: true /* , map: Textures.test  */ }),
   }
 

@@ -151,6 +151,7 @@ import {outlinePass} from 'app/OutlinePass';
 
     // runtime set
     drawerStartPos: 0, 
+    lightBulbEmissive: 0,
     cameraDir: 0.
   }
 
@@ -243,6 +244,7 @@ import {outlinePass} from 'app/OutlinePass';
       fakeEnvironmentLight.groundColor.set(Params.sceneTintColorDay); 
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityDay;
       renderer.toneMappingExposure = Params.toneMappingExposureDay;      
+      Interactives.lightBulb.material.emissive.set('#969393'); 
     }
     else{
       RuntimeData.isWindEnabled = false;
@@ -252,6 +254,7 @@ import {outlinePass} from 'app/OutlinePass';
       fakeEnvironmentLight.groundColor.set(Params.sceneTintColorNight);
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityNight;
       renderer.toneMappingExposure = Params.toneMappingExposureNight;  
+      Interactives.lightBulb.material.emissive.copy(Params.lightBulbEmissive);
     }
   }
 
@@ -580,6 +583,7 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
   Interactives.lightBulb = imported.getObjectByName("LightBulb");
   Interactives.lightBulb.receiveShadow  = false;
   Interactives.lightBulb.castShadow  = false;
+  Params.lightBulbEmissive = Interactives.lightBulb.material.emissive.clone();
 
   Interactives.lampObject = imported.getObjectByName("LampShell");
   Interactives.lampObject.receiveShadow  = false;

@@ -47,9 +47,6 @@ import {outlinePass} from 'app/OutlinePass';
     HoverHandlers.Camera.onOpenPost(camera);
     pageContainer.setAttribute('aria-hidden', 'false');
     pageContainer.setAttribute('data-open', 'true');
-    
-    currentCard = null;
-    entries.forEach(sensor => { sensor.scale.y = 0; }); 
   }
 
   async function closePost() {

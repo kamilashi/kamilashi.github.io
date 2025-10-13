@@ -26,7 +26,7 @@
 }
 
 .hud-v-list-item {
-  width: 4rem;
+  width: 64px;
   aspect-ratio: 1;
   align-items: center;
   margin: 1rem;
@@ -57,7 +57,7 @@
 }
 
 .new-bg-card{
-  width: 35rem;
+  width: 560px;
   aspect-ratio: 1 / 1;
   box-shadow: var(--new-bg-shadow);
   border-radius: var(--new-bg-border-radius);
@@ -71,8 +71,8 @@
   overflow: hidden;
   
   position: fixed;   
-  right: 6rem;
-  top: 5rem;
+  right: 96px;
+  top: 80px;
   pointer-events: none; 
 }
 

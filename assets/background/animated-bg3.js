@@ -129,13 +129,15 @@ import {outlinePass} from 'app/OutlinePass';
     //sceneTintColorGroundNight: '#000000',
     //sceneTintColorDay: '#ada66b',
     //sceneTintColorNight: '#101fa3',
+    lampLightColor: '#ffb242',
+    
     sceneTintColorDay: '#B3AF92',
     sceneTintColorNight: '#4353ff',
     directionalLightIntensity: 0.5,
     fakeEnvironmentIntensityDay: 1.2,
     fakeEnvironmentIntensityNight: 1.2,
     pointLightIntensity: 1.5,
-    spotLightIntensity: 0.7,
+    spotLightPower: 0.7,
 
     toneMappingExposureDay: 2.0,
     toneMappingExposureNight: 2.0,
@@ -152,6 +154,7 @@ import {outlinePass} from 'app/OutlinePass';
     // runtime set
     drawerStartPos: 0, 
     lightBulbEmissive: 0,
+    lightBulbEmissiveIntensity: 0,
     cameraDir: 0.
   }
 
@@ -245,6 +248,7 @@ import {outlinePass} from 'app/OutlinePass';
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityDay;
       renderer.toneMappingExposure = Params.toneMappingExposureDay;      
       Interactives.lightBulb.material.emissive.set('#969393'); 
+      Interactives.lightBulb.material.emissiveIntensity = 1.0;
     }
     else{
       RuntimeData.isWindEnabled = false;
@@ -255,6 +259,7 @@ import {outlinePass} from 'app/OutlinePass';
       fakeEnvironmentLight.intensity = Params.fakeEnvironmentIntensityNight;
       renderer.toneMappingExposure = Params.toneMappingExposureNight;  
       Interactives.lightBulb.material.emissive.copy(Params.lightBulbEmissive);
+      Interactives.lightBulb.material.emissiveIntensity = Params.lightBulbEmissiveIntensity;
     }
   }
 
@@ -543,9 +548,7 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
   //console.log(imported);
 
   imported.traverse((o) => {
-  if (o.isLight) {
-    // todo: lookup by name
-    if (o.isDirectionalLight) { 
+  if (o.isDirectionalLight) {
         o.intensity = Params.directionalLightIntensity; 
         o.castShadow = true;
 
@@ -558,21 +561,6 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
         o.shadow.normalBias = 0.02;  
 
         Interactives.sunLight = o;
-        }
-    if (o.isPointLight) {
-      o.intensity = Params.pointLightIntensity;  
-      o.castShadow = false;
-    }
-    if (o.isSpotLight) {
-      o.intensity = Params.spotLightIntensity; 
-      o.castShadow = true;
-      o.receiveShadow = false;
-      o.shadow.camera.near = 0.2; 
-      o.shadow.camera.far = 4.0; 
-      o.shadow.camera.updateProjectionMatrix();
-      o.shadow.normalBias = -0.31;
-      Interactives.lampLight = o;
-    }
   } 
   else if (o.isMesh) {
     o.receiveShadow = true;
@@ -580,14 +568,30 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
   }
   });
   
+  const ambientLight = imported.getObjectByName("AmbientLight");
+  ambientLight.intensity = Params.pointLightIntensity;  
+  ambientLight.castShadow = false;
+  
   Interactives.lightBulb = imported.getObjectByName("LightBulb");
   Interactives.lightBulb.receiveShadow  = false;
   Interactives.lightBulb.castShadow  = false;
   Params.lightBulbEmissive = Interactives.lightBulb.material.emissive.clone();
+  Params.lightBulbEmissiveIntensity = Interactives.lightBulb.material.emissiveIntensity;
+  console.log(Params.lightBulbEmissive);
+  console.log(Interactives.lightBulb);
+  
+  Interactives.lampLight = new THREE.PointLight(Params.lampLightColor, 1, 3, 4 );
+  Interactives.lampLight.position.copy(Interactives.lightBulb.position);
+  Interactives.lampLight.castShadow = true;
+  Interactives.lampLight.power = Params.spotLightPower;
+  Interactives.lampLight.shadow.normalBias = 0.001;
+  Interactives.lampLight.shadow.camera.far = 5.0;
+  Interactives.lampLight.shadow.camera.near = 0.001;
+  Interactives.lampLight.shadow.mapSize.width = 1024; 
+  Interactives.lampLight.shadow.mapSize.height = 1024; 
+  scene.add(Interactives.lampLight);
 
   Interactives.lampObject = imported.getObjectByName("LampShell");
-  Interactives.lampObject.receiveShadow  = false;
-  Interactives.lampObject.castShadow  = false;
   
   //TODO: redo by instancing at hooks 
   Interactives.drawer = imported.getObjectByName("Drawer");

@@ -380,6 +380,7 @@ import {outlinePass} from 'app/OutlinePass';
   const entries = new Array(entriesCount);
   const sections = new Array(Params.sectionsCount);
   const sectionLabels = new Array(Params.sectionsCount);
+  const mixers = [];
   
   const { times: entryKfTimes, values: entryKfValues } = Helpers.getKeyFramesWRate(Params.entryHoverShiftDuration, 120, Helpers.easeOutCubic, 1.0);
   const entryShiftPos = Helpers.convertD([Params.entryHoverShiftDistance], entryKfValues);
@@ -425,6 +426,7 @@ import {outlinePass} from 'app/OutlinePass';
     sections[sIdx].userData.index = sIdx;
     sections[sIdx].userData.model = drawerModel;
     sections[sIdx].userData.mixer = mixer;
+    mixers.push(mixer);
     sections[sIdx].userData.actions = 
     {
       hoverIn: mixer.clipAction(cabinetHoverInClip),
@@ -477,6 +479,7 @@ import {outlinePass} from 'app/OutlinePass';
       entries[i].userData.model = entryModel;
       entries[i].userData.index = i;
       entries[i].userData.mixer = entryMixer;
+      mixers.push(entryMixer);
       entries[i].userData.actions = 
       {
         hoverIn: entryMixer.clipAction(entryHoverInClip),

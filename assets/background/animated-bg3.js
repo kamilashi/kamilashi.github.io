@@ -577,8 +577,6 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
   Interactives.lightBulb.castShadow  = false;
   Params.lightBulbEmissive = Interactives.lightBulb.material.emissive.clone();
   Params.lightBulbEmissiveIntensity = Interactives.lightBulb.material.emissiveIntensity;
-  console.log(Params.lightBulbEmissive);
-  console.log(Interactives.lightBulb);
   
   Interactives.lampLight = new THREE.PointLight(Params.lampLightColor, 1, 3, 4 );
   Interactives.lampLight.position.copy(Interactives.lightBulb.position);

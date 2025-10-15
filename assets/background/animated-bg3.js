@@ -532,6 +532,7 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
     
   const cameraMixer = new THREE.AnimationMixer(camera);
   camera.userData.mixer = cameraMixer;
+  mixers.push(cameraMixer);
   camera.userData.actions = 
     {
       truckRight: cameraMixer.clipAction(cameraTruckRightClip),
@@ -656,6 +657,7 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
   }
 
 	renderer.setAnimationLoop( animate );
+  RuntimeData.hoverEnabled = true;
 });
 
   scene.background  = new THREE.Color(Params.bgColor);
@@ -731,7 +733,6 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
   window.addEventListener('pointermove', (e) => {
   mousePos.x =  (e.clientX / innerWidth) * 2 - 1;
   mousePos.y = -(e.clientY / innerHeight) * 2 + 1;
-  RuntimeData.hoverEnabled = true;
   });
 
   function onResize()
@@ -798,15 +799,9 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
     //composer.render();
     renderer.render(scene, camera);
 
-    entries.forEach(entry => {
-      entry.userData.mixer.update(delta);
+    mixers.forEach(mixer => {
+      mixer.update(delta);
     });
-
-    sections.forEach(entry => {
-      entry.userData.mixer.update(delta);
-    });
-
-    camera.userData.mixer.update(delta);
 
     if (RuntimeData.isWindEnabled)
     {

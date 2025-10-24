@@ -30,11 +30,19 @@
 
     <main class="page-content" aria-label="Content" data-open="false" aria-hidden="true">
       
-      <div id="back-button" class="back-home-button" role="button" tabindex="0" hidden aria-hidden="true" >
-        <!-- <div class="new-bg-top-list-item"> -->
-            {{ site.theme_config.back_home_text }}
-        <!-- </div> -->
-      </div> 
+      <div class = "navigation-bar">
+        <div id="prev-button" class="navigation-button" role="button" tabindex="0" hidden>
+          <div class="new-bg-top-list-item">
+              prev
+          </div> 
+        </div> 
+        <div class = "navigation-spacer"></div>
+        <div id="next-button" class="navigation-button" role="button" tabindex="1" hidden>
+          <div class="new-bg-top-list-item">
+              next
+          </div> 
+        </div> 
+      </div>
 
       <div class="w" >
 

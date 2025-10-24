@@ -15,6 +15,30 @@
   --font-oswald: "Oswald", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
+.navigation-bar{
+  position: sticky !important;
+  min-width: 0;
+  height: auto;
+  padding-top: 2rem;
+  padding-bottom: 0.3rem;
+  padding-inline: 3rem;
+  z-index: 30;         
+  display: flex;
+  flex-direction: row;
+}
+
+.navigation-spacer{
+  flex: 1 1 auto;
+}
+
+.navigation-button{
+  width: auto;
+  height: auto;
+  z-index: 31;         
+  cursor: pointer !important;
+  display: flex;
+}
+
 .hud-v-list {
   position: fixed;
   right: 0;

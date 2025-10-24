@@ -22,7 +22,9 @@ import {outlinePass} from 'app/OutlinePass';
 
   const thisW = document.querySelector('.w');
   const pageContainer = document.querySelector('.page-content');
-  const backFromPostButton = document.getElementById('back-button');
+  //const previousPostButton = document.getElementById('back-button');
+  const previousPostButton = document.getElementById('prev-button');
+  const nextPostButton = document.getElementById('next-button');
   const themeToggle = new ThemeToggle();
   const themeToggleButton = themeToggle.getButton();
 
@@ -54,19 +56,48 @@ import {outlinePass} from 'app/OutlinePass';
   }
 
   async function closePost() {
-    RuntimeData.pauseInteractions = false;
-    HoverHandlers.Camera.onClosePost(camera);
     pageContainer.setAttribute('aria-hidden', 'true');
     pageContainer.setAttribute('data-open', 'false');
   }
 
-  backFromPostButton.addEventListener('click', (e) => {
-    closePost();             
+  async function closePosts() {
+    RuntimeData.pauseInteractions = false;
+    HoverHandlers.Camera.onClosePost(camera);
+    closePost();
+  }
+
+  previousPostButton.addEventListener('click', (e) => {
+    let prevIndex = lastHoveredItem.item.userData.index + 1;
+    switchToPost(prevIndex);
+  });
+
+  nextPostButton.addEventListener('click', (e) => {
+    let nextIndex = lastHoveredItem.item.userData.index - 1;
+    switchToPost(nextIndex);
   });
 
   themeToggleButton.addEventListener('click', (e) => {
     toggleDayNight();             
   });
+
+  function switchToPost(targetIdx)
+  {  
+    if(targetIdx < 0 || targetIdx > entries.length) return; // TODO: either remove buttons or allow wrap-around
+    if(lastHoveredItem.item.userData.sectionIndex != entries[targetIdx].userData.sectionIndex) {
+      runSymmetricalAnimation(lastHoveredStickyItem.item.userData.actions.hoverIn, -1, Params.entryHoverShiftDuration); 
+      lastHoveredStickyItem.item.userData.entrySensors.forEach(sensor => { sensor.scale.y = 0; }); 
+      lastHoveredStickyItem.item = sections[entries[targetIdx].userData.sectionIndex];
+      lastHoveredStickyItem.handlerId = Layers.sections;
+      runSymmetricalAnimation(lastHoveredStickyItem.item.userData.actions.hoverIn, 1, Params.entryHoverShiftDuration); 
+      lastHoveredStickyItem.item.userData.entrySensors.forEach(sensor => { sensor.scale.y = 1; }); 
+    }
+    runSymmetricalAnimation(lastHoveredItem.item.userData.actions.hoverIn, -1, Params.entryHoverShiftDuration);
+    lastHoveredItem.item = entries[targetIdx];
+    lastHoveredItem.handlerId = Layers.entries;
+    runSymmetricalAnimation(lastHoveredItem.item.userData.actions.hoverIn, 1, Params.entryHoverShiftDuration);
+    currentCard = cards.get(lastHoveredItem.item.userData.id);
+    tryOpenCard();
+  }
 
   function tryOpenCard()
   {
@@ -403,7 +434,7 @@ import {outlinePass} from 'app/OutlinePass';
       cabinetShiftForwardKF 
     ]);
 
-  let i = 0;
+  let entity_idx_offset = 0;
   let imported;
 
   function initializeCabinet(){
@@ -457,6 +488,7 @@ import {outlinePass} from 'app/OutlinePass';
       const etntryContainer = new THREE.Object3D();
       etntryContainer.position.set(entriesXOffset, Params.recordOffsetY, + Params.drawerInnerWidth * 0.5  - entriesSpacing * ( 0.5 + eIdx));
 
+      const i = entity_idx_offset + eIdx;
       entries[i] = new THREE.Mesh(entrySensorGeometry, Materials.sensor);
       entries[i].position.set(0, 0, 0);
       entries[i].scale.y = 0; 
@@ -487,12 +519,13 @@ import {outlinePass} from 'app/OutlinePass';
 
       initializeAnimation(entries[i].userData.actions.hoverIn);
       entries[i].userData.id = entryId;
+      entries[i].userData.sectionIndex = sIdx;
 
       sections[sIdx].userData.entrySensors[eIdx] = entries[i];
       sections[sIdx].userData.model.add(etntryContainer);
-      
-      i += 1;
     }
+
+    entity_idx_offset += Params.entriesCount[sIdx];
   }
 }
 
@@ -617,11 +650,7 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
   sectionLabels[1].text = 'PERSONAL PROJECTS';
   personalProjlabel.add(sectionLabels[1]);
 
-  //const window = imported.getObjectByName("Window");
-  //window.material = Materials.transparentShadowCaster;
-
   sectionLabels.forEach(label => {
-    //label.color = 0x000000;
     label.material = Materials.text;
     label.rotation.y += Math.PI/2;
     label.fontSize = 0.04;
@@ -766,7 +795,7 @@ modelLoader.load('../assets/threejs/models/portfolio_room.glb', gltf => {
       tryOpenCard();
     }
     else{
-      closePost();
+      closePosts();
     }
   });
 

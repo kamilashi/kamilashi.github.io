@@ -67,12 +67,12 @@ import {outlinePass} from 'app/OutlinePass';
   }
 
   previousPostButton.addEventListener('click', (e) => {
-    let prevIndex = lastHoveredItem.item.userData.index + 1;
+    let prevIndex = lastHoveredItem.item.userData.index - 1;
     switchToPost(prevIndex);
   });
 
   nextPostButton.addEventListener('click', (e) => {
-    let nextIndex = lastHoveredItem.item.userData.index - 1;
+    let nextIndex = lastHoveredItem.item.userData.index + 1;
     switchToPost(nextIndex);
   });
 

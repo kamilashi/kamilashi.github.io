@@ -60,12 +60,12 @@ project_entries:
 old_project_entries:
   - title: Jet Loop
     url: jet-loop
-    desc: OpenGL practice project.
+    desc: OpenGL practice project with a RAII profiler.
     tools: (C++, OpenGL, Dear ImGui, CMake)
     highlight: DEMO
     image: /assets/images/jetloop/cappadocia1.png
     desc_long: "Lightweight <strong>OpenGL renderer</strong> of a procedurally generated terrain patch 
-      using <strong>fractal noise.</strong> \n\n
+      using <strong>fractal noise</strong> + <strong>RAII profiler.</strong> \n\n
       <em> C++, OpenGL, Dear ImGui, CMake </em>"
 
   - title: Numerical Approximator

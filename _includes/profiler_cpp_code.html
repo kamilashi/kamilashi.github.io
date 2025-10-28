@@ -1,0 +1,238 @@
+{% highlight cpp %}
+
+namespace Profiler
+{
+  static const size_t InvalidNodeIdx = std::numeric_limits<size_t>::max();
+
+  ...
+
+  class ScopeProfileTree
+  {
+  public:
+    class iterator
+    {
+    public:
+      iterator(ScopeProfileNode* pNode, ScopeProfileTree* pTree, int depth) : 
+      m_pNode(pNode),
+      m_pTree(pTree),
+      m_depth(depth) {}
+
+      iterator& operator++()
+      {
+        advance();
+        return *this;
+      }
+
+      iterator operator++(int)
+      {
+        iterator treeIterator = *this;
+        advance();
+        return treeIterator;
+      }
+
+      bool operator==(iterator other) const
+      {
+        return this->m_pNode == other.m_pNode;
+      }
+
+      bool operator!=(iterator other) const
+      {
+        return this->m_pNode != other.m_pNode;
+      }
+
+      ScopeProfileNode& operator*() const
+      {
+        return *m_pNode;
+      }
+
+      ScopeProfileNode* operator->() const
+      {
+        return m_pNode;
+      }
+
+      int depth() const
+      {
+        return m_depth;
+      }
+
+      private:
+        ScopeProfileNode* m_pNode;
+        ScopeProfileTree* m_pTree;
+        int m_depth;
+        void advance()
+        {
+          if (!m_pNode) return;
+
+          if (m_pNode->firstChildIdx != InvalidNodeIdx)
+          {
+            m_pNode = m_pTree->getNodePtr(m_pNode->firstChildIdx);
+            m_depth++;
+            return;
+          }
+
+          while (true)
+          {
+            if (m_pNode->nextSiblingIdx != InvalidNodeIdx)
+            {
+              m_pNode = m_pTree->getNodePtr(m_pNode->nextSiblingIdx);
+              return;
+            }
+            if (m_pNode->parentIdx == InvalidNodeIdx)
+            {
+              m_pNode = nullptr;
+              m_depth = -1;
+              return;
+            }
+            m_pNode = m_pTree->getNodePtr(m_pNode->parentIdx);
+            m_depth--;
+          }
+        }
+      };
+
+      ScopeProfileTree() :
+        m_nodes(0),
+        m_openNodes(0),
+        m_stats(0)
+      {
+        m_nodes.reserve(m_sMaxNodesCount);
+        m_openNodes.reserve(m_sMaxNodesCount);
+        m_stats.reserve(m_sMaxNodesCount);
+        reset();
+      }
+
+      ~ScopeProfileTree() {}
+
+      iterator begin()
+      {
+        if (m_nodes.size() <= m_sStartIdx)
+        {
+          return end(); // skip empty root
+        }
+        return iterator{ &m_nodes[getRootIdx()], this, 0 };
+      }
+
+      iterator end()
+      {
+        return iterator{ nullptr, this, -1 };
+      }
+
+      void reset()
+      {
+        m_nodes.clear();
+        m_openNodes.clear();
+
+        pushNode(InvalidNodeIdx, -1); // root
+        m_openNodes.emplace_back(0);
+      }
+
+      void onNodeOpen(int id)
+      {
+          const size_t parentIdx = m_openNodes.back();
+          const size_t thisIdx = m_nodes.size();
+
+#ifdef _DEBUG
+        if (thisIdx == m_sMaxNodesCount)
+        {
+          fprintf(stderr, "Increase the default capacity of the profiler's node storage!\n");
+        }
+#endif // DEBUG
+
+        pushNode(parentIdx, id);
+
+        ScopeProfileNode& parentNode = m_nodes[parentIdx];
+        if (parentNode.firstChildIdx == InvalidNodeIdx)
+        {
+          parentNode.firstChildIdx = thisIdx;
+          parentNode.lastChildIdx = thisIdx;
+        }
+        else 
+        {
+          m_nodes[parentNode.lastChildIdx].nextSiblingIdx = thisIdx;
+          parentNode.lastChildIdx = thisIdx;
+        }
+
+        m_openNodes.emplace_back(thisIdx);
+      }
+
+      void onNodeClose(const char* n, double startT, double elapsedT)
+      {
+        if (m_openNodes.size() <= 1)
+        {
+          return;
+        }
+        const size_t lastOpenIdx = m_openNodes.back();
+        m_nodes[lastOpenIdx].setData(n, startT, elapsedT);
+        m_openNodes.pop_back();
+
+        storeStats(&m_nodes[lastOpenIdx].data, m_nodes[lastOpenIdx].id);
+      }
+
+      const ScopeProfileNode& getNode(size_t idx) const
+      {
+        return m_nodes.at(idx);
+      }
+
+      const ScopeStats& getOrCreateStats(int idKey)
+      {
+        return m_stats[idKey];
+      }
+
+      bool hasStatsFor(int idKey) const
+      {
+        return m_stats.find(idKey) != m_stats.end();
+      }
+
+      size_t getNodesCount() const
+      {
+        return m_nodes.size();
+      }
+
+      size_t getRootIdx() const
+      {
+        return m_sStartIdx;
+      }
+
+    private:
+      static const size_t m_sStartIdx = 1;
+      static const size_t m_sMaxNodesCount = 64;
+      std::vector<ScopeProfileNode> m_nodes;
+      std::vector<size_t> m_openNodes;
+      std::unordered_map<int, ScopeStats> m_stats;
+      friend class iterator;
+
+      void pushNode(size_t parent, int id)
+      {
+        m_nodes.emplace_back(id, parent);
+      }
+
+      void storeStats(ScopeProfileData* pData, int id)
+      {
+        auto it = m_stats.find(id);
+
+        if (it != m_stats.end())
+        {
+          ScopeStats& nodeStats = it->second;
+          nodeStats.maxElapsedTime = std::max(nodeStats.maxElapsedTime, pData->elapsedTime);
+          nodeStats.minElapsedTime = std::min(nodeStats.minElapsedTime, pData->elapsedTime);
+          nodeStats.pushElapsedTime(pData->elapsedTime);
+        }
+        else
+        {
+          m_stats.emplace(id, ScopeStats{ pData->elapsedTime, pData->elapsedTime });
+        }
+      }
+
+      ScopeProfileNode* getNodePtr(size_t idx)
+      {
+        return &m_nodes.at(idx);
+      }
+
+      ScopeProfileNode& getNodeRef(size_t idx)
+      {
+        return m_nodes.at(idx);
+      }
+    };
+
+    ...
+}
+{% endhighlight %}

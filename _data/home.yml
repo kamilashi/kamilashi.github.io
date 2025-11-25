@@ -77,6 +77,18 @@ old_project_entries:
     desc_long: "A launcher that executes several <strong>calculus operations</strong> with a <strong>console-like GUI</strong>. \n\n
       <em> C++, Qt6, CMake. </em>"
 
+  - title: SubAction!
+    url: sub-action
+    desc: Rapid prototyping, creature movement logic
+    tools: (C#, Unity) 
+    highlight: DEMO
+    image: /assets/images/cover/subaction.jpg
+    desc_long: "An excercise in <strong> rapid prototyping </strong> of gameplay and creature behaviors. \n\n
+      03 Spring-Verlet Simulation \n
+      02 Boids (Flocking) \n
+      03 Steering Logic \n\n
+      <em> C#, Unity Engine </em>"
+
   - title: Ghosts Never Talk
     url: ghosts-never-talk
     desc: Gameplay & VFX coding for a 2.5D adventure 

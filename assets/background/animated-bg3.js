@@ -129,7 +129,7 @@ import {outlinePass} from 'app/OutlinePass';
   const Params =
   {
     bgColor: '#827F6D',
-    entriesCount: [4, 8], // sync with the site data!
+    entriesCount: [4, 9], // sync with the site data!
     sectionsCount: 2, // sync with the site data!
     titleTopMargin: 0.1,
     titleXOffsetStep: 0.17,

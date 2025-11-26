@@ -84,7 +84,7 @@ old_project_entries:
     highlight: DEMO
     image: /assets/images/cover/subaction.jpg
     desc_long: "An excercise in <strong> rapid prototyping </strong> of gameplay and creature behaviors. \n\n
-      03 Spring-Verlet Simulation \n
+      01 Spring-Verlet Simulation \n
       02 Boids (Flocking) \n
       03 Steering Logic \n\n
       <em> C#, Unity Engine </em>"
@@ -96,7 +96,7 @@ old_project_entries:
     highlight: DEMO
     image: /assets/images/cover/ghost.png
     desc_long: "<strong> 2.5D adventure</strong> team project with myself as the programmer. \n\n
-      03 Spline Movement \n
+      01 Spline Movement \n
       02 A* Pathfinding \n
       03 Camera Movement \n\n
       <em> C#, Unity Engine </em>"
